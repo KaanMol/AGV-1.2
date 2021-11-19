@@ -5,11 +5,20 @@ public class Servo {
     private int targetSpeed = 0;
     private boolean reverse = false;
 
-    Servo(int outputPin, boolean reverse)
-    {
+    public Servo(int outputPin, boolean reverse) {
         this.outputPin = outputPin;
         this.reverse = reverse;
     }
 
+    public void setSpeed(int targetSpeed) {
 
+    }
+
+    public void stop() {
+
+    }
+
+    public void update(){
+
+    }
 }
