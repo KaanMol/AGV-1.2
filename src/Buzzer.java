@@ -3,44 +3,41 @@ import TI.BoeBot;
 public class Buzzer {
     private int outputPin;
     private int frequency;
-    private int time;
+    private int milliseconds;
 
     /**
      *
-     * @param outputPin
-     * @param frequency
-     * @param time
+     * @param outputPin - The pin which is used for the output of the circuit
+     * @param frequency - The frequency of the tone of the buzzer
+     * @param milliseconds - The amount of milliseconds the buzzer will play a tone
      */
-
-
-    public Buzzer(int outputPin, int frequency, int time) {
+    public Buzzer(int outputPin, int frequency, int milliseconds) {
         this.frequency = frequency;
         this.outputPin = outputPin;
-        this.time = time;
+        this.milliseconds = milliseconds;
 
     }
 
     /**
      *
-     * Get variable values from 'outputPin, frequency, time'
-     * Call freqOut method
+     * Get variable values from 'outputPin, frequency, milliseconds'
+     * Call the freqOut method with those variables to start playing a tone
      */
-
-    public void start(){
-        BoeBot.freqOut(this.outputPin, this.frequency, this.time);
+    public void start() {
+        BoeBot.freqOut(this.outputPin, this.frequency, this.milliseconds);
 
     }
 
     /**
      *
-     * @param outputPin
-     * @param frequency
-     * @param time
+     * @param outputPin - The pin which is used for the output of the circuit
+     * @param frequency - The frequency of the tone of the buzzer
+     * @param milliseconds - The amount of milliseconds the buzzer will play a tone
      */
-    public void update(int outputPin, int frequency, int time){
+    public void update(int outputPin, int frequency, int milliseconds) {
         this.frequency = frequency;
         this.outputPin = outputPin;
-        this.time = time;
+        this.milliseconds = milliseconds;
 
     }
 }
