@@ -4,6 +4,7 @@ import TI.PinMode;
 public class Whisker {
 
     private int inputPin;
+    
     /**
      *
      * @param inputPin The pin that the whisker is connected to
