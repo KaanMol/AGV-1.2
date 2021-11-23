@@ -1,17 +1,19 @@
 package vehicle;
 
-import hardware.Servo;
+import hardware.Motor;
 import interfaces.Updatable;
 import common.Config;
 
-public class Movement implements Updatable {
+import java.util.ArrayList;
 
-    private Servo rightServo;
-    private Servo leftServo;
+public class Movement implements interfaces.hardware.Movement, Updatable {
+
+    private Motor rightServo;
+    private Motor leftServo;
 
     public Movement() {
-        this.rightServo = new Servo(Config.rightServoPin);
-        this.leftServo = new Servo(Config.leftServoPin);
+        this.rightServo = new Motor(Config.rightServoPin);
+        this.leftServo = new Motor(Config.leftServoPin);
     }
 
     public void forward() {
@@ -29,8 +31,15 @@ public class Movement implements Updatable {
         this.rightServo.setSpeed(1700);
     }
 
+    public void turnLeft() {
+
+    }
+
     public void update() {
 
     }
 
+//    public getTestResults(ArrayList<String> expected) {
+//        return this.
+//    }
 }
