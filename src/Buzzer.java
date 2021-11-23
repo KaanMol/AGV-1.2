@@ -20,8 +20,7 @@ public class Buzzer {
 
     /**
      *
-     * Get variable values from 'outputPin, frequency, milliseconds'
-     * Call the freqOut method with those variables to start playing a tone
+     * Starts playing a tone
      */
     public void start() {
         BoeBot.freqOut(this.outputPin, this.frequency, this.milliseconds);
