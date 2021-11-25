@@ -1,5 +1,7 @@
 import TI.BoeBot;
 import TI.PinMode;
+import interfaces.MovementUpdater;
+import interfaces.Updatable;
 import vehicle.Movement;
 
 public class RobotMain {
@@ -16,6 +18,10 @@ public class RobotMain {
 //        }
 
         Ed ed = new Ed();
+        ed.updater();
+
+        //Movement movement = new Movement();
+
     }
 
 

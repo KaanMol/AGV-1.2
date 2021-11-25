@@ -45,19 +45,21 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     }
 
     public void onMovementUpdate() {
-
+        //movement.turnLeft();
     }
 
     public void onCollisionDetectionUpdate(int bs) {
         if (bs == 0) {
-            System.out.println("Left!");
-            this.blinkers.blinkLeft();
+            System.out.println("Obstacle on Left!");
+            this.movement.passingObstacleRight(bs);
+            this.blinkers.blinkRight();
 
 //            this.movement.turnLeft();
         }
 
         if (bs == 1) {
-            System.out.println("Right!");
+            System.out.println("Obstacle on Right!");
+            this.movement.passingObstacleRight(bs);
             this.blinkers.blinkRight();
 //            this.movement.turnRight();
         }
