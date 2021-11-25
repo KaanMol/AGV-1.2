@@ -1,6 +1,7 @@
 package vehicle;
 
 import TI.Timer;
+import enums.Direction;
 import hardware.Led;
 import interfaces.Updatable;
 
@@ -13,10 +14,11 @@ public class Blinkers implements Updatable {
     private Led bottomRight;
 
     private Timer timer;
+    private boolean shouldBeOn = false;
     private boolean isOn = false;
     private boolean isInit = true;
 
-    private int side = 1;
+    private Direction side = Direction.NEUTRAL;
 
     public Blinkers() {
         this.topLeft = new Led(Led.topLeft);
@@ -24,18 +26,23 @@ public class Blinkers implements Updatable {
         this.bottomLeft = new Led(Led.bottomLeft);
         this.bottomRight = new Led(Led.bottomRight);
 
+        this.blinkersOff();
+
         this.timer = new Timer(0);
     }
 
-    public void blinkLeft() {
-        this.side = 0;
-        this.isInit = false;
-        this.blinkersOff();
-    }
+    public void setBlinker(Direction side) {
+        if (this.side == side) return;
 
-    public void blinkRight() {
-        this.side = 2;
+        if (side == Direction.NEUTRAL) {
+            this.shouldBeOn = false;
+            return;
+        }
+
+        this.side = side;
         this.isInit = false;
+        this.shouldBeOn = true;
+
         this.blinkersOff();
     }
 
@@ -48,6 +55,8 @@ public class Blinkers implements Updatable {
     }
 
     public void update() {
+        if (this.shouldBeOn == false) return;
+
         if (this.isInit == false) {
             this.timer.setInterval(750);
             this.isInit = true;
@@ -57,13 +66,15 @@ public class Blinkers implements Updatable {
             if (this.isOn) {
                 this.blinkersOff();
             } else {
-                if (this.side == 0) {
+                System.out.println(this.side);
+                if (this.side == Direction.LEFT) {
                     this.topLeft.setColor(Color.YELLOW);
                     this.bottomLeft.setColor(Color.YELLOW);
                 } else {
                     this.topRight.setColor(Color.YELLOW);
                     this.bottomRight.setColor(Color.YELLOW);
                 }
+
                 this.isOn = true;
             }
 
