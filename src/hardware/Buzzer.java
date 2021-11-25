@@ -1,3 +1,5 @@
+package hardware;
+
 import TI.BoeBot;
 
 public class Buzzer {

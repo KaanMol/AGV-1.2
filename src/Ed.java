@@ -2,12 +2,15 @@ import TI.BoeBot;
 import TI.Timer;
 import common.Config;
 import enums.Direction;
+import hardware.Buzzer;
 import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
+import interfaces.DrivingNotificationUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.Blinkers;
 import vehicle.CollisionDetection;
+import vehicle.DrivingNotification;
 import vehicle.Movement;
 
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
+    private DrivingNotification notification;
     private CollisionDetection collisionDetection;
     private Timer timer;
     private Button emergencyStop;
@@ -38,6 +42,9 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
+
+        this.notification = new DrivingNotification();
+        this.processes.add(this.notification);
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
@@ -65,6 +72,10 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
             this.blinkers.setBlinker(heading);
         } else {
             this.blinkers.setBlinker(Direction.NEUTRAL);
+        }
+        if(heading == Direction.BACKWARD)
+        {
+            this.notification.setBuzzer();
         }
     }
 
