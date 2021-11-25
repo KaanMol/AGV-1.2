@@ -13,7 +13,7 @@ import vehicle.Movement;
 
 import java.util.ArrayList;
 
-public class Ed implements MovementUpdater, CollisionDetectionUpdater, DrivingNotificationUpdater {
+public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -31,12 +31,12 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater, DrivingNo
     public void initialize() {
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-        this.movement.backwards();
+        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
 
-        this.notification = new DrivingNotification(this);
+        this.notification = new DrivingNotification();
         this.processes.add(this.notification);
 
         this.blinkers = new Blinkers();
@@ -57,6 +57,10 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater, DrivingNo
             this.blinkers.setBlinker(heading);
         } else {
             this.blinkers.setBlinker(Direction.NEUTRAL);
+        }
+        if(heading == Direction.BACKWARD)
+        {
+            this.notification.setBuzzer();
         }
     }
 
@@ -79,15 +83,5 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater, DrivingNo
 //            }
 
         }
-    }
-
-    public void buzzerUpdate(){
-        this.notification.buzzerOn();
-    }
-
-    public int getHeading()
-    {
-        System.out.println(this.movement.getHeading());
-        return this.movement.getHeading();
     }
 }

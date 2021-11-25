@@ -1,6 +1,8 @@
 package interfaces;
 
+import enums.Direction;
+
 public interface DrivingNotificationUpdater {
-    int getHeading();
-    void buzzerUpdate();
+    //Direction getHeading();
+    //void buzzerUpdate();
 }
