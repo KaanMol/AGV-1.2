@@ -49,7 +49,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     }
 
     public void backwards() {
-        this.setAcceleratingDirection(Direction.BACKWARD, 0, 0);
+        this.setDirection(Direction.BACKWARD, 200, -200);
     }
 
     public void turnRight() {
@@ -168,9 +168,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 //        }
 
         if (this.isAccelerating) {
-            System.out.println("Accelerate");
+//            System.out.println("Accelerate");
             if (this.timer.timeout()) {
-                System.out.println(this.leftMotorSpeed);
+//                System.out.println(this.leftMotorSpeed);
                 if (this.leftMotorSpeed < 200 && this.rightMotorSpeed > -200) {
                     this.leftMotorSpeed += Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;

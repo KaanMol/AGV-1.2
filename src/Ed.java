@@ -58,13 +58,18 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
                     this.emergencyStopActivated = true;
                     break;
                 }
-
                 process.update();
             }
             BoeBot.wait(1);
         }
         System.out.println("STOP");
+        this.stop();
+    }
+
+    private void stop() {
         this.movement.neutral();
+        this.notification.stopBuzzer();
+        this.blinkers.setBlinker(Direction.NEUTRAL);
     }
 
     public void onMovementUpdate(Direction heading) {
@@ -73,9 +78,9 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
         } else {
             this.blinkers.setBlinker(Direction.NEUTRAL);
         }
-        if(heading == Direction.BACKWARD)
-        {
-            this.notification.setBuzzer();
+
+        if (heading == Direction.BACKWARD) {
+            this.notification.startBuzzer();
         }
     }
 

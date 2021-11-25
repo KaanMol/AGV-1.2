@@ -11,35 +11,39 @@ public class DrivingNotification implements Updatable {
     private Buzzer buzzer;
     private DrivingNotificationUpdater callback;
     private Timer timer = new Timer(0);
-    private boolean shouldBeOn = false;
+    private boolean isOn = false;
     private boolean isSet = false;
 
     public DrivingNotification(){
         this.callback = callback;
-        this.buzzer = new Buzzer(Config.buzzerPin, 2000, 10);
+        this.buzzer = new Buzzer(Config.buzzerPin);
 
     }
 
-    public void setBuzzer(){
-        shouldBeOn = true;
+    public void startBuzzer() {
+        this.isSet = true;
+        this.timer.setInterval(500);
+    }
+
+    public void stopBuzzer() {
+        this.isSet = false;
+        this.buzzer.stop();
     }
 
     public void update(){
-        if(shouldBeOn)
-        {
-            this.buzzerOn();
-            if(timer.timeout())
-            {
-                shouldBeOn = false;
-            }
+        if (this.timer.timeout() == false) {
+            return;
         }
-        else if(!isSet){
-            timer.setInterval(250);
-        }
-    }
 
-    public void buzzerOn(){
-        this.buzzer.start();
+        if (this.isSet == false) return;
+
+        if (isOn) {
+            this.buzzer.stop();
+        } else {
+           this.buzzer.start();
+        }
+
+        this.isOn = !this.isOn;
     }
 
 }
