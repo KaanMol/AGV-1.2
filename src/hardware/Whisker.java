@@ -16,6 +16,16 @@ public class Whisker {
         BoeBot.setMode(this.inputPin, PinMode.Input);
     }
 
+    public int getPinNum()
+    {
+        return this.inputPin;
+    }
+
+    public void setPinMode()
+    {
+        BoeBot.setMode(this.inputPin, PinMode.Input);
+    }
+
     /**
      * Checks if whisker is pressed
      * @return state of parameter
