@@ -1,5 +1,7 @@
 package interfaces;
 
+import enums.Direction;
+
 public interface MovementUpdater {
-    void onMovementUpdate();
+    void onMovementUpdate(Direction heading);
 }

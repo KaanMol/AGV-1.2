@@ -2,29 +2,36 @@ package vehicle;
 
 import TI.BoeBot;
 import TI.Timer;
+import enums.Direction;
 import hardware.Motor;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import common.Config;
 
-import java.util.ArrayList;
-
 public class Movement implements interfaces.hardware.Movement, Updatable {
-    public static final int NEUTRAL = 0;
-    public static final int FORWARD = 1;
-    public static final int RIGHT = 2;
-    public static final int BACKWARD = 3;
-    public static final int LEFT = 4;
-
     private Motor rightServo;
     private Motor leftServo;
-    private int currentHeading = 0;
+    private Direction currentHeading = Direction.NEUTRAL;
     private int leftMotorSpeed = 0;
     private int rightMotorSpeed = 0;
     private MovementUpdater callback;
     private boolean isAccelerating = false;
+    private String manoeuvre = "NONE";
     private Timer timer;
+    private Timer timer1;
+    private Timer timer2;
+    private Timer timer3;
+    private Timer timer4;
+    private Timer timer5;
+    private boolean isInit;
+    private int step = 0;
 
+    //0 = stop
+    //500 = backwards
+    //2000 = turn right/left
+    //2550 = forward
+    //4550 = turn left/right
+    //3550 = forward
     public Movement(MovementUpdater callback) {
         this.callback = callback;
         this.timer = new Timer(0);
@@ -32,148 +39,221 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.leftServo = new Motor(Config.leftServoPin);
     }
 
-    public int getHeading() {
+    public Direction getHeading() {
         return this.currentHeading;
     }
 
-    public void forward() {
+    public void forwardSlow() {
         this.isAccelerating = true;
         this.rightMotorSpeed = 0;
         this.leftMotorSpeed = 0;
         this.timer.setInterval(250);
-        this.currentHeading = Movement.FORWARD;
+        this.currentHeading = Direction.FORWARD;
     }
 
-    public void instantForward() {
+    public void forward() {
+        this.currentHeading = Direction.FORWARD;
         this.rightServo.setSpeed(1300);
         this.leftServo.setSpeed(1700);
     }
 
     public void backwards() {
-        this.currentHeading = Movement.BACKWARD;
+        this.currentHeading = Direction.BACKWARD;
         this.rightServo.setSpeed(1700);
         this.leftServo.setSpeed(1300);
     }
 
     public void turnRight() {
         //System.out.println("working");
-        this.currentHeading = Movement.RIGHT;
+        this.currentHeading = Direction.RIGHT;
         this.leftServo.setSpeed(1600);
         this.rightServo.setSpeed(1600);
     }
 
     public void turnLeft() {
-        this.currentHeading = Movement.BACKWARD;
+        this.currentHeading = Direction.LEFT;
         this.leftServo.setSpeed(1400);
         this.rightServo.setSpeed(1400);
     }
 
-    public void passingObstacleRight(int bs) {
+    public void neutral() {
+        this.currentHeading = Direction.NEUTRAL;
+        this.leftServo.setSpeed(1500);
+        this.rightServo.setSpeed(1500);
+    }
 
+    public void setManoeuvre(String manoeuvre) {
+        if (this.manoeuvre.equals(manoeuvre)) return;
 
-        timer.setInterval(2000);
+        this.manoeuvre = manoeuvre;
+        this.step = 0;
+        this.isInit = false;
+    }
 
-        if(bs == 0 || bs==2)
-        {
-
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-             BoeBot.wait(500);
-
-            while(!timer.timeout()){
-                this.backwards();
-
-            }
-
-
-                this.rightServo.setSpeed(1500);
-                this.leftServo.setSpeed(1500);
-                BoeBot.wait(500);
-
-                timer.setInterval(550);
-                while(!timer.timeout()){
-                    this.turnRight();
-                }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            timer.setInterval(2000);
-                BoeBot.wait(500);
-
-
-                while(!timer.timeout()){
-                    System.out.println("h");
-                    this.instantForward();
-            }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
-            timer.setInterval(550);
-            while(!timer.timeout()){
-                this.turnLeft();
-            }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
-           this.forward();
-
-
-
-//            this.forward();
-//            this.turnLeft();
-//            this.forward();
-//            this.turnLeft();
-//            this.forward();
-//            this.turnRight();
+    public void manoeuvreExecute() {
+//        System.out.println("EXEC " + this.manoeuvre);
+        //0-500 = stop
+        //500-2000 = backwards
+        //2000-2550 = turn right/left
+        //2550 = forward
+        //4550 = turn left/right
+        //3550 = forward
+        if (this.step == 0) {
+            this.timer.setInterval(500);
+            this.neutral();
+            this.step++;
         }
-        else if(bs==1){
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
 
-            while(!timer.timeout()){
-                this.backwards();
+        if (this.timer.timeout()) {
+            switch (this.step) {
+                case 1:
+                    this.backwards();
+                    this.timer.setInterval(1500);
+                    break;
 
+                case 2:
+                    if (this.manoeuvre.equals("RIGHT")) {
+                        this.turnLeft();
+                    } else {
+                        this.turnRight();
+                    }
+
+                    this.timer.setInterval(550);
+                    break;
+
+                case 3:
+                    this.forward();
+                    this.timer.setInterval(2000);
+                    break;
+                case 4:
+                    if (this.manoeuvre.equals("RIGHT")) {
+                        this.turnRight();
+                    } else {
+                        this.turnLeft();
+                    }
+                    this.timer.setInterval(550);
+                    break;
+                case 5:
+                    this.forward();
+                    this.manoeuvre = "NONE";
             }
 
-
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
-
-            timer.setInterval(550);
-            while(!timer.timeout()){
-                this.turnLeft();
-            }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            timer.setInterval(2000);
-            BoeBot.wait(500);
-
-
-            while(!timer.timeout()){
-                this.instantForward();
-            }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
-            timer.setInterval(550);
-            while(!timer.timeout()){
-                this.turnRight();
-            }
-            this.rightServo.setSpeed(1500);
-            this.leftServo.setSpeed(1500);
-            BoeBot.wait(500);
-            this.forward();
-
+            this.step++;
+            System.out.println(this.currentHeading);
         }
 
 
+
+//        if(bs == 0 || bs==2)
+//        {
+//
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//             BoeBot.wait(500);
+//
+//            while(!timer.timeout()){
+//                this.backwards();
+//
+//            }
+//
+//
+//                this.rightServo.setSpeed(1500);
+//                this.leftServo.setSpeed(1500);
+//                BoeBot.wait(500);
+//
+//                timer.setInterval(550);
+//                while(!timer.timeout()){
+//                    this.turnRight();
+//                }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            timer.setInterval(2000);
+//                BoeBot.wait(500);
+//
+//
+//                while(!timer.timeout()){
+//                    System.out.println("h");
+//                    this.instantForward();
+//            }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//            timer.setInterval(550);
+//            while(!timer.timeout()){
+//                this.turnLeft();
+//            }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//           this.forward();
+//
+//
+//
+////            this.forward();
+////            this.turnLeft();
+////            this.forward();
+////            this.turnLeft();
+////            this.forward();
+////            this.turnRight();
+//        }
+//        else if(bs==1){
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//
+//            while(!timer.timeout()){
+//                this.backwards();
+//
+//            }
+//
+//
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//
+//            timer.setInterval(550);
+//            while(!timer.timeout()){
+//                this.turnLeft();
+//            }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            timer.setInterval(2000);
+//            BoeBot.wait(500);
+//
+//
+//            while(!timer.timeout()){
+//                this.instantForward();
+//            }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//            timer.setInterval(550);
+//            while(!timer.timeout()){
+//                this.turnRight();
+//            }
+//            this.rightServo.setSpeed(1500);
+//            this.leftServo.setSpeed(1500);
+//            BoeBot.wait(500);
+//            this.forward();
+//
+//        }
+//
+//
     }
 
     public void update() {
-        if (this.timer.timeout() == false) {
-            return;
+        if (this.manoeuvre.equals("NONE") == false) {
+
+            this.manoeuvreExecute();
+
         }
+
+
+        this.callback.onMovementUpdate(this.getHeading());
+
+//        if (this.timer.timeout() == false) {
+//            return;
+//        }
 //        if (this.currentHeading == Movement.FORWARD) {
 //            this.rightMotorSpeed = -200;
 //            this.leftMotorSpeed = 200;
@@ -190,22 +270,22 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 //            this.rightMotorSpeed = 0;
 //            this.leftMotorSpeed = 0;
 //        }
-        if (this.isAccelerating) {
-            System.out.println(this.leftMotorSpeed);
-            if (this.leftMotorSpeed < 200 && this.rightMotorSpeed > -200) {
-                this.leftMotorSpeed += 10;
-                this.rightMotorSpeed -= 10;
-            } else {
-                this.isAccelerating = false;
-            }
+//        if (this.isAccelerating) {
+//            System.out.println(this.leftMotorSpeed);
+//            if (this.leftMotorSpeed < 200 && this.rightMotorSpeed > -200) {
+//                this.leftMotorSpeed += 10;
+//                this.rightMotorSpeed -= 10;
+//            } else {
+//                this.isAccelerating = false;
+//            }
+//
+//
+//
+//
+//            this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
+//            this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
+//        }
 
-
-
-
-            this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
-            this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
-        }
-
-        this.timer.mark();
+//        this.timer.mark();
     }
 }

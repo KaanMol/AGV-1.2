@@ -1,5 +1,6 @@
 import TI.BoeBot;
 import TI.Timer;
+import enums.Direction;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
@@ -44,34 +45,31 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
         }
     }
 
-    public void onMovementUpdate() {
-        //movement.turnLeft();
+    public void onMovementUpdate(Direction heading) {
+        if (heading == Direction.LEFT || heading == Direction.RIGHT) {
+            this.blinkers.setBlinker(heading);
+        } else {
+            this.blinkers.setBlinker(Direction.NEUTRAL);
+        }
     }
 
     public void onCollisionDetectionUpdate(int bs) {
-        if (bs == 0) {
-            System.out.println("Obstacle on Left!");
-            this.movement.passingObstacleRight(bs);
-            this.blinkers.blinkRight();
-
-//            this.movement.turnLeft();
+        if (bs == 0 || bs == 2) {
+            this.movement.setManoeuvre("LEFT");
         }
 
         if (bs == 1) {
-            System.out.println("Obstacle on Right!");
-            this.movement.passingObstacleRight(bs);
-            this.blinkers.blinkRight();
-//            this.movement.turnRight();
+            this.movement.setManoeuvre("RIGHT");
         }
 
         if (bs == 2) {
-            System.out.println("Both!");
-
-            if (this.movement.getHeading() == 3) {
-                this.movement.forward();
-            } else if (this.movement.getHeading() == 1) {
-                this.movement.backwards();
-            }
+//            System.out.println("Both!");
+//
+//            if (this.movement.getHeading() == Direction.BACKWARD) {
+//                this.movement.forward();
+//            } else if (this.movement.getHeading() == Direction.FORWARD) {
+//                this.movement.backwards();
+//            }
 
         }
     }
