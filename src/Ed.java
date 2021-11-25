@@ -1,7 +1,9 @@
 import TI.BoeBot;
 import TI.Timer;
+import common.Config;
 import enums.Direction;
 import hardware.Buzzer;
+import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.DrivingNotificationUpdater;
 import interfaces.MovementUpdater;
@@ -20,6 +22,8 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     private DrivingNotification notification;
     private CollisionDetection collisionDetection;
     private Timer timer;
+    private Button emergencyStop;
+    private boolean emergencyStopActivated = false;
 
     public Ed() {
         this.timer = new Timer(1000);
@@ -29,9 +33,12 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     }
 
     public void initialize() {
+        this.emergencyStop = new Button(Config.emergencyStopButtonPin);
+
         this.movement = new Movement(this);
         this.processes.add(this.movement);
         this.movement.forward();
+        System.out.println("forward");
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -44,12 +51,20 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
     }
 
     public void updater() {
-        while (true) {
+        while (this.emergencyStopActivated == false) {
             for (Updatable process: processes) {
+                if (this.emergencyStop.isPressed()) {
+                    System.out.println(this.emergencyStop.isPressed());
+                    this.emergencyStopActivated = true;
+                    break;
+                }
+
                 process.update();
             }
             BoeBot.wait(1);
         }
+        System.out.println("STOP");
+        this.movement.neutral();
     }
 
     public void onMovementUpdate(Direction heading) {
@@ -64,24 +79,13 @@ public class Ed implements MovementUpdater, CollisionDetectionUpdater {
         }
     }
 
-    public void onCollisionDetectionUpdate(int bs) {
-        if (bs == 0 || bs == 2) {
+    public void onCollisionDetectionUpdate(int whiskerCollision) {
+        if (whiskerCollision == 0 || whiskerCollision == 2) {
             this.movement.setManoeuvre("LEFT");
         }
 
-        if (bs == 1) {
+        if (whiskerCollision == 1) {
             this.movement.setManoeuvre("RIGHT");
-        }
-
-        if (bs == 2) {
-//            System.out.println("Both!");
-//
-//            if (this.movement.getHeading() == Direction.BACKWARD) {
-//                this.movement.forward();
-//            } else if (this.movement.getHeading() == Direction.FORWARD) {
-//                this.movement.backwards();
-//            }
-
         }
     }
 }
