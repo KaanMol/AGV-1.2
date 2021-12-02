@@ -57,6 +57,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.processes.add(this.blinkers);
     }
 
+    /**
+     * Handles the updates of the system by calling the update method from Updatable interface
+     */
     private void updater() {
         while (this.emergencyStopActivated == false) {
             for (Updatable process: processes) {
