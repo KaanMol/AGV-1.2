@@ -76,6 +76,8 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
      * In this case the vehicle stops
      */
     public void neutral() {
+        this.rightServo.setSpeed(1500);
+        this.leftServo.setSpeed(1500);
         this.setDirection(Direction.NEUTRAL, 0, 0);
     }
 
