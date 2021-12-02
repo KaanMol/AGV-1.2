@@ -18,7 +18,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private String manoeuvre = "NONE";
     private Timer timer;
     private Timer accelerationTimer;
-
+    
     private int step = 0;
 
     public Movement(MovementUpdater callback) {
@@ -72,7 +72,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     }
 
     public void setManoeuvre(String manoeuvre) {
-        if (this.manoeuvre.equals(manoeuvre)) return;
+        if (this.manoeuvre.equals(manoeuvre)) {
+            return;
+        }
 
         this.manoeuvre = manoeuvre;
         this.step = 0;

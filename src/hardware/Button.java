@@ -23,11 +23,4 @@ public class Button {
     public boolean isPressed() {
         return !BoeBot.digitalRead(inputPin);
     }
-
-    /**
-     * method for interface in the future
-     */
-    public void update(){
-
-    }
 }
