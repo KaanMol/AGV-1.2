@@ -96,7 +96,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             switch (this.step) {
                 case 1:
                     this.backward();
-                    this.timer.setInterval(3000);
+                    this.timer.setInterval(2000);
                     break;
 
                 case 2:
@@ -106,7 +106,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
                         this.turnRight();
                     }
 
-                    this.timer.setInterval(3000);
+                    this.timer.setInterval(1500);
                     break;
 
                 case 3:

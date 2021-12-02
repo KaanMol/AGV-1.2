@@ -48,7 +48,7 @@ public class Blinkers implements Updatable {
         this.direction = direction;
         this.isOn = true;
         this.isSet = true;
-        this.timer.setInterval(750);
+        this.timer.setInterval(500);
 
         this.on();
     }
