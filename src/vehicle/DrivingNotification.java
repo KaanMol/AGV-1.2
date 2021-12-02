@@ -4,46 +4,64 @@ import TI.Timer;
 import common.Config;
 import enums.Direction;
 import hardware.Buzzer;
+import hardware.Led;
 import interfaces.DrivingNotificationUpdater;
 import interfaces.Updatable;
 
-public class DrivingNotification implements Updatable {
-    private Buzzer buzzer;
-    private DrivingNotificationUpdater callback;
-    private Timer timer = new Timer(0);
-    private boolean isOn = false;
-    private boolean isSet = false;
+import java.awt.*;
 
-    public DrivingNotification(){
-        this.callback = callback;
+public class DrivingNotification implements Updatable {
+    private Timer timer;
+
+    private boolean isOn;
+    private boolean isSet;
+
+    private Buzzer buzzer;
+
+    public void initialize() {
+        this.isOn = false;
+        this.isSet = false;
+        this.timer = new Timer(0);
         this.buzzer = new Buzzer(Config.buzzerPin);
 
+//        this.stop();
     }
 
-    public void startBuzzer() {
+    public DrivingNotification(){
+        this.initialize();
+    }
+
+    public void start() {
+        if (this.isSet == true) {
+            return;
+        }
+
+        this.timer.setInterval(Config.buzzerDelay);
         this.isSet = true;
-        this.timer.setInterval(500);
+        this.isOn = true;
+        this.buzzer.start();
     }
 
-    public void stopBuzzer() {
+    public void stop() {
         this.isSet = false;
+        this.isOn = false;
         this.buzzer.stop();
     }
 
     public void update(){
-        if (this.timer.timeout() == false) {
+        if (this.timer.timeout() == false || this.isSet == false) {
             return;
         }
 
-        if (this.isSet == false) return;
-
-        if (isOn) {
-            this.buzzer.stop();
+        if (this.isOn == false) {
+            this.buzzer.start();
         } else {
-           this.buzzer.start();
+            this.buzzer.stop();
         }
 
         this.isOn = !this.isOn;
+
+        this.timer.mark();
     }
 
 }
