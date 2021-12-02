@@ -1,6 +1,7 @@
 package vehicle;
 
 import TI.Timer;
+import common.Config;
 import enums.Direction;
 import hardware.Led;
 import interfaces.Updatable;
@@ -14,71 +15,111 @@ public class Blinkers implements Updatable {
     private Led bottomRight;
 
     private Timer timer;
-    private boolean shouldBeOn = false;
-    private boolean isOn = false;
-    private boolean isInit = true;
+//    private boolean shouldBeOn = false;
+    private boolean isOn;
+    private boolean isSet;
 
-    private Direction side = Direction.NEUTRAL;
+    private Direction direction;
 
-    public Blinkers() {
+    public void initialize() {
         this.topLeft = new Led(Led.topLeft);
         this.topRight = new Led(Led.topRight);
         this.bottomLeft = new Led(Led.bottomLeft);
         this.bottomRight = new Led(Led.bottomRight);
 
-        this.blinkersOff();
-
         this.timer = new Timer(0);
+        this.isOn = false;
+        this.isSet = false;
+
+        this.direction = Config.defaultDirection;
+
+        this.off();
     }
 
-    public void setBlinker(Direction side) {
-        if (this.side == side) return;
+    public Blinkers() {
+        this.initialize();
+    }
 
-        if (side == Direction.NEUTRAL) {
-            this.shouldBeOn = false;
+    public void start(Direction direction) {
+        if (this.direction == direction) {
             return;
         }
 
-        this.side = side;
-        this.isInit = false;
-        this.shouldBeOn = true;
+        this.direction = direction;
+        this.isOn = true;
+        this.isSet = true;
+        this.timer.setInterval(750);
 
-        this.blinkersOff();
+        this.on();
     }
 
-    private void blinkersOff() {
+    private void on() {
+        if (this.direction == Direction.LEFT) {
+            this.topLeft.setColor(Color.YELLOW);
+            this.bottomLeft.setColor(Color.YELLOW);
+        } else {
+            this.topRight.setColor(Color.YELLOW);
+            this.bottomRight.setColor(Color.YELLOW);
+        }
+
+//        this.isOn = true;
+    }
+
+    private void off() {
         this.topLeft.off();
         this.topRight.off();
         this.bottomLeft.off();
         this.bottomRight.off();
+
+    }
+
+    public void stop() {
         this.isOn = false;
+        this.isSet = false;
+        this.off();
     }
 
     public void update() {
-        if (this.shouldBeOn == false) return;
-
-        if (this.isInit == false) {
-            this.timer.setInterval(750);
-            this.isInit = true;
+        if (this.timer.timeout() == false || this.isSet == false) {
+            return;
         }
 
-        if (this.timer.timeout()) {
-            if (this.isOn) {
-                this.blinkersOff();
-            } else {
-                System.out.println(this.side);
-                if (this.side == Direction.LEFT) {
-                    this.topLeft.setColor(Color.YELLOW);
-                    this.bottomLeft.setColor(Color.YELLOW);
-                } else {
-                    this.topRight.setColor(Color.YELLOW);
-                    this.bottomRight.setColor(Color.YELLOW);
-                }
+        System.out.println("Do something!");
 
-                this.isOn = true;
-            }
-
-            this.timer.mark();
+        if (this.isOn == false) {
+            this.on();
+        } else {
+            this.off();
         }
+
+        this.isOn = !this.isOn;
+
+        this.timer.mark();
+//        if (this.shouldBeOn == false) return;
+//
+//        if (this.isInit == false) {
+//            this.timer.setInterval(750);
+//            this.isInit = true;
+//            this.blinkersOff();
+//        }
+//
+//        if (this.timer.timeout()) {
+//            if (this.isOn) {
+//                this.blinkersOff();
+//            } else {
+//                System.out.println(this.side);
+//                if (this.side == Direction.LEFT) {
+//                    this.topLeft.setColor(Color.YELLOW);
+//                    this.bottomLeft.setColor(Color.YELLOW);
+//                } else {
+//                    this.topRight.setColor(Color.YELLOW);
+//                    this.bottomRight.setColor(Color.YELLOW);
+//                }
+//
+//                this.isOn = true;
+//            }
+//
+//            this.timer.mark();
+//        }
     }
 }

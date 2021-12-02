@@ -18,7 +18,7 @@ public class MovementTest {
         this.movement.forward();
         this.movement.turnLeft();
         this.movement.turnRight();
-        this.movement.backwards();
+        this.movement.backward();
         this.movement.turnLeft();
 
 

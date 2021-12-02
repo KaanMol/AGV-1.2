@@ -2,7 +2,7 @@ package interfaces.hardware;
 
 public interface Movement {
     void forward();
-    void backwards();
+    void backward();
     void turnRight();
     void turnLeft();
 }

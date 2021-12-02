@@ -15,7 +15,7 @@ public class FakeMovement implements Movement {
         this.test.pushResult("mv forward");
     }
 
-    public void backwards() {
+    public void backward() {
         this.test.pushResult("mv backwards");
     }
 

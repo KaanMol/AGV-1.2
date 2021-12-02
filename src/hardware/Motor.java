@@ -10,6 +10,7 @@ public class Motor {
     }
 
     public void setSpeed(int targetSpeed) {
+//        1500 + targetSpeed * 2
         this.motor.update(targetSpeed);
     }
 }
