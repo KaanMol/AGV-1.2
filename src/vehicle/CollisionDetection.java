@@ -17,19 +17,12 @@ public class CollisionDetection implements Updatable {
     }
 
     public void update() {
-//        System.out.println(this.leftWhisker.getPinNum());
-//        this.leftWhisker.setPinMode();
-        if (this.leftWhisker.isPressed()) {
-            System.out.println("left whisker is pressed");
-            this.callback.onCollisionDetectionUpdate(0);
-        }
-//        this.rightWhisker.setPinMode();
-        if (this.rightWhisker.isPressed()) {
-            this.callback.onCollisionDetectionUpdate(1);
-        }
-
         if (this.leftWhisker.isPressed() && this.rightWhisker.isPressed()) {
             this.callback.onCollisionDetectionUpdate(2);
+        } else if (this.leftWhisker.isPressed()) {
+            this.callback.onCollisionDetectionUpdate(0);
+        } else if (this.rightWhisker.isPressed()) {
+            this.callback.onCollisionDetectionUpdate(1);
         }
     }
 }

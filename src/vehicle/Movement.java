@@ -15,12 +15,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private int leftMotorSpeed = 0;
     private int rightMotorSpeed = 0;
     private MovementUpdater callback;
-//    private boolean isAccelerating = false;
     private String manoeuvre = "NONE";
     private Timer timer;
     private Timer accelerationTimer;
-
-    private boolean directionChanged = false;
 
     private int step = 0;
 
@@ -46,12 +43,10 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     }
 
     public void turnRight() {
-//        this.isAccelerating = false;
         this.setDirection(Direction.RIGHT, 25, 25);
     }
 
     public void turnLeft() {
-//        this.isAccelerating = false;
         this.setDirection(Direction.LEFT, -25, -25);
     }
 
@@ -62,7 +57,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     }
 
     public void setAcceleratingDirection(Direction direction, int leftSpeed, int rightSpeed) {
-//        this.isAccelerating = true;
         this.accelerationTimer.mark();
         this.setDirection(direction, leftSpeed, rightSpeed);
     }
@@ -72,7 +66,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             return;
         }
 
-        this.directionChanged = true;
         this.currentHeading = direction;
         this.leftMotorSpeed = leftSpeed;
         this.rightMotorSpeed = rightSpeed;
@@ -133,8 +126,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
                 if (this.leftMotorSpeed < 100 && this.rightMotorSpeed > -100) {
                     this.leftMotorSpeed += Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;
-//                    System.out.println(this.rightMotorSpeed);
-//                    System.out.println(this.leftMotorSpeed);
                 }
             }
         }

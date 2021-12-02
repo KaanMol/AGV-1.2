@@ -62,7 +62,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
             }
             BoeBot.wait(1);
         }
-        System.out.println("STOP");
         this.stop();
     }
 
