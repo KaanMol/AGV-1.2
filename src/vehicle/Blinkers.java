@@ -76,6 +76,7 @@ public class Blinkers implements Updatable {
     public void stop() {
         this.isOn = false;
         this.isSet = false;
+        this.direction = Direction.NEUTRAL;
         this.off();
     }
 
