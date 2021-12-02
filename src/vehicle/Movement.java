@@ -112,7 +112,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
             this.step++;
             this.timer.mark();
-            System.out.println(this.currentHeading);
         }
     }
 

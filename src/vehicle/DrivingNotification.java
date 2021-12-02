@@ -7,7 +7,6 @@ import hardware.Buzzer;
 import hardware.Led;
 import interfaces.DrivingNotificationUpdater;
 import interfaces.Updatable;
-
 import java.awt.*;
 
 public class DrivingNotification implements Updatable {
@@ -23,11 +22,9 @@ public class DrivingNotification implements Updatable {
         this.isSet = false;
         this.timer = new Timer(0);
         this.buzzer = new Buzzer(Config.buzzerPin);
-
-//        this.stop();
     }
 
-    public DrivingNotification(){
+    public DrivingNotification() {
         this.initialize();
     }
 
@@ -48,7 +45,7 @@ public class DrivingNotification implements Updatable {
         this.buzzer.stop();
     }
 
-    public void update(){
+    public void update() {
         if (this.timer.timeout() == false || this.isSet == false) {
             return;
         }
@@ -58,10 +55,8 @@ public class DrivingNotification implements Updatable {
         } else {
             this.buzzer.stop();
         }
-
+        
         this.isOn = !this.isOn;
-
         this.timer.mark();
     }
-
 }

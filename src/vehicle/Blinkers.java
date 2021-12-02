@@ -59,8 +59,6 @@ public class Blinkers implements Updatable {
             this.topRight.setColor(Color.YELLOW);
             this.bottomRight.setColor(Color.YELLOW);
         }
-
-//        this.isOn = true;
     }
 
     private void off() {
@@ -68,7 +66,6 @@ public class Blinkers implements Updatable {
         this.topRight.off();
         this.bottomLeft.off();
         this.bottomRight.off();
-
     }
 
     public void stop() {
@@ -83,8 +80,6 @@ public class Blinkers implements Updatable {
             return;
         }
 
-        System.out.println("Do something!");
-
         if (this.isOn == false) {
             this.on();
         } else {
@@ -92,7 +87,6 @@ public class Blinkers implements Updatable {
         }
 
         this.isOn = !this.isOn;
-
         this.timer.mark();
     }
 }

@@ -53,7 +53,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         while (this.emergencyStopActivated == false) {
             for (Updatable process: processes) {
                 if (this.emergencyStop.isPressed()) {
-                    System.out.println(this.emergencyStop.isPressed());
                     this.emergencyStopActivated = true;
                     break;
                 }
