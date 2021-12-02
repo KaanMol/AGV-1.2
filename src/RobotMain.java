@@ -3,6 +3,8 @@ import TI.PinMode;
 import TI.Timer;
 import common.Config;
 import enums.Direction;
+import enums.Manoeuvre;
+import enums.WhiskerStatus;
 import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
@@ -26,11 +28,17 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         new RobotMain();
     }
 
+    /**
+     * Constructor
+     */
     public RobotMain() {
         this.initialize();
         this.updater();
     }
 
+    /**
+     * Initializes all systems and adds them to the queue
+     */
     private void initialize() {
         this.processes = new ArrayList<>();
         this.emergencyStop = new Button(Config.emergencyStopButtonPin);
@@ -63,15 +71,20 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.stop();
     }
 
+    /**
+     * Stops all systems in the case of emergency
+     */
     private void stop() {
         this.movement.neutral();
         this.drivingNotification.stop();
         this.blinkers.stop();
     }
 
+    /**
+     * Callback that gets called when the vehicle direction changes.
+     * @param heading - The direction where the vehicle is heading to
+     */
     public void onMovementUpdate(Direction heading) {
-
-
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
             this.drivingNotification.stop();
@@ -86,13 +99,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         }
     }
 
-    public void onCollisionDetectionUpdate(int whiskerCollision) {
-        if (whiskerCollision == 0 || whiskerCollision == 2) {
-            this.movement.setManoeuvre("LEFT");
-        }
-
-        if (whiskerCollision == 1) {
-            this.movement.setManoeuvre("RIGHT");
+    /**
+     * Callback that gets called when the vehicle detects a collision.
+     * @param whiskerCollision - Which whiskers are triggered.
+     */
+    public void onCollisionDetectionUpdate(WhiskerStatus whiskerCollision) {
+        switch (whiskerCollision) {
+            case LEFT:
+            case BOTH:
+                this.movement.setManoeuvre(Manoeuvre.LEFT);
+                break;
+            case RIGHT:
+                this.movement.setManoeuvre(Manoeuvre.RIGHT);
+                break;
         }
     }
 }

@@ -2,12 +2,8 @@ package vehicle;
 
 import TI.Timer;
 import common.Config;
-import enums.Direction;
 import hardware.Buzzer;
-import hardware.Led;
-import interfaces.DrivingNotificationUpdater;
 import interfaces.Updatable;
-import java.awt.*;
 
 public class DrivingNotification implements Updatable {
     private Timer timer;
@@ -17,6 +13,16 @@ public class DrivingNotification implements Updatable {
 
     private Buzzer buzzer;
 
+    /**
+     * Constructor
+     */
+    public DrivingNotification() {
+        this.initialize();
+    }
+
+    /**
+     * Initializes all attributes and sets defaults
+     */
     public void initialize() {
         this.isOn = false;
         this.isSet = false;
@@ -24,10 +30,10 @@ public class DrivingNotification implements Updatable {
         this.buzzer = new Buzzer(Config.buzzerPin);
     }
 
-    public DrivingNotification() {
-        this.initialize();
-    }
-
+    /**
+     * Starts buzzer cycle
+     * Sets all values so the update method will turn the buzzer on and off
+     */
     public void start() {
         if (this.isSet == true) {
             return;
@@ -39,12 +45,19 @@ public class DrivingNotification implements Updatable {
         this.buzzer.start();
     }
 
+    /**
+     * Stops buzzer cycle
+     * Sets values so update wont keep turning the buzzer on
+     */
     public void stop() {
         this.isSet = false;
         this.isOn = false;
         this.buzzer.stop();
     }
 
+    /**
+     * Turns buzzer on and off for a given interval in the case this method keeps getting called
+     */
     public void update() {
         if (this.timer.timeout() == false || this.isSet == false) {
             return;

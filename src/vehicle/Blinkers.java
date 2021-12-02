@@ -19,6 +19,16 @@ public class Blinkers implements Updatable {
 
     private Direction direction;
 
+    /**
+     * Constructor
+     */
+    public Blinkers() {
+        this.initialize();
+    }
+
+    /**
+     * Initialize all attributes in class and sets defaults
+     */
     public void initialize() {
         this.topLeft = new Led(Led.topLeft);
         this.topRight = new Led(Led.topRight);
@@ -34,10 +44,10 @@ public class Blinkers implements Updatable {
         this.off();
     }
 
-    public Blinkers() {
-        this.initialize();
-    }
-
+    /**
+     * Starts the blinker cycle
+     * @param direction - The direction the blinkers should turn on
+     */
     public void start(Direction direction) {
         if (this.direction == direction) {
             return;
@@ -51,6 +61,20 @@ public class Blinkers implements Updatable {
         this.on();
     }
 
+    /**
+     * Stops blinker cycle with timer
+     */
+    public void stop() {
+        this.isOn = false;
+        this.isSet = false;
+        this.direction = Direction.NEUTRAL;
+        this.off();
+    }
+
+    /**
+     * Turns on the specified side of the blinkers.
+     * This uses the attribute direction
+     */
     private void on() {
         if (this.direction == Direction.LEFT) {
             this.topLeft.setColor(Color.YELLOW);
@@ -61,6 +85,9 @@ public class Blinkers implements Updatable {
         }
     }
 
+    /**
+     * Turns off all the blinkers
+     */
     private void off() {
         this.topLeft.off();
         this.topRight.off();
@@ -68,13 +95,9 @@ public class Blinkers implements Updatable {
         this.bottomRight.off();
     }
 
-    public void stop() {
-        this.isOn = false;
-        this.isSet = false;
-        this.direction = Direction.NEUTRAL;
-        this.off();
-    }
-
+    /**
+     * Turns blinkers on and off on a timed interval in the case this keep getting called
+     */
     public void update() {
         if (this.timer.timeout() == false || this.isSet == false) {
             return;
