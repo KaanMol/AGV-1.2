@@ -11,7 +11,6 @@ import vehicle.Blinkers;
 import vehicle.CollisionDetection;
 import vehicle.DrivingNotification;
 import vehicle.Movement;
-
 import java.util.ArrayList;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {

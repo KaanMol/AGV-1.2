@@ -42,6 +42,4 @@ public class Led {
         BoeBot.rgbSet(this.inputPin, Color.black);
         BoeBot.rgbShow();
     }
-
-
 }

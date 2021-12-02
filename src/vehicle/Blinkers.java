@@ -5,7 +5,6 @@ import common.Config;
 import enums.Direction;
 import hardware.Led;
 import interfaces.Updatable;
-
 import java.awt.*;
 
 public class Blinkers implements Updatable {
@@ -15,7 +14,6 @@ public class Blinkers implements Updatable {
     private Led bottomRight;
 
     private Timer timer;
-//    private boolean shouldBeOn = false;
     private boolean isOn;
     private boolean isSet;
 
@@ -96,31 +94,5 @@ public class Blinkers implements Updatable {
         this.isOn = !this.isOn;
 
         this.timer.mark();
-//        if (this.shouldBeOn == false) return;
-//
-//        if (this.isInit == false) {
-//            this.timer.setInterval(750);
-//            this.isInit = true;
-//            this.blinkersOff();
-//        }
-//
-//        if (this.timer.timeout()) {
-//            if (this.isOn) {
-//                this.blinkersOff();
-//            } else {
-//                System.out.println(this.side);
-//                if (this.side == Direction.LEFT) {
-//                    this.topLeft.setColor(Color.YELLOW);
-//                    this.bottomLeft.setColor(Color.YELLOW);
-//                } else {
-//                    this.topRight.setColor(Color.YELLOW);
-//                    this.bottomRight.setColor(Color.YELLOW);
-//                }
-//
-//                this.isOn = true;
-//            }
-//
-//            this.timer.mark();
-//        }
     }
 }
