@@ -1,5 +1,7 @@
 package interfaces;
 
+import enums.WhiskerStatus;
+
 public interface CollisionDetectionUpdater {
-    void onCollisionDetectionUpdate(int whiskerCollision);
+    void onCollisionDetectionUpdate(WhiskerStatus whiskerCollision);
 }
