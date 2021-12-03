@@ -6,6 +6,7 @@ import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
+import hardware.IRSensor;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
@@ -23,6 +24,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private IRSensor sensor = new IRSensor();
 
     public static void main(String[] args) {
         new RobotMain();
@@ -55,6 +57,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
+
     }
 
     /**
@@ -67,6 +70,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                     this.emergencyStopActivated = true;
                     break;
                 }
+                sensor.getRemoteCode();
                 process.update();
             }
             BoeBot.wait(1);

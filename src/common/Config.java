@@ -58,4 +58,9 @@ public class Config {
      * The default direction of the vehicle
      */
     public static final Direction defaultDirection = Direction.FORWARD;
+
+    /**
+     *  The GPIO Pin where the IRSensor is connected to
+     */
+    public static final int IRSensorPin = 7;
 }
