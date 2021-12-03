@@ -9,10 +9,8 @@ import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
-import vehicle.Blinkers;
-import vehicle.CollisionDetection;
-import vehicle.DrivingNotification;
-import vehicle.Movement;
+import vehicle.*;
+
 import java.util.ArrayList;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
@@ -21,6 +19,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     private Blinkers blinkers;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
+    private WirelessConnection wirelessConnection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
 
@@ -55,6 +54,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
+
+        this.wirelessConnection = new WirelessConnection();
+        this.processes.add(this.wirelessConnection);
+
     }
 
     /**
