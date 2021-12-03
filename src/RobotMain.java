@@ -30,7 +30,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     /**
      * Constructor
      */
-
     public RobotMain() {
         this.initialize();
         this.updater();
@@ -39,7 +38,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     /**
      * Initializes all systems and adds them to the queue
      */
-
     private void initialize() {
         this.processes = new ArrayList<>();
         this.emergencyStop = new Button(Config.emergencyStopButtonPin);
@@ -63,7 +61,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     /**
      * Handles the updates of the system by calling the update method from Updatable interface
      */
-
     private void updater() {
         while (this.emergencyStopActivated == false) {
             for (Updatable process : processes) {
@@ -81,7 +78,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     /**
      * Stops all systems in the case of emergency
      */
-
     private void stop() {
         this.movement.neutral();
         this.drivingNotification.stop();
@@ -93,7 +89,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      *
      * @param heading - The direction where the vehicle is heading to
      */
-
     public void onMovementUpdate(Direction heading) {
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
@@ -114,7 +109,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         } else {
             this.blinkers.stop();
         }
-
     }
 
     /**
@@ -122,7 +116,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      *
      * @param whiskerCollision - Which whiskers are triggered.
      */
-
     public void onCollisionDetectionUpdate(WhiskerStatus whiskerCollision) {
         switch (whiskerCollision) {
             case LEFT:

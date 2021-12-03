@@ -13,6 +13,9 @@ public class DrivingLights {
     private Led bottomRight;
     private Direction direction;
 
+    /**
+     * Initializes the LED's and direction.
+     */
     public DrivingLights() {
         this.topLeft = new Led(Led.topLeft);
         this.topRight = new Led(Led.topRight);
@@ -22,6 +25,11 @@ public class DrivingLights {
         this.off();
     }
 
+    /**
+     * Returns if the given direction is neutral and otherwise changes the
+     * direction attribute in the given direction.
+     * @param direction - The direction that the Bot is currently heading.
+     */
     public void start(Direction direction) {
         if (this.direction == direction) {
             return;
@@ -30,7 +38,10 @@ public class DrivingLights {
         this.on();
     }
 
-    public void on(){
+    /**
+     * Turns the front or back LED's on in a specific color depending the direction.
+     */
+    public void on() {
         if (this.direction == Direction.FORWARD) {
             topRight.setColor(Color.WHITE);
             topLeft.setColor(Color.WHITE);
@@ -41,11 +52,17 @@ public class DrivingLights {
         }
     }
 
+    /**
+     * Changes the direction attribute back to neutral and calls the off method.
+     */
     public void stop() {
         this.direction = Direction.NEUTRAL;
         this.off();
     }
 
+    /**
+     * Turns off the LED's.
+     */
     private void off() {
         this.topLeft.off();
         this.topRight.off();
