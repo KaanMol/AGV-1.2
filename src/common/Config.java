@@ -58,4 +58,9 @@ public class Config {
      * The default direction of the vehicle
      */
     public static final Direction defaultDirection = Direction.FORWARD;
+
+    /**
+     * Bluetooth module
+     */
+    public static final int baudrate = 115200;
 }
