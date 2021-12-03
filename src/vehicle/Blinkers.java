@@ -112,4 +112,7 @@ public class Blinkers implements Updatable {
         this.isOn = !this.isOn;
         this.timer.mark();
     }
+    public boolean currentState(){
+        return isOn;
+    }
 }

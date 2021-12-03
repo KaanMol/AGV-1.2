@@ -9,10 +9,8 @@ import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
-import vehicle.Blinkers;
-import vehicle.CollisionDetection;
-import vehicle.DrivingNotification;
-import vehicle.Movement;
+import vehicle.*;
+
 import java.util.ArrayList;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
@@ -23,6 +21,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private DrivingLights drivinglights;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -33,6 +32,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      */
     public RobotMain() {
         this.initialize();
+        this.drivinglights.start(Direction.FORWARD);
         this.updater();
     }
 
@@ -55,6 +55,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
+        this.drivinglights = new DrivingLights();
+
     }
 
     /**
@@ -91,15 +93,24 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
             this.drivingNotification.stop();
-        } else {
-            this.blinkers.stop();
+        }
 
+        else if(heading == Direction.FORWARD || heading == Direction.BACKWARD){
+            if(this.blinkers.currentState()){
+                this.blinkers.stop();
+            }
+
+            this.drivinglights.start(heading);
             if (heading == Direction.BACKWARD) {
                 this.drivingNotification.start();
             } else {
                 this.drivingNotification.stop();
             }
         }
+        else {
+            this.blinkers.stop();
+        }
+
     }
 
     /**
