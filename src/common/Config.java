@@ -60,7 +60,38 @@ public class Config {
     public static final Direction defaultDirection = Direction.FORWARD;
 
     /**
-     *  The GPIO Pin where the IRSensor is connected to
+     * The number that the ir remote sends for moving forward
      */
-    public static final int IRSensorPin = 7;
+    public static final int remoteForward = 216;
+
+    /**
+     * The number that the ir remote sends for moving backward
+     */
+    public static final int remoteBackward = 217;
+
+    /**
+     * The number that the ir remote sends for turning left
+     */
+    public static final int remoteLeft = 147;
+
+    /**
+     * The number that the ir remote sends for turning right
+     */
+    public static final int remoteRight = 146;
+
+    /**
+     * The number that the ir remote sends for turning the wheels off
+     */
+    public static final int remoteNeutral = 223;
+
+    /**
+     * The number that the ir remote sends for emergency stop
+     */
+    public static final int remoteEmergencyStop = 149;
+
+    /**
+     * The number that the ir remote sends for emergency stop
+     */
+    public static final int remoteControlTransferd = 149;
+
 }

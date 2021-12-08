@@ -1,6 +1,4 @@
 import TI.BoeBot;
-import TI.PinMode;
-import TI.Timer;
 import common.Config;
 import enums.Direction;
 import enums.Manoeuvre;
@@ -8,23 +6,24 @@ import enums.WhiskerStatus;
 import hardware.Button;
 import hardware.IRSensor;
 import interfaces.CollisionDetectionUpdater;
+import interfaces.IRSignalMover;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
-import vehicle.Blinkers;
-import vehicle.CollisionDetection;
-import vehicle.DrivingNotification;
-import vehicle.Movement;
+import vehicle.*;
+
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, IRSignalMover {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
+    private Infrared infrared;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private IRSensor sensor = new IRSensor();
+
 
     public static void main(String[] args) {
         new RobotMain();
@@ -47,7 +46,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -58,6 +56,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
     }
 
     /**
@@ -85,6 +86,51 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.movement.neutral();
         this.drivingNotification.stop();
         this.blinkers.stop();
+    }
+
+    /**
+     * This method moves the robot towards the side the user told it to with the remote
+     */
+    /*
+    public void moveIRSignal(Direction heading){
+        System.out.println(heading);
+        if (heading == Direction.FORWARD) {
+            this.movement.forward();
+        }
+        else if (heading == Direction.BACKWARD) {
+            this.movement.backward();
+        }
+        else if (heading == Direction.RIGHT) {
+            this.movement.turnRight();
+        }
+        else if (heading == Direction.LEFT) {
+            this.movement.turnLeft();
+        }
+        else if (heading == Direction.NEUTRAL) {
+            this.movement.neutral();
+        }
+    }
+    */
+
+    public void getOrder(int signal) {
+        if (signal == Config.remoteForward) {
+            this.movement.forward();
+        }
+        else if (signal == Config.remoteBackward) {
+            this.movement.backward();
+        }
+        else if (signal == Config.remoteRight) {
+            this.movement.turnRight();
+        }
+        else if (signal == Config.remoteLeft) {
+            this.movement.turnLeft();
+        }
+        else if (signal == Config.remoteNeutral) {
+            this.movement.neutral();
+        }
+        else if (signal == Config.remoteEmergencyStop) {
+            this.emergencyStopActivated = true;
+        }
     }
 
     /**

@@ -4,6 +4,10 @@ import TI.BoeBot;
 import TI.PinMode;
 
 public class IRSensor {
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public int getRemoteCode() {
         BoeBot.setMode(7, PinMode.Input);
         int pulseLen = BoeBot.pulseIn(7, false, 6000);
@@ -17,16 +21,22 @@ public class IRSensor {
             int output = 0;
 
             for (int i = 0; i < 12; i++) {
+<<<<<<< Updated upstream
                 if (lengths[i] > 800) {
                     output = output | (1 << i);
                     System.out.println(output );
                 }
             }
 
+=======
+>>>>>>> Stashed changes
             return output;
         } else {
             return -1;
         }
     }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }
