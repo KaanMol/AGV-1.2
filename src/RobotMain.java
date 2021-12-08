@@ -95,10 +95,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
             this.drivingNotification.stop();
 
         } else if (heading == Direction.FORWARD || heading == Direction.BACKWARD) {
-
-            if (this.blinkers.currentState()) {
-                this.blinkers.stop();
-            }
+            this.blinkers.stop();
             this.drivinglights.start(heading);
             if (heading == Direction.BACKWARD) {
                 this.drivingNotification.start();

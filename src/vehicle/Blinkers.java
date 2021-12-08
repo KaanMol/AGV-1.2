@@ -65,6 +65,9 @@ public class Blinkers implements Updatable {
      * Stops blinker cycle with timer
      */
     public void stop() {
+        if(!this.isSet) {
+            return;
+        }
         this.isOn = false;
         this.isSet = false;
         this.direction = Direction.NEUTRAL;
