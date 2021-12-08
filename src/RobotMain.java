@@ -2,18 +2,21 @@ import TI.BoeBot;
 import TI.PinMode;
 import TI.Timer;
 import common.Config;
+import common.WirelessConfig;
 import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
+import enums.WirelessCommands;
 import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
+import interfaces.WirelessUpdater;
 import vehicle.*;
 
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -44,7 +47,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-        this.movement.forward();
+//        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -55,7 +58,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
 
-        this.wirelessConnection = new WirelessConnection();
+        this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
 
     }
@@ -118,6 +121,20 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
             case RIGHT:
                 this.movement.setManoeuvre(Manoeuvre.RIGHT);
                 break;
+        }
+    }
+
+    public void onWirelessUpdate(int data) {
+        if (data == WirelessConfig.backward) {
+            this.movement.backward();
+        } else if (data == WirelessConfig.left) {
+            this.movement.turnLeft();
+        } else if (data == WirelessConfig.right) {
+            this.movement.turnRight();
+        } else if (data == WirelessConfig.forward) {
+            this.movement.forward();
+        } else if (data == WirelessConfig.stop) {
+            this.movement.neutral();
         }
     }
 }
