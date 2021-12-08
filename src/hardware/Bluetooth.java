@@ -6,7 +6,7 @@ import common.Config;
 public class Bluetooth {
     private SerialConnection serial;
 
-    public void Bluetooth() {
+    public Bluetooth() {
         this.serial = new SerialConnection(Config.baudrate);
     }
 

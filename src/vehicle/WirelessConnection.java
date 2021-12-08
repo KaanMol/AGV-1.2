@@ -12,7 +12,7 @@ public class WirelessConnection implements Updatable {
     }
 
     public void update() {
-        if (bluetooth.available() > 0) {
+        if (this.bluetooth.available() > 0) {
             int data = bluetooth.readByte();
             bluetooth.writeByte(data); // Echo data
             System.out.println("Received: " + data);
