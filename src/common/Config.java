@@ -24,6 +24,21 @@ public class Config {
     public static final int rightWhiskerPin = 11;
 
     /**
+     * The ADC pin where the left line follower is connected to
+     */
+    public static final int leftLineFollowerPin = 0;
+
+    /**
+     * The ADC pin where the middle line follower is connected to
+     */
+    public static final int middleLineFollowerPin = 1;
+
+    /**
+     * The ADC pin where the right line follower is connected to
+     */
+    public static final int rightLineFollowerPin = 2;
+
+    /**
      * The GPIO pin where the buzzer is connected to
      */
     public static final int buzzerPin = 2;

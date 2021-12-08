@@ -3,6 +3,7 @@ import TI.PinMode;
 import TI.Timer;
 import common.Config;
 import enums.Direction;
+import enums.LineDirection;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
@@ -115,6 +116,18 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
             case RIGHT:
                 this.movement.setManoeuvre(Manoeuvre.RIGHT);
                 break;
+        }
+    }
+    public void onLineDetectionUpdate(LineDirection lineDetection) {
+        switch (lineDetection) {
+            case FORWARD:
+                this.movement.forward();
+            case LEFT:
+                this.movement.turnRight();
+            case RIGHT:
+                this.movement.turnLeft();
+            case STOP:
+                this.movement.neutral();
         }
     }
 }
