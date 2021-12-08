@@ -136,6 +136,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.movement.forward();
         } else if (data == WirelessConfig.stop) {
             this.movement.neutral();
+        } else if (data == WirelessConfig.transfer) {
+
         }
     }
 }
