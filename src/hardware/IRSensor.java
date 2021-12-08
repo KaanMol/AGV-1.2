@@ -29,6 +29,14 @@ public class IRSensor {
             }
 
 =======
+                System.out.print(lengths[i] + ", ");
+                if (lengths[i] > 800) {
+                    output = output | (1 << i);
+                }
+
+            }
+            System.out.println();
+            System.out.println("output" + output);
 >>>>>>> Stashed changes
             return output;
         } else {

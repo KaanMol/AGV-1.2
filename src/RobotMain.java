@@ -55,10 +55,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, IR
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
-
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
+        
+        this.infrared = new Infrared(this);
+        this.processes.add(this.infrared);
     }
 
     /**
