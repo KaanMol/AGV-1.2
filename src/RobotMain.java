@@ -1,12 +1,9 @@
 import TI.BoeBot;
-import TI.PinMode;
-import TI.Timer;
 import common.Config;
 import common.WirelessConfig;
 import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
-import enums.WirelessCommands;
 import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.MovementUpdater;
@@ -124,6 +121,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         }
     }
 
+    /**
+     * Callbakc that gets called when the vehicle detects Bluetooth
+     * @param data Which ASCII Number is given
+     */
     public void onWirelessUpdate(int data) {
         if (data == WirelessConfig.backward) {
             this.movement.backward();
