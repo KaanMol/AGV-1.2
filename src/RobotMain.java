@@ -61,18 +61,45 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      * Handles the updates of the system by calling the update method from Updatable interface
      */
     private void updater() {
-        while (this.emergencyStopActivated == false) {
-            for (Updatable process: processes) {
-                if (this.emergencyStop.isPressed()) {
-                    this.emergencyStopActivated = true;
-                    break;
+        while (true) {
+            if (!this.emergencyStopActivated && !this.emergencyStop.isPressed()) {
+                for (Updatable process : processes) {
+
+                    if (this.emergencyStop.isPressed()) {
+                        System.out.println("stop");
+                        this.movement.neutral();
+                        this.emergencyStopActivated = true;
+                        break;
+                    }
+                    if (this.emergencyStopActivated) {
+                        this.movement.neutral();
+                    }
+                    if (!this.emergencyStopActivated) {
+                        process.update();
+                    }
                 }
-                process.update();
+                BoeBot.wait(1);
+            } else if (!this.emergencyStop.isPressed()) {
+                while (true) {
+                    if (this.emergencyStop.isPressed()) {
+                        System.out.println("start");
+                        this.emergencyStopActivated = false;
+                        while(true) {
+                            System.out.println("h");
+                            if(!this.emergencyStop.isPressed()) {
+                                this.movement.forward();
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
             }
-            BoeBot.wait(1);
+
         }
-        this.stop();
     }
+
+
 
     /**
      * Stops all systems in the case of emergency
@@ -85,6 +112,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
     /**
      * Callback that gets called when the vehicle direction changes.
+     *
      * @param heading - The direction where the vehicle is heading to
      */
     public void onMovementUpdate(Direction heading) {
@@ -104,6 +132,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
     /**
      * Callback that gets called when the vehicle detects a collision.
+     *
      * @param whiskerCollision - Which whiskers are triggered.
      */
     public void onCollisionDetectionUpdate(WhiskerStatus whiskerCollision) {
@@ -116,5 +145,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                 this.movement.setManoeuvre(Manoeuvre.RIGHT);
                 break;
         }
+    }
+
+    public void emergencyStop() {
+        if(this.emergencyStop.isPressed()){
+            this.movement.neutral();
+            while(this.emergencyStop.isPressed()){
+            }
+        }
+
     }
 }
