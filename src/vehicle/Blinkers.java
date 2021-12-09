@@ -65,7 +65,7 @@ public class Blinkers implements Updatable {
      * Stops blinker cycle with timer
      */
     public void stop() {
-        if(!this.isSet) {
+        if(this.isSet == false) {
             return;
         }
         this.isOn = false;
@@ -114,9 +114,5 @@ public class Blinkers implements Updatable {
         }
         this.isOn = !this.isOn;
         this.timer.mark();
-    }
-
-    public boolean currentState() {
-        return isOn;
     }
 }
