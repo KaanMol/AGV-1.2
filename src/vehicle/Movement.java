@@ -186,7 +186,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
             this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
         }
-
         this.callback.onMovementUpdate(this.getHeading());
     }
 }
