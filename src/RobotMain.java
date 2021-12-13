@@ -63,6 +63,13 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     private void updater() {
         while (true) {
             if (!this.emergencyStopActivated && !this.emergencyStop.isPressed()) {
+                if (this.emergencyStop.isPressed()) {
+                    System.out.println("stop");
+                    this.movement.neutral();
+                    this.emergencyStopActivated = true;
+                    break;
+                }
+                System.out.println("dam");
                 for (Updatable process : processes) {
 
                     if (this.emergencyStop.isPressed()) {
@@ -85,7 +92,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                         System.out.println("start");
                         this.emergencyStopActivated = false;
                         while(true) {
-                            System.out.println("h");
+                            System.out.println("in loop");
                             if(!this.emergencyStop.isPressed()) {
                                 this.movement.forward();
                                 break;
