@@ -26,7 +26,7 @@ public class Config {
     /**
      * The ADC pin where the left line follower is connected to
      */
-    public static final int leftLineFollowerPin = 0;
+    public static final int leftLineFollowerPin = 2;
 
     /**
      * The ADC pin where the middle line follower is connected to
@@ -36,7 +36,7 @@ public class Config {
     /**
      * The ADC pin where the right line follower is connected to
      */
-    public static final int rightLineFollowerPin = 2;
+    public static final int rightLineFollowerPin = 0;
 
     /**
      * The GPIO pin where the buzzer is connected to

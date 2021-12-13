@@ -2,6 +2,7 @@ package vehicle;
 
 import TI.Timer;
 import enums.Direction;
+import enums.LineDirection;
 import enums.Manoeuvre;
 import hardware.Motor;
 import interfaces.MovementUpdater;
@@ -159,6 +160,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             this.timer.mark();
         }
     }
+
 
     /**
      * Sets motor speed and handles manoeuvre by a timer.

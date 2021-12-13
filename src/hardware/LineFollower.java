@@ -10,19 +10,36 @@ public class LineFollower {
     private final int upperbound = 2000;
     private final int lowerbound = 500;
 
+    /**
+     *
+     * @param inputPin The pin that the LineFollower is connected to
+     */
     public LineFollower(int inputPin) {
         this.inputPin = inputPin;
         BoeBot.setMode(this.inputPin, PinMode.Input);
     }
 
+    /**
+     *
+     * @return The pin that the LineFollower is connected to
+     */
     public int getPinNum() {
         return this.inputPin;
     }
 
-    public void setPinMode() {
-        BoeBot.setMode(this.inputPin, PinMode.Input);
+    /**
+     *
+     * @param inputPin The pin that the LineFollower is connected to
+     */
+    public void setPinMode(int inputPin) {
+        BoeBot.setMode(inputPin, PinMode.Input);
+        this.inputPin = inputPin;
     }
 
+    /**
+     * Checks if LineFollower is on line
+     * @return state of parameter
+     */
     public boolean isOnLine(){
         int color = BoeBot.analogRead(inputPin);
         return color > lowerbound && color < upperbound;

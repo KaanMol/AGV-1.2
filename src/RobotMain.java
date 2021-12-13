@@ -8,20 +8,23 @@ import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
 import interfaces.CollisionDetectionUpdater;
+import interfaces.LineDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.Blinkers;
 import vehicle.CollisionDetection;
+import vehicle.LineDetection;
 import vehicle.DrivingNotification;
 import vehicle.Movement;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, LineDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
+    private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
 
@@ -51,6 +54,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
 
+        this.lineDetection = new LineDetection(this);
+        this.processes.add(this.lineDetection);
+
         this.drivingNotification = new DrivingNotification();
         this.processes.add(this.drivingNotification);
 
@@ -62,17 +68,12 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      * Handles the updates of the system by calling the update method from Updatable interface
      */
     private void updater() {
-        while (this.emergencyStopActivated == false) {
+        while (true) {
             for (Updatable process: processes) {
-                if (this.emergencyStop.isPressed()) {
-                    this.emergencyStopActivated = true;
-                    break;
-                }
                 process.update();
             }
             BoeBot.wait(1);
         }
-        this.stop();
     }
 
     /**
@@ -118,16 +119,29 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                 break;
         }
     }
+
+    /**
+     * Callback that gets called when the vehicle detects a line.
+     * @param lineDetection
+     */
     public void onLineDetectionUpdate(LineDirection lineDetection) {
         switch (lineDetection) {
             case FORWARD:
+                System.out.println("forward");
                 this.movement.forward();
+                break;
             case LEFT:
-                this.movement.turnRight();
-            case RIGHT:
+                System.out.println("left");
                 this.movement.turnLeft();
+                break;
+            case RIGHT:
+                System.out.println("right");
+                this.movement.turnRight();
+                break;
             case STOP:
+                System.out.println("stop");
                 this.movement.neutral();
+                break;
         }
     }
 }
