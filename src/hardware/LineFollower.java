@@ -7,8 +7,7 @@ import enums.Direction;
 
 public class LineFollower {
     private int inputPin;
-    private final int upperbound = 2000;
-    private final int lowerbound = 500;
+    private final int bound = 800;
 
     /**
      *
@@ -42,6 +41,6 @@ public class LineFollower {
      */
     public boolean isOnLine(){
         int color = BoeBot.analogRead(inputPin);
-        return color > lowerbound && color < upperbound;
+        return color > bound;
     }
 }
