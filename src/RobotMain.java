@@ -127,19 +127,15 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Li
     public void onLineDetectionUpdate(LineDirection lineDetection) {
         switch (lineDetection) {
             case FORWARD:
-                System.out.println("forward");
                 this.movement.forward();
                 break;
             case LEFT:
-                System.out.println("left");
                 this.movement.turnLeft();
                 break;
             case RIGHT:
-                System.out.println("right");
                 this.movement.turnRight();
                 break;
             case STOP:
-                System.out.println("stop");
                 this.movement.neutral();
                 break;
         }
