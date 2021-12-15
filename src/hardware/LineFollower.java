@@ -8,6 +8,7 @@ import enums.Direction;
 public class LineFollower {
     private int inputPin;
     private final int bound = 800;
+    private boolean on = true;
 
     /**
      *
@@ -16,23 +17,6 @@ public class LineFollower {
     public LineFollower(int inputPin) {
         this.inputPin = inputPin;
         BoeBot.setMode(this.inputPin, PinMode.Input);
-    }
-
-    /**
-     *
-     * @return The pin that the LineFollower is connected to
-     */
-    public int getPinNum() {
-        return this.inputPin;
-    }
-
-    /**
-     *
-     * @param inputPin The pin that the LineFollower is connected to
-     */
-    public void setPinMode(int inputPin) {
-        BoeBot.setMode(inputPin, PinMode.Input);
-        this.inputPin = inputPin;
     }
 
     /**

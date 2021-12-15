@@ -37,7 +37,9 @@ public class LineDetection implements Updatable {
         if (this.timer.timeout() == false) {
             return;
         }
-        if (this.leftLineFollower.isOnLine() && !this.rightLineFollower.isOnLine()) {
+        if (!middleLineFollower.isOnLine()) {
+            this.callback.onLineDetectionUpdate(LineDirection.STOP);
+        } else if (this.leftLineFollower.isOnLine() && !this.rightLineFollower.isOnLine()) {
             this.callback.onLineDetectionUpdate(LineDirection.LEFT);
         } else if (!leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine()) {
             this.callback.onLineDetectionUpdate(LineDirection.RIGHT);
