@@ -62,18 +62,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      */
     private void updater() {
         while (true) {
-            if (!this.emergencyStopActivated && !this.emergencyStop.isPressed()) {
+            if (this.emergencyStopActivated == false && !this.emergencyStop.isPressed()) {
                 if (this.emergencyStop.isPressed()) {
-                    System.out.println("stop");
                     this.movement.neutral();
                     this.emergencyStopActivated = true;
                     break;
                 }
-                System.out.println("dam");
                 for (Updatable process : processes) {
-
                     if (this.emergencyStop.isPressed()) {
-                        System.out.println("stop");
                         this.movement.neutral();
                         this.emergencyStopActivated = true;
                         break;
@@ -81,19 +77,15 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                     if (this.emergencyStopActivated) {
                         this.movement.neutral();
                     }
-                    if (!this.emergencyStopActivated) {
                         process.update();
-                    }
                 }
                 BoeBot.wait(1);
-            } else if (!this.emergencyStop.isPressed()) {
+            } else if (this.emergencyStop.isPressed() == false) {
                 while (true) {
                     if (this.emergencyStop.isPressed()) {
-                        System.out.println("start");
                         this.emergencyStopActivated = false;
                         while(true) {
-                            System.out.println("in loop");
-                            if(!this.emergencyStop.isPressed()) {
+                            if(this.emergencyStop.isPressed() == false) {
                                 this.movement.forward();
                                 break;
                             }
@@ -102,7 +94,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                     }
                 }
             }
-
         }
     }
 
