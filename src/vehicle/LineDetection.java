@@ -1,14 +1,11 @@
 package vehicle;
 
 import TI.Timer;
-import enums.Direction;
 import enums.LineDirection;
 import hardware.LineFollower;
 import interfaces.LineDetectionUpdater;
 import interfaces.Updatable;
 import common.Config;
-
-import javax.sound.sampled.Line;
 
 public class LineDetection implements Updatable {
 
@@ -37,11 +34,15 @@ public class LineDetection implements Updatable {
         if (this.timer.timeout() == false) {
             return;
         }
-        if (!middleLineFollower.isOnLine() && !leftLineFollower.isOnLine() && !rightLineFollower.isOnLine()) {
+        if (middleLineFollower.isOnLine() == false
+                && leftLineFollower.isOnLine() == false
+                && rightLineFollower.isOnLine() == false) {
             this.callback.onLineDetectionUpdate(LineDirection.STOP);
-        } else if (this.leftLineFollower.isOnLine() && !this.rightLineFollower.isOnLine()) {
+        } else if (this.leftLineFollower.isOnLine() == true
+                && this.rightLineFollower.isOnLine() == false) {
             this.callback.onLineDetectionUpdate(LineDirection.LEFT);
-        } else if (!leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine()) {
+        } else if (!leftLineFollower.isOnLine() == false
+                && this.rightLineFollower.isOnLine() == true) {
             this.callback.onLineDetectionUpdate(LineDirection.RIGHT);
         } else {
             this.callback.onLineDetectionUpdate(LineDirection.FORWARD);

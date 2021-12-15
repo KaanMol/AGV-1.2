@@ -2,13 +2,10 @@ package hardware;
 
 import TI.BoeBot;
 import TI.PinMode;
-import common.Config;
-import enums.Direction;
 
 public class LineFollower {
     private int inputPin;
     private final int bound = 800;
-    private boolean on = true;
 
     /**
      *
