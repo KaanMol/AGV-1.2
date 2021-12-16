@@ -99,7 +99,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.blinkers.stop();
     }
 
-    public void onDistanceDetectionUpdate(){
+    /**
+     * This method is called when the distance from the ultrasonic sensor is too little
+     */
+    public void onDistanceDetectionUpdate() {
         this.movement.neutral();
         //System.out.println("in neutral");
     }
