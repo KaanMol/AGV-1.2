@@ -1,10 +1,7 @@
 import TI.BoeBot;
 import common.Config;
 import common.WirelessConfig;
-import enums.Direction;
-import enums.LineDirection;
-import enums.Manoeuvre;
-import enums.WhiskerStatus;
+import enums.*;
 import hardware.Button;
 import hardware.Infrared;
 import interfaces.CollisionDetectionUpdater;
@@ -28,8 +25,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
-    private Infrared sensor = new Infrared();
     private DrivingLights drivinglights;
+
+    ControlOwner controlOwner = ControlOwner.Line;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -84,11 +82,12 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                     this.emergencyStopActivated = true;
                     break;
                 }
-                sensor.getRemoteCode();
                 process.update();
             }
             BoeBot.wait(1);
         }
+
+
     }
 
     /**
@@ -104,6 +103,13 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * This method moves the robot towards the side the user told it to with the remote
      */
     public void onInfraredCommandUpdate(int signal) {
+        if (this.controlOwner != ControlOwner.Remote) {
+            System.out.println("Remote took control!");
+            this.controlOwner = ControlOwner.Remote;
+        }
+
+        System.out.println(signal);
+
         if (signal == Config.remoteForward) {
             this.movement.forward();
         } else if (signal == Config.remoteBackward) {
@@ -116,6 +122,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.movement.neutral();
         } else if (signal == Config.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
+        } else if (signal == Config.remoteControlTransfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
         }
     }
 
@@ -165,6 +174,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param data Which ASCII Number is given
      */
     public void onWirelessUpdate(int data) {
+        if (this.controlOwner != ControlOwner.Wireless) {
+            System.out.println("Wireless took control!");
+            this.controlOwner = ControlOwner.Wireless;
+        }
+
         if (data == WirelessConfig.backward) {
             this.movement.backward();
         } else if (data == WirelessConfig.left) {
@@ -176,6 +190,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.stop) {
             this.movement.neutral();
         } else if (data == WirelessConfig.transfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
         }
     }
 
@@ -184,6 +200,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param lineDetection
      */
     public void onLineDetectionUpdate(LineDirection lineDetection) {
+        if (this.controlOwner != ControlOwner.Line) {
+            return;
+        }
+
         switch (lineDetection) {
             case FORWARD:
                 this.movement.forward();

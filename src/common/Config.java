@@ -112,7 +112,7 @@ public class Config {
     /**
      * The number that the ir remote sends for emergency stop
      */
-    public static final int remoteControlTransferd = 149;
+    public static final int remoteControlTransfer = 151;
 
 
     /**
