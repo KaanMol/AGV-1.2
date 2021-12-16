@@ -99,4 +99,9 @@ public class Config {
      */
     public static final int remoteControlTransferd = 149;
 
+
+    /**
+     * Bluetooth module
+     */
+    public static final int baudrate = 115200;
 }

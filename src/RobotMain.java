@@ -1,5 +1,6 @@
 import TI.BoeBot;
 import common.Config;
+import common.WirelessConfig;
 import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
@@ -11,15 +12,17 @@ import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.*;
 
+import interfaces.WirelessUpdater;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, InfraredUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
     private Remote remote;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
+    private WirelessConnection wirelessConnection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private Infrared sensor = new Infrared();
@@ -61,6 +64,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
 
         this.drivinglights = new DrivingLights();
         this.processes.add(this.drivinglights);
+
+        this.wirelessConnection = new WirelessConnection(this);
+        this.processes.add(this.wirelessConnection);
     }
 
     /**
@@ -147,6 +153,25 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
             case RIGHT:
                 this.movement.setManoeuvre(Manoeuvre.RIGHT);
                 break;
+        }
+    }
+
+    /**
+     * Callbakc that gets called when the vehicle detects Bluetooth
+     * @param data Which ASCII Number is given
+     */
+    public void onWirelessUpdate(int data) {
+        if (data == WirelessConfig.backward) {
+            this.movement.backward();
+        } else if (data == WirelessConfig.left) {
+            this.movement.turnLeft();
+        } else if (data == WirelessConfig.right) {
+            this.movement.turnRight();
+        } else if (data == WirelessConfig.forward) {
+            this.movement.forward();
+        } else if (data == WirelessConfig.stop) {
+            this.movement.neutral();
+        } else if (data == WirelessConfig.transfer) {
         }
     }
 }
