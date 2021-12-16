@@ -1,26 +1,28 @@
 import TI.BoeBot;
-import TI.PinMode;
-import TI.Timer;
 import common.Config;
 import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
+import hardware.Infrared;
 import interfaces.CollisionDetectionUpdater;
+import interfaces.InfraredUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.*;
 
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, InfraredUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
+    private Remote remote;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private Infrared sensor = new Infrared();
     private DrivingLights drivinglights;
 
     public static void main(String[] args) {
@@ -44,7 +46,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -54,8 +55,12 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
-        this.drivinglights = new DrivingLights();
 
+        this.remote = new Remote(this);
+        this.processes.add(this.remote);
+
+        this.drivinglights = new DrivingLights();
+        this.processes.add(this.drivinglights);
     }
 
     /**
@@ -68,6 +73,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                     this.emergencyStopActivated = true;
                     break;
                 }
+                sensor.getRemoteCode();
                 process.update();
             }
             BoeBot.wait(1);
@@ -82,6 +88,25 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.movement.neutral();
         this.drivingNotification.stop();
         this.blinkers.stop();
+    }
+
+    /**
+     * This method moves the robot towards the side the user told it to with the remote
+     */
+    public void onInfraredCommandUpdate(int signal) {
+        if (signal == Config.remoteForward) {
+            this.movement.forward();
+        } else if (signal == Config.remoteBackward) {
+            this.movement.backward();
+        } else if (signal == Config.remoteRight) {
+            this.movement.turnRight();
+        } else if (signal == Config.remoteLeft) {
+            this.movement.turnLeft();
+        } else if (signal == Config.remoteNeutral) {
+            this.movement.neutral();
+        } else if (signal == Config.remoteEmergencyStop) {
+            this.emergencyStopActivated = true;
+        }
     }
 
     /**

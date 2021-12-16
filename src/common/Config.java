@@ -58,4 +58,45 @@ public class Config {
      * The default direction of the vehicle
      */
     public static final Direction defaultDirection = Direction.FORWARD;
+
+    /**
+     * The number that the ir remote sends for moving forward
+     */
+    public static final int InfraredPin = 7;
+
+    /**
+     * The number that the ir remote sends for moving forward
+     */
+    public static final int remoteForward = 216;
+
+    /**
+     * The number that the ir remote sends for moving backward
+     */
+    public static final int remoteBackward = 217;
+
+    /**
+     * The number that the ir remote sends for turning left
+     */
+    public static final int remoteLeft = 147;
+
+    /**
+     * The number that the ir remote sends for turning right
+     */
+    public static final int remoteRight = 146;
+
+    /**
+     * The number that the ir remote sends for turning the wheels off
+     */
+    public static final int remoteNeutral = 223;
+
+    /**
+     * The number that the ir remote sends for emergency stop
+     */
+    public static final int remoteEmergencyStop = 149;
+
+    /**
+     * The number that the ir remote sends for emergency stop
+     */
+    public static final int remoteControlTransferd = 149;
+
 }

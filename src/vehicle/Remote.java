@@ -1,0 +1,23 @@
+package vehicle;
+
+import hardware.Infrared;
+import interfaces.InfraredUpdater;
+import interfaces.Updatable;
+
+public class Remote implements Updatable {
+    private InfraredUpdater callback;
+    private Infrared infrared;
+
+    public Remote(InfraredUpdater callback) {
+        this.callback = callback;
+        this.initialize();
+    }
+
+    public void initialize() {
+        infrared = new Infrared();
+    }
+
+    public void update() {
+        this.callback.getOrder(infrared.getRemoteCode());
+    }
+}
