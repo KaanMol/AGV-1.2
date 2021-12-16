@@ -84,11 +84,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Handles the updates of the system by calling the update method from Updatable interface
      */
     private void updater() {
-        while (this.emergencyStopActivated == false) {
-            for (Updatable process : processes) {
-                if (this.emergencyStop.isPressed()) {
-                    this.emergencyStopActivated = true;
-                    break;
         while (true) {
             if (this.emergencyStopActivated == false) {
                 for (Updatable process : processes) {
@@ -109,47 +104,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             }
         }
     }
-
-
-
-
-//        while (true) {
-//            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
-//                if (this.emergencyStop.isPressed()) {
-//                    this.movement.neutral();
-//                    this.emergencyStopActivated = true;
-//                }
-//                for (Updatable process : processes) {
-//                    if (this.emergencyStop.isPressed()) {
-//                        System.out.println("stop");
-//                        this.movement.neutral();
-//                        this.emergencyStopActivated = true;
-//                        break;
-//                    }
-//                    if (this.emergencyStopActivated) {
-//                        this.movement.neutral();
-//                    }
-//                        process.update();
-//                }
-//                BoeBot.wait(1);
-//            } else if (this.emergencyStop.isPressed() == false) {
-//                while (true) {
-//                    System.out.println("h");
-//                    if (this.emergencyStop.isPressed()) {
-//                        System.out.println("start");
-//                        this.emergencyStopActivated = false;
-//                        while(true) {
-//                            if(this.emergencyStop.isPressed() == false) {
-//                                this.movement.forward();
-//                                break;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Stops all systems in the case of emergency
