@@ -46,6 +46,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
+        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -100,6 +101,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
     public void onDistanceDetectionUpdate(){
         this.movement.neutral();
+        //System.out.println("in neutral");
     }
 
     /**

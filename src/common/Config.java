@@ -128,5 +128,5 @@ public class Config {
     /**
      * GPIO pin the UltraSonic input is connected to
      */
-    public static final int UltraSonicInputPin = 14;
+    public static final int UltraSonicInputPin = 15;
 }
