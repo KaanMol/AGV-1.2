@@ -85,6 +85,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      */
     private void updater() {
         while (true) {
+            BoeBot.wait(1);
             if (this.emergencyStopActivated == false) {
                 for (Updatable process : processes) {
                     if (this.emergencyStop.isPressed()) {
