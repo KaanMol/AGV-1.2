@@ -23,7 +23,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private Infrared sensor = new Infrared();
-
+    private DrivingLights drivinglights;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -55,9 +55,12 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
-        
+
         this.remote = new Remote(this);
         this.processes.add(this.remote);
+
+        this.drivinglights = new DrivingLights();
+        this.processes.add(this.drivinglights);
     }
 
     /**
@@ -65,7 +68,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
      */
     private void updater() {
         while (this.emergencyStopActivated == false) {
-            for (Updatable process: processes) {
+            for (Updatable process : processes) {
                 if (this.emergencyStop.isPressed()) {
                     this.emergencyStopActivated = true;
                     break;
@@ -108,25 +111,31 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, In
 
     /**
      * Callback that gets called when the vehicle direction changes.
+     *
      * @param heading - The direction where the vehicle is heading to
      */
     public void onMovementUpdate(Direction heading) {
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
             this.drivingNotification.stop();
-        } else {
-            this.blinkers.stop();
 
+        } else if (heading == Direction.FORWARD || heading == Direction.BACKWARD) {
+            this.blinkers.stop();
+            this.drivinglights.start(heading);
             if (heading == Direction.BACKWARD) {
                 this.drivingNotification.start();
             } else {
                 this.drivingNotification.stop();
             }
+
+        } else {
+            this.blinkers.stop();
         }
     }
 
     /**
      * Callback that gets called when the vehicle detects a collision.
+     *
      * @param whiskerCollision - Which whiskers are triggered.
      */
     public void onCollisionDetectionUpdate(WhiskerStatus whiskerCollision) {
