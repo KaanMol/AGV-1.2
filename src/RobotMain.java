@@ -4,25 +4,25 @@ import enums.Direction;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
-import hardware.IRSensor;
+import hardware.Infrared;
 import interfaces.CollisionDetectionUpdater;
-import interfaces.IRSignalMover;
+import interfaces.InfraredUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.*;
 
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, IRSignalMover {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, InfraredUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
-    private Infrared infrared;
+    private Remote remote;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
-    private IRSensor sensor = new IRSensor();
+    private Infrared sensor = new Infrared();
 
 
     public static void main(String[] args) {
@@ -56,8 +56,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, IR
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
         
-        this.infrared = new Infrared(this);
-        this.processes.add(this.infrared);
+        this.remote = new Remote(this);
+        this.processes.add(this.remote);
     }
 
     /**
@@ -90,44 +90,18 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, IR
     /**
      * This method moves the robot towards the side the user told it to with the remote
      */
-    /*
-    public void moveIRSignal(Direction heading){
-        System.out.println(heading);
-        if (heading == Direction.FORWARD) {
-            this.movement.forward();
-        }
-        else if (heading == Direction.BACKWARD) {
-            this.movement.backward();
-        }
-        else if (heading == Direction.RIGHT) {
-            this.movement.turnRight();
-        }
-        else if (heading == Direction.LEFT) {
-            this.movement.turnLeft();
-        }
-        else if (heading == Direction.NEUTRAL) {
-            this.movement.neutral();
-        }
-    }
-    */
-
-    public void getOrder(int signal) {
+    public void onInfraredCommandUpdate(int signal) {
         if (signal == Config.remoteForward) {
             this.movement.forward();
-        }
-        else if (signal == Config.remoteBackward) {
+        } else if (signal == Config.remoteBackward) {
             this.movement.backward();
-        }
-        else if (signal == Config.remoteRight) {
+        } else if (signal == Config.remoteRight) {
             this.movement.turnRight();
-        }
-        else if (signal == Config.remoteLeft) {
+        } else if (signal == Config.remoteLeft) {
             this.movement.turnLeft();
-        }
-        else if (signal == Config.remoteNeutral) {
+        } else if (signal == Config.remoteNeutral) {
             this.movement.neutral();
-        }
-        else if (signal == Config.remoteEmergencyStop) {
+        } else if (signal == Config.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
         }
     }

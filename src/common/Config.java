@@ -62,6 +62,11 @@ public class Config {
     /**
      * The number that the ir remote sends for moving forward
      */
+    public static final int InfraredPin = 7;
+
+    /**
+     * The number that the ir remote sends for moving forward
+     */
     public static final int remoteForward = 216;
 
     /**
