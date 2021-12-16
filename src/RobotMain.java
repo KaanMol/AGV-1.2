@@ -26,6 +26,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private DrivingLights drivinglights;
+    private Gripper gripper;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -70,6 +71,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
+
+        this.gripper = new Gripper();
+        this.processes.add(this.gripper);
     }
 
     /**

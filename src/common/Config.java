@@ -14,6 +14,11 @@ public class Config {
     public static final int leftServoPin = 13;
 
     /**
+     * The GPIO pin where the gripper is connected to
+     */
+    public static final int gripperPin = 14;
+
+    /**
      * The GPIO pin where the left whisker is connected to
      */
     public static final int leftWhiskerPin = 8;
