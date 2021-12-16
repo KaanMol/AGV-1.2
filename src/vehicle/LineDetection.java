@@ -47,7 +47,7 @@ public class LineDetection implements Updatable {
         } else {
             this.callback.onLineDetectionUpdate(LineDirection.FORWARD);
         }
-        timer.mark();
 
+        timer.mark();
     }
 }

@@ -166,7 +166,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         }
     }
 
-
     /**
      * Sets motor speed and handles manoeuvre by a timer.
      */
