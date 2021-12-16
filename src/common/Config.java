@@ -130,10 +130,10 @@ public class Config {
     /**
      * GPIO pin the UltraSonic output is connected to
      */
-    public static final int UltraSonicOutputPin = 14;
+    public static final int UltraSonicOutputPin = 3;
 
     /**
      * GPIO pin the UltraSonic input is connected to
      */
-    public static final int UltraSonicInputPin = 15;
+    public static final int UltraSonicInputPin = 4;
 }

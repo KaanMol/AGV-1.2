@@ -19,6 +19,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private boolean hasObstacle = false;
+    private Direction lastHeading = Direction.FORWARD;
     private DrivingLights drivinglights;
     private Gripper gripper;
     private DistanceDetection distanceDetection;
@@ -105,8 +107,32 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     /**
      * This method is called when the distance from the ultrasonic sensor is too little
      */
-    public void onDistanceDetectionUpdate() {
-        this.movement.neutral();
+    public void onDistanceDetectionUpdate(boolean hasObstacle) {
+        if (this.hasObstacle == false && hasObstacle == true) {
+            this.lastHeading = this.movement.getHeading();
+        }
+
+        if (this.hasObstacle == true && hasObstacle == false) {
+           switch (this.lastHeading) {
+               case FORWARD:
+                   this.movement.forward();
+                   break;
+               case BACKWARD:
+                   this.movement.backward();
+                   break;
+               case LEFT:
+                   this.movement.turnLeft();
+                   break;
+               case RIGHT:
+                   this.movement.turnRight();
+                   break;
+               case NEUTRAL:
+                   this.movement.neutral();
+                   break;
+           }
+        }
+
+        this.hasObstacle = hasObstacle;
     }
 
     /**

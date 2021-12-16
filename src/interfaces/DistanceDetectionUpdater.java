@@ -1,5 +1,5 @@
 package interfaces;
 
 public interface DistanceDetectionUpdater {
-    void onDistanceDetectionUpdate();
+    void onDistanceDetectionUpdate(boolean hasObstacle);
 }
