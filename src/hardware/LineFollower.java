@@ -20,7 +20,7 @@ public class LineFollower {
      * Checks if LineFollower is on line
      * @return state of parameter
      */
-    public boolean isOnLine(){
+    public boolean isOnLine() {
         int color = BoeBot.analogRead(inputPin);
         return color > bound;
     }

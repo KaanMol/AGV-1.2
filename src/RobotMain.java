@@ -69,7 +69,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.processes.add(this.remote);
 
         this.drivinglights = new DrivingLights();
-        this.processes.add(this.drivinglights);
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
