@@ -65,6 +65,9 @@ public class Blinkers implements Updatable {
      * Stops blinker cycle with timer
      */
     public void stop() {
+        if(this.isSet == false) {
+            return;
+        }
         this.isOn = false;
         this.isSet = false;
         this.direction = Direction.NEUTRAL;
@@ -89,6 +92,7 @@ public class Blinkers implements Updatable {
      * Turns off all the blinkers
      */
     private void off() {
+
         this.topLeft.off();
         this.topRight.off();
         this.bottomLeft.off();
@@ -108,7 +112,6 @@ public class Blinkers implements Updatable {
         } else {
             this.off();
         }
-
         this.isOn = !this.isOn;
         this.timer.mark();
     }
