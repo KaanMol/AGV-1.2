@@ -3,7 +3,6 @@ import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
-import hardware.Infrared;
 import interfaces.*;
 import vehicle.*;
 
@@ -104,7 +103,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      */
     public void onDistanceDetectionUpdate() {
         this.movement.neutral();
-        //System.out.println("in neutral");
     }
 
     /**

@@ -16,7 +16,7 @@ public class DistanceDetection implements Updatable {
 
     public void update() {
         int distance = ultraSonic.Readings();
-        if(distance <= 750){
+        if (distance <= 750) {
             callback.onDistanceDetectionUpdate();
         }
     }
