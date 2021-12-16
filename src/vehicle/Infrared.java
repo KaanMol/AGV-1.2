@@ -19,14 +19,11 @@ public class Infrared implements Updatable {
 
     public void initialize() {
         irSensor = new IRSensor();
-        //timer = new Timer(0);
-        //this.timer.setInterval(1);
     }
 
 
 
     public void update() {
-        //int signal = irSensor.getRemoteCode();
         this.callback.getOrder(irSensor.getRemoteCode());
     }
 }
