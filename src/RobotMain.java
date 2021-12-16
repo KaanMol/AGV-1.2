@@ -4,17 +4,12 @@ import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
 import hardware.Infrared;
-import interfaces.CollisionDetectionUpdater;
-import interfaces.InfraredUpdater;
-import interfaces.LineDetectionUpdater;
-import interfaces.MovementUpdater;
-import interfaces.Updatable;
+import interfaces.*;
 import vehicle.*;
 
-import interfaces.WirelessUpdater;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -26,6 +21,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private DrivingLights drivinglights;
+    private DistanceDetection distanceDetection;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -70,6 +66,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
+
+        this.distanceDetection = new DistanceDetection(this);
+        this.processes.add(this.distanceDetection);
     }
 
     /**
@@ -97,6 +96,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.movement.neutral();
         this.drivingNotification.stop();
         this.blinkers.stop();
+    }
+
+    public void onDistanceDetectionUpdate(){
+        this.movement.neutral();
     }
 
     /**

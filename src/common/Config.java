@@ -119,4 +119,14 @@ public class Config {
      * Bluetooth module
      */
     public static final int baudrate = 115200;
+
+    /**
+     * GPIO pin the UltraSonic output is connected to
+     */
+    public static final int UltraSonicOutputPin = 14;
+
+    /**
+     * GPIO pin the UltraSonic input is connected to
+     */
+    public static final int UltraSonicInputPin = 14;
 }
