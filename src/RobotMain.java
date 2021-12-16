@@ -3,18 +3,12 @@ import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
-import hardware.Infrared;
-import interfaces.CollisionDetectionUpdater;
-import interfaces.InfraredUpdater;
-import interfaces.LineDetectionUpdater;
-import interfaces.MovementUpdater;
-import interfaces.Updatable;
+import interfaces.*;
 import vehicle.*;
 
-import interfaces.WirelessUpdater;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -25,8 +19,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private boolean hasObstacle = false;
+    private Direction lastHeading = Direction.FORWARD;
     private DrivingLights drivinglights;
     private Gripper gripper;
+    private DistanceDetection distanceDetection;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -51,6 +48,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
+        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -74,6 +72,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.gripper = new Gripper();
         this.processes.add(this.gripper);
+
+        this.distanceDetection = new DistanceDetection(this);
+        this.processes.add(this.distanceDetection);
     }
 
     /**
@@ -101,6 +102,37 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.movement.neutral();
         this.drivingNotification.stop();
         this.blinkers.stop();
+    }
+
+    /**
+     * This method is called when the distance from the ultrasonic sensor is too little
+     */
+    public void onDistanceDetectionUpdate(boolean hasObstacle) {
+        if (this.hasObstacle == false && hasObstacle == true) {
+            this.lastHeading = this.movement.getHeading();
+        }
+
+        if (this.hasObstacle == true && hasObstacle == false) {
+           switch (this.lastHeading) {
+               case FORWARD:
+                   this.movement.forward();
+                   break;
+               case BACKWARD:
+                   this.movement.backward();
+                   break;
+               case LEFT:
+                   this.movement.turnLeft();
+                   break;
+               case RIGHT:
+                   this.movement.turnRight();
+                   break;
+               case NEUTRAL:
+                   this.movement.neutral();
+                   break;
+           }
+        }
+
+        this.hasObstacle = hasObstacle;
     }
 
     /**
