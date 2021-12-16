@@ -119,6 +119,8 @@ public class Config {
      */
     public static final int remoteControlTransfer = 151;
 
+    public static final int remoteGripper = 219;
+
 
     /**
      * Bluetooth module

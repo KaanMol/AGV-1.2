@@ -127,6 +127,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (signal == Config.remoteControlTransfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
+        } else if (signal == Config.remoteGripper) {
+            this.gripper.toggle();
         }
     }
 
@@ -194,6 +196,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.transfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
+        } else if (data == WirelessConfig.gripper) {
+            this.gripper.toggle();
         }
     }
 
