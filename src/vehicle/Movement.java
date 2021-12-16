@@ -19,11 +19,12 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private Manoeuvre manoeuvre = Manoeuvre.NONE;
     private Timer timer;
     private Timer accelerationTimer;
-    
+
     private int step = 0;
 
     /**
      * Constructor
+     *
      * @param callback - is called to give direction changes
      */
     public Movement(MovementUpdater callback) {
@@ -36,6 +37,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
     /**
      * Get the current direction of the vehicle
+     *
      * @return direction
      */
     public Direction getHeading() {
@@ -84,8 +86,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
     /**
      * Sets the direction of the vehicle for a given direction and base speeds and slowly accelerates the action
-     * @param direction - The direction the vehicle should be heading to
-     * @param leftSpeed - Left motor speed
+     *
+     * @param direction  - The direction the vehicle should be heading to
+     * @param leftSpeed  - Left motor speed
      * @param rightSpeed - Right motor speed
      */
     private void setAcceleratingDirection(Direction direction, int leftSpeed, int rightSpeed) {
@@ -95,8 +98,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
     /**
      * Sets the direction of the vehicle for a given direction and base speeds and instantly accelerates the action
-     * @param direction - The direction the vehicle should be heading to
-     * @param leftSpeed - Left motor speed
+     *
+     * @param direction  - The direction the vehicle should be heading to
+     * @param leftSpeed  - Left motor speed
      * @param rightSpeed - Right motor speed
      */
     private void setDirection(Direction direction, int leftSpeed, int rightSpeed) {
@@ -111,6 +115,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
     /**
      * Set manouvre to right or left
+     *
      * @param manoeuvre - The side the vehicle should make the manouevre to
      */
     public void setManoeuvre(Manoeuvre manoeuvre) {
@@ -179,6 +184,14 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
                 }
             }
         }
+        else if (this.currentHeading == Direction.NEUTRAL) {
+            if (this.accelerationTimer.timeout()) {
+                if (this.leftMotorSpeed > 100 && this.rightMotorSpeed < -100) {
+                    this.leftMotorSpeed -= Config.accelerationStep;
+                    this.rightMotorSpeed -= Config.accelerationStep;
+                }
+            }
+        }
 
         if (this.getHeading() == Direction.BACKWARD) {
 
@@ -188,7 +201,6 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
             this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
         }
-
         this.callback.onMovementUpdate(this.getHeading());
     }
 }
