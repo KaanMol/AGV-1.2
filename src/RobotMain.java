@@ -2,12 +2,14 @@ import TI.BoeBot;
 import common.Config;
 import common.WirelessConfig;
 import enums.Direction;
+import enums.LineDirection;
 import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
 import hardware.Infrared;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.InfraredUpdater;
+import interfaces.LineDetectionUpdater;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
 import vehicle.*;
@@ -15,7 +17,7 @@ import vehicle.*;
 import interfaces.WirelessUpdater;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -23,6 +25,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
     private WirelessConnection wirelessConnection;
+    private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private Infrared sensor = new Infrared();
@@ -53,6 +56,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
 
+        this.lineDetection = new LineDetection(this);
+        this.processes.add(this.lineDetection);
+
         this.drivingNotification = new DrivingNotification();
         this.processes.add(this.drivingNotification);
 
@@ -63,7 +69,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.processes.add(this.remote);
 
         this.drivinglights = new DrivingLights();
-        this.processes.add(this.drivinglights);
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
@@ -84,7 +89,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             }
             BoeBot.wait(1);
         }
-        this.stop();
     }
 
     /**
@@ -172,6 +176,27 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.stop) {
             this.movement.neutral();
         } else if (data == WirelessConfig.transfer) {
+        }
+    }
+
+    /**
+     * Callback that gets called when the vehicle detects a line.
+     * @param lineDetection
+     */
+    public void onLineDetectionUpdate(LineDirection lineDetection) {
+        switch (lineDetection) {
+            case FORWARD:
+                this.movement.forward();
+                break;
+            case LEFT:
+                this.movement.turnLeft();
+                break;
+            case RIGHT:
+                this.movement.turnRight();
+                break;
+            case STOP:
+                this.movement.neutral();
+                break;
         }
     }
 }
