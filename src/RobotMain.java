@@ -24,6 +24,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private DrivingLights drivinglights;
     private Gripper gripper;
     private DistanceDetection distanceDetection;
+    private Button startButton;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -35,6 +36,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Constructor
      */
     public RobotMain() {
+
         this.initialize();
         this.updater();
     }
@@ -75,6 +77,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.distanceDetection = new DistanceDetection(this);
         this.processes.add(this.distanceDetection);
+        this.startButton = new Button(0);
     }
 
     /**
@@ -86,14 +89,67 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 if (this.emergencyStop.isPressed()) {
                     this.emergencyStopActivated = true;
                     break;
+        while (true) {
+            if (this.emergencyStopActivated == false) {
+                for (Updatable process : processes) {
+                    if (this.emergencyStop.isPressed()) {
+                        System.out.println("stop");
+                        this.movement.neutral();
+                        this.emergencyStopActivated = true;
+                        break;
+                    }
+                    if (this.emergencyStopActivated) {
+                        this.movement.neutral();
+                    }
+                    process.update();
                 }
-                process.update();
+            } else if (this.startButton.isPressed()) {
+                this.movement.forward();
+                this.emergencyStopActivated = false;
             }
-            BoeBot.wait(1);
         }
-
-
     }
+
+
+
+
+//        while (true) {
+//            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
+//                if (this.emergencyStop.isPressed()) {
+//                    this.movement.neutral();
+//                    this.emergencyStopActivated = true;
+//                }
+//                for (Updatable process : processes) {
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("stop");
+//                        this.movement.neutral();
+//                        this.emergencyStopActivated = true;
+//                        break;
+//                    }
+//                    if (this.emergencyStopActivated) {
+//                        this.movement.neutral();
+//                    }
+//                        process.update();
+//                }
+//                BoeBot.wait(1);
+//            } else if (this.emergencyStop.isPressed() == false) {
+//                while (true) {
+//                    System.out.println("h");
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("start");
+//                        this.emergencyStopActivated = false;
+//                        while(true) {
+//                            if(this.emergencyStop.isPressed() == false) {
+//                                this.movement.forward();
+//                                break;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Stops all systems in the case of emergency
@@ -256,5 +312,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 this.movement.neutral();
                 break;
         }
+    }
+
+    public void emergencyStop() {
+        if(this.emergencyStop.isPressed()){
+            this.movement.neutral();
+            while(this.emergencyStop.isPressed()){
+            }
+        }
+
     }
 }
