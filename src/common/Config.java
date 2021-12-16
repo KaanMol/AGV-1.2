@@ -14,6 +14,11 @@ public class Config {
     public static final int leftServoPin = 13;
 
     /**
+     * The GPIO pin where the gripper is connected to
+     */
+    public static final int gripperPin = 14;
+
+    /**
      * The GPIO pin where the left whisker is connected to
      */
     public static final int leftWhiskerPin = 8;
@@ -112,11 +117,23 @@ public class Config {
     /**
      * The number that the ir remote sends for emergency stop
      */
-    public static final int remoteControlTransferd = 149;
+    public static final int remoteControlTransfer = 151;
+
+    public static final int remoteGripper = 219;
 
 
     /**
      * Bluetooth module
      */
     public static final int baudrate = 115200;
+
+    /**
+     * GPIO pin the UltraSonic output is connected to
+     */
+    public static final int UltraSonicOutputPin = 3;
+
+    /**
+     * GPIO pin the UltraSonic input is connected to
+     */
+    public static final int UltraSonicInputPin = 4;
 }

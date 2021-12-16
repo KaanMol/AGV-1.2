@@ -1,26 +1,14 @@
 import TI.BoeBot;
 import common.Config;
 import common.WirelessConfig;
-import enums.Direction;
-import enums.LineDirection;
-import enums.Manoeuvre;
-import enums.WhiskerStatus;
+import enums.*;
 import hardware.Button;
-import hardware.Infrared;
-import hardware.Led;
-import interfaces.CollisionDetectionUpdater;
-import interfaces.InfraredUpdater;
-import interfaces.LineDetectionUpdater;
-import interfaces.MovementUpdater;
-import interfaces.Updatable;
+import interfaces.*;
 import vehicle.*;
 
-import interfaces.WirelessUpdater;
-
-import java.awt.*;
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
@@ -31,8 +19,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
-    private Infrared sensor = new Infrared();
+    private boolean hasObstacle = false;
+    private Direction lastHeading = Direction.FORWARD;
     private DrivingLights drivinglights;
+    private Gripper gripper;
+    private DistanceDetection distanceDetection;
+    private Button startButton;
+
+    ControlOwner controlOwner = ControlOwner.Line;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -42,6 +36,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Constructor
      */
     public RobotMain() {
+
         this.initialize();
         this.updater();
     }
@@ -55,6 +50,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
+        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -75,6 +71,13 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
+
+        this.gripper = new Gripper();
+        this.processes.add(this.gripper);
+
+        this.distanceDetection = new DistanceDetection(this);
+        this.processes.add(this.distanceDetection);
+        this.startButton = new Button(0);
     }
 
     /**
@@ -86,13 +89,67 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 if (this.emergencyStop.isPressed()) {
                     this.emergencyStopActivated = true;
                     break;
+        while (true) {
+            if (this.emergencyStopActivated == false) {
+                for (Updatable process : processes) {
+                    if (this.emergencyStop.isPressed()) {
+                        System.out.println("stop");
+                        this.movement.neutral();
+                        this.emergencyStopActivated = true;
+                        break;
+                    }
+                    if (this.emergencyStopActivated) {
+                        this.movement.neutral();
+                    }
+                    process.update();
                 }
-                sensor.getRemoteCode();
-                process.update();
+            } else if (this.startButton.isPressed()) {
+                this.movement.forward();
+                this.emergencyStopActivated = false;
             }
-            BoeBot.wait(1);
         }
     }
+
+
+
+
+//        while (true) {
+//            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
+//                if (this.emergencyStop.isPressed()) {
+//                    this.movement.neutral();
+//                    this.emergencyStopActivated = true;
+//                }
+//                for (Updatable process : processes) {
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("stop");
+//                        this.movement.neutral();
+//                        this.emergencyStopActivated = true;
+//                        break;
+//                    }
+//                    if (this.emergencyStopActivated) {
+//                        this.movement.neutral();
+//                    }
+//                        process.update();
+//                }
+//                BoeBot.wait(1);
+//            } else if (this.emergencyStop.isPressed() == false) {
+//                while (true) {
+//                    System.out.println("h");
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("start");
+//                        this.emergencyStopActivated = false;
+//                        while(true) {
+//                            if(this.emergencyStop.isPressed() == false) {
+//                                this.movement.forward();
+//                                break;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Stops all systems in the case of emergency
@@ -104,9 +161,45 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     }
 
     /**
+     * This method is called when the distance from the ultrasonic sensor is too little
+     */
+    public void onDistanceDetectionUpdate(boolean hasObstacle) {
+        if (this.hasObstacle == false && hasObstacle == true) {
+            this.lastHeading = this.movement.getHeading();
+        }
+
+        if (this.hasObstacle == true && hasObstacle == false) {
+           switch (this.lastHeading) {
+               case FORWARD:
+                   this.movement.forward();
+                   break;
+               case BACKWARD:
+                   this.movement.backward();
+                   break;
+               case LEFT:
+                   this.movement.turnLeft();
+                   break;
+               case RIGHT:
+                   this.movement.turnRight();
+                   break;
+               case NEUTRAL:
+                   this.movement.neutral();
+                   break;
+           }
+        }
+
+        this.hasObstacle = hasObstacle;
+    }
+
+    /**
      * This method moves the robot towards the side the user told it to with the remote
      */
     public void onInfraredCommandUpdate(int signal) {
+        if (this.controlOwner != ControlOwner.Remote) {
+            System.out.println("Remote took control!");
+            this.controlOwner = ControlOwner.Remote;
+        }
+
         if (signal == Config.remoteForward) {
             this.movement.forward();
         } else if (signal == Config.remoteBackward) {
@@ -119,6 +212,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.movement.neutral();
         } else if (signal == Config.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
+        } else if (signal == Config.remoteControlTransfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
+        } else if (signal == Config.remoteGripper) {
+            this.gripper.toggle();
         }
     }
 
@@ -168,6 +266,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param data Which ASCII Number is given
      */
     public void onWirelessUpdate(int data) {
+        if (this.controlOwner != ControlOwner.Wireless) {
+            System.out.println("Wireless took control!");
+            this.controlOwner = ControlOwner.Wireless;
+        }
+
         if (data == WirelessConfig.backward) {
             this.movement.backward();
         } else if (data == WirelessConfig.left) {
@@ -179,6 +282,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.stop) {
             this.movement.neutral();
         } else if (data == WirelessConfig.transfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
+        } else if (data == WirelessConfig.gripper) {
+            this.gripper.toggle();
         }
     }
 
@@ -187,6 +294,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param lineDetection
      */
     public void onLineDetectionUpdate(LineDirection lineDetection) {
+        if (this.controlOwner != ControlOwner.Line) {
+            return;
+        }
+
         switch (lineDetection) {
             case FORWARD:
                 this.movement.forward();
@@ -202,5 +313,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 this.drivingNotification.start();
                 break;
         }
+    }
+
+    public void emergencyStop() {
+        if(this.emergencyStop.isPressed()){
+            this.movement.neutral();
+            while(this.emergencyStop.isPressed()){
+            }
+        }
+
     }
 }
