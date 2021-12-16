@@ -18,6 +18,10 @@ public class Remote implements Updatable {
     }
 
     public void update() {
-        this.initialize();
+        int remoteCode = infrared.getRemoteCode();
+
+        if (remoteCode != -1) {
+            this.callback.onInfraredCommandUpdate(remoteCode);
+        }
     }
 }
