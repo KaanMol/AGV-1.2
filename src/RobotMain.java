@@ -108,8 +108,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.controlOwner = ControlOwner.Remote;
         }
 
-        System.out.println(signal);
-
         if (signal == Config.remoteForward) {
             this.movement.forward();
         } else if (signal == Config.remoteBackward) {
