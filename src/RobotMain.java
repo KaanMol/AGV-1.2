@@ -44,7 +44,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-//        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -57,7 +56,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
-
     }
 
     /**
@@ -137,7 +135,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.stop) {
             this.movement.neutral();
         } else if (data == WirelessConfig.transfer) {
-
         }
     }
 }

@@ -26,7 +26,6 @@ public class WirelessConnection implements Updatable {
             int data = bluetooth.readByte();
             bluetooth.writeByte(data); // Echo data
             callback.onWirelessUpdate(data);
-            System.out.println("Received: " + data);
         }
     }
 }
