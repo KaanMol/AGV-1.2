@@ -20,6 +20,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
     private DrivingLights drivinglights;
+    private Gripper gripper;
     private DistanceDetection distanceDetection;
 
     ControlOwner controlOwner = ControlOwner.Line;
@@ -66,6 +67,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
+
+        this.gripper = new Gripper();
+        this.processes.add(this.gripper);
 
         this.distanceDetection = new DistanceDetection(this);
         this.processes.add(this.distanceDetection);
@@ -129,6 +133,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (signal == Config.remoteControlTransfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
+        } else if (signal == Config.remoteGripper) {
+            this.gripper.toggle();
         }
     }
 
@@ -196,6 +202,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (data == WirelessConfig.transfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
+        } else if (data == WirelessConfig.gripper) {
+            this.gripper.toggle();
         }
     }
 
