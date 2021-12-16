@@ -23,6 +23,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     private CollisionDetection collisionDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private Button startButton;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -32,6 +33,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      * Constructor
      */
     public RobotMain() {
+
         this.initialize();
         this.updater();
     }
@@ -55,6 +57,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
+        this.startButton = new Button(0);
     }
 
     /**
@@ -62,14 +65,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      */
     private void updater() {
         while (true) {
-            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
-                if (this.emergencyStop.isPressed()) {
-                    this.movement.neutral();
-                    this.emergencyStopActivated = true;
-                    break;
-                }
+            if (this.emergencyStopActivated == false) {
                 for (Updatable process : processes) {
                     if (this.emergencyStop.isPressed()) {
+                        System.out.println("stop");
                         this.movement.neutral();
                         this.emergencyStopActivated = true;
                         break;
@@ -77,25 +76,55 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                     if (this.emergencyStopActivated) {
                         this.movement.neutral();
                     }
-                        process.update();
+                    process.update();
                 }
-                BoeBot.wait(1);
-            } else if (this.emergencyStop.isPressed() == false) {
-                while (true) {
-                    if (this.emergencyStop.isPressed()) {
-                        this.emergencyStopActivated = false;
-                        while(true) {
-                            if(this.emergencyStop.isPressed() == false) {
-                                this.movement.forward();
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+            } else if (this.startButton.isPressed()) {
+                this.movement.forward();
+                this.emergencyStopActivated = false;
             }
         }
     }
+
+
+
+
+//        while (true) {
+//            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
+//                if (this.emergencyStop.isPressed()) {
+//                    this.movement.neutral();
+//                    this.emergencyStopActivated = true;
+//                }
+//                for (Updatable process : processes) {
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("stop");
+//                        this.movement.neutral();
+//                        this.emergencyStopActivated = true;
+//                        break;
+//                    }
+//                    if (this.emergencyStopActivated) {
+//                        this.movement.neutral();
+//                    }
+//                        process.update();
+//                }
+//                BoeBot.wait(1);
+//            } else if (this.emergencyStop.isPressed() == false) {
+//                while (true) {
+//                    System.out.println("h");
+//                    if (this.emergencyStop.isPressed()) {
+//                        System.out.println("start");
+//                        this.emergencyStopActivated = false;
+//                        while(true) {
+//                            if(this.emergencyStop.isPressed() == false) {
+//                                this.movement.forward();
+//                                break;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Stops all systems in the case of emergency
