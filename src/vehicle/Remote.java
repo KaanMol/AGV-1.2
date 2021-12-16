@@ -18,6 +18,6 @@ public class Remote implements Updatable {
     }
 
     public void update() {
-        this.callback.getOrder(infrared.getRemoteCode());
+        this.initialize();
     }
 }

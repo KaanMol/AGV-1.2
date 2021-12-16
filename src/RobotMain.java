@@ -7,6 +7,7 @@ import enums.Manoeuvre;
 import enums.WhiskerStatus;
 import hardware.Button;
 import hardware.Infrared;
+import hardware.Led;
 import interfaces.CollisionDetectionUpdater;
 import interfaces.InfraredUpdater;
 import interfaces.LineDetectionUpdater;
@@ -15,6 +16,8 @@ import interfaces.Updatable;
 import vehicle.*;
 
 import interfaces.WirelessUpdater;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater {
@@ -196,6 +199,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 break;
             case STOP:
                 this.movement.neutral();
+                this.drivingNotification.start();
                 break;
         }
     }
