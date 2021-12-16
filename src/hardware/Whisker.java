@@ -16,12 +16,21 @@ public class Whisker {
         BoeBot.setMode(this.inputPin, PinMode.Input);
     }
 
+    /**
+     *
+     * @return The pin that the whisker is connected to
+     */
     public int getPinNum() {
         return this.inputPin;
     }
 
-    public void setPinMode() {
-        BoeBot.setMode(this.inputPin, PinMode.Input);
+    /**
+     *
+     * @param inputPin The pin that the whisker is connected to
+     */
+    public void setPinMode(int inputPin) {
+        BoeBot.setMode(inputPin, PinMode.Input);
+        this.inputPin = inputPin;
     }
 
     /**

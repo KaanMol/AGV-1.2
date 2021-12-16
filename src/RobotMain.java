@@ -1,29 +1,32 @@
 import TI.BoeBot;
-import TI.PinMode;
-import TI.Timer;
 import common.Config;
-import enums.Direction;
-import enums.Manoeuvre;
-import enums.WhiskerStatus;
+import common.WirelessConfig;
+import enums.*;
 import hardware.Button;
-import interfaces.CollisionDetectionUpdater;
-import interfaces.MovementUpdater;
-import interfaces.Updatable;
-import vehicle.Blinkers;
-import vehicle.CollisionDetection;
-import vehicle.DrivingNotification;
-import vehicle.Movement;
+import interfaces.*;
+import vehicle.*;
+
 import java.util.ArrayList;
 
-public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
+public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
     private ArrayList<Updatable> processes;
     private Movement movement;
     private Blinkers blinkers;
+    private Remote remote;
     private DrivingNotification drivingNotification;
     private CollisionDetection collisionDetection;
+    private WirelessConnection wirelessConnection;
+    private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
+    private boolean hasObstacle = false;
+    private Direction lastHeading = Direction.FORWARD;
+    private DrivingLights drivinglights;
+    private Gripper gripper;
+    private DistanceDetection distanceDetection;
     private Button startButton;
+
+    ControlOwner controlOwner = ControlOwner.Line;
 
     public static void main(String[] args) {
         new RobotMain();
@@ -52,11 +55,28 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
 
+        this.lineDetection = new LineDetection(this);
+        this.processes.add(this.lineDetection);
+
         this.drivingNotification = new DrivingNotification();
         this.processes.add(this.drivingNotification);
 
         this.blinkers = new Blinkers();
         this.processes.add(this.blinkers);
+
+        this.remote = new Remote(this);
+        this.processes.add(this.remote);
+
+        this.drivinglights = new DrivingLights();
+
+        this.wirelessConnection = new WirelessConnection(this);
+        this.processes.add(this.wirelessConnection);
+
+        this.gripper = new Gripper();
+        this.processes.add(this.gripper);
+
+        this.distanceDetection = new DistanceDetection(this);
+        this.processes.add(this.distanceDetection);
         this.startButton = new Button(0);
     }
 
@@ -64,6 +84,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      * Handles the updates of the system by calling the update method from Updatable interface
      */
     private void updater() {
+        while (this.emergencyStopActivated == false) {
+            for (Updatable process : processes) {
+                if (this.emergencyStop.isPressed()) {
+                    this.emergencyStopActivated = true;
+                    break;
         while (true) {
             if (this.emergencyStopActivated == false) {
                 for (Updatable process : processes) {
@@ -136,6 +161,66 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
     }
 
     /**
+     * This method is called when the distance from the ultrasonic sensor is too little
+     */
+    public void onDistanceDetectionUpdate(boolean hasObstacle) {
+        if (this.hasObstacle == false && hasObstacle == true) {
+            this.lastHeading = this.movement.getHeading();
+        }
+
+        if (this.hasObstacle == true && hasObstacle == false) {
+           switch (this.lastHeading) {
+               case FORWARD:
+                   this.movement.forward();
+                   break;
+               case BACKWARD:
+                   this.movement.backward();
+                   break;
+               case LEFT:
+                   this.movement.turnLeft();
+                   break;
+               case RIGHT:
+                   this.movement.turnRight();
+                   break;
+               case NEUTRAL:
+                   this.movement.neutral();
+                   break;
+           }
+        }
+
+        this.hasObstacle = hasObstacle;
+    }
+
+    /**
+     * This method moves the robot towards the side the user told it to with the remote
+     */
+    public void onInfraredCommandUpdate(int signal) {
+        if (this.controlOwner != ControlOwner.Remote) {
+            System.out.println("Remote took control!");
+            this.controlOwner = ControlOwner.Remote;
+        }
+
+        if (signal == Config.remoteForward) {
+            this.movement.forward();
+        } else if (signal == Config.remoteBackward) {
+            this.movement.backward();
+        } else if (signal == Config.remoteRight) {
+            this.movement.turnRight();
+        } else if (signal == Config.remoteLeft) {
+            this.movement.turnLeft();
+        } else if (signal == Config.remoteNeutral) {
+            this.movement.neutral();
+        } else if (signal == Config.remoteEmergencyStop) {
+            this.emergencyStopActivated = true;
+        } else if (signal == Config.remoteControlTransfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
+        } else if (signal == Config.remoteGripper) {
+            this.gripper.toggle();
+        }
+    }
+
+    /**
      * Callback that gets called when the vehicle direction changes.
      *
      * @param heading - The direction where the vehicle is heading to
@@ -144,14 +229,18 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
             this.drivingNotification.stop();
-        } else {
-            this.blinkers.stop();
 
+        } else if (heading == Direction.FORWARD || heading == Direction.BACKWARD) {
+            this.blinkers.stop();
+            this.drivinglights.start(heading);
             if (heading == Direction.BACKWARD) {
                 this.drivingNotification.start();
             } else {
                 this.drivingNotification.stop();
             }
+
+        } else {
+            this.blinkers.stop();
         }
     }
 
@@ -168,6 +257,59 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
                 break;
             case RIGHT:
                 this.movement.setManoeuvre(Manoeuvre.RIGHT);
+                break;
+        }
+    }
+
+    /**
+     * Callbakc that gets called when the vehicle detects Bluetooth
+     * @param data Which ASCII Number is given
+     */
+    public void onWirelessUpdate(int data) {
+        if (this.controlOwner != ControlOwner.Wireless) {
+            System.out.println("Wireless took control!");
+            this.controlOwner = ControlOwner.Wireless;
+        }
+
+        if (data == WirelessConfig.backward) {
+            this.movement.backward();
+        } else if (data == WirelessConfig.left) {
+            this.movement.turnLeft();
+        } else if (data == WirelessConfig.right) {
+            this.movement.turnRight();
+        } else if (data == WirelessConfig.forward) {
+            this.movement.forward();
+        } else if (data == WirelessConfig.stop) {
+            this.movement.neutral();
+        } else if (data == WirelessConfig.transfer) {
+            System.out.println("Linefollower was given control!");
+            this.controlOwner = ControlOwner.Line;
+        } else if (data == WirelessConfig.gripper) {
+            this.gripper.toggle();
+        }
+    }
+
+    /**
+     * Callback that gets called when the vehicle detects a line.
+     * @param lineDetection
+     */
+    public void onLineDetectionUpdate(LineDirection lineDetection) {
+        if (this.controlOwner != ControlOwner.Line) {
+            return;
+        }
+
+        switch (lineDetection) {
+            case FORWARD:
+                this.movement.forward();
+                break;
+            case LEFT:
+                this.movement.turnLeft();
+                break;
+            case RIGHT:
+                this.movement.turnRight();
+                break;
+            case STOP:
+                this.movement.neutral();
                 break;
         }
     }
