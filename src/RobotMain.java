@@ -62,7 +62,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
      */
     private void updater() {
         while (true) {
-            if (this.emergencyStopActivated == false && !this.emergencyStop.isPressed()) {
+            if (this.emergencyStopActivated == false && this.emergencyStop.isPressed() == false) {
                 if (this.emergencyStop.isPressed()) {
                     this.movement.neutral();
                     this.emergencyStopActivated = true;
@@ -96,8 +96,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater {
             }
         }
     }
-
-
 
     /**
      * Stops all systems in the case of emergency
