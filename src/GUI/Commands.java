@@ -11,6 +11,7 @@ import TI.SerialConnection;
 
 public class Commands {
     private static final String PORT = "COM4";
+    private SerialPort serialPort = new SerialPort(PORT);
     //Bluetooth bluetooth = new Bluetooth();
 
 //    public void forwardButton() {
@@ -19,30 +20,60 @@ public class Commands {
 
     public void openPort() {
 
-    }
-
-    public void closePort() {
-        
-    }
-
-
-    public void forwardbutton() {
-
-        SerialPort serialPort = new SerialPort(PORT);
         try {
-            System.out.println(serialPort.openPort()); // Open the serial connection
+            serialPort.openPort(); // Open the serial connection
             serialPort.setParams(SerialPort.BAUDRATE_115200,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
-            serialPort.writeString("w");
-            //Boebot doesn't return
-//            byte[] buffer = serialPort.readBytes(10); // Fixed buffer length
-//            for (int i = 0; i < 10; i++)
-//                System.out.print(buffer[i] + "-");
-            //Needs to be seperated
-            //serialPort.closePort();
         } catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closePort() {
+        try {
+            serialPort.closePort();
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void forwardbutton() {
+        try {
+            serialPort.writeString("w");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void leftButton() {
+        try {
+            serialPort.writeString("a");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void rightButton() {
+        try {
+            serialPort.writeString("d");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void backwardButton() {
+        try {
+            serialPort.writeString("s");
+        }
+        catch (SerialPortException e) {
             e.printStackTrace();
         }
     }

@@ -20,6 +20,7 @@ public class Layout extends Application {
     public void start(Stage stage) {
 
         Commands commands = new Commands();
+        commands.openPort();
 
         GridPane pane = new GridPane();
         BorderPane borderPane = new BorderPane();
@@ -32,30 +33,28 @@ public class Layout extends Application {
         });
 
         Button left = new Button("<" );
+        left.setOnAction(movingLeft -> {
+            commands.leftButton();
+        });
+
         Button right = new Button(">");
+        right.setOnAction(movingRight -> {
+            commands.rightButton();
+        });
+
         Button backward = new Button("|");
+        backward.setOnAction(movingBackward -> {
+            commands.backwardButton();
+        });
 
 
+        pane.add(forward, 10, 10);
 
-        pane.add(forward, 2, 1);
+        pane.add(left, 9, 11);
 
+        pane.add(right, 11, 11);
 
-        pane.add(left, 1, 2);
-
-
-        pane.add(right, 3, 2);
-
-
-        pane.add(backward, 2, 3);
-
-
-
-        //borderPane.setCenter(new Text);
-
-
-
-//        Button button = new Button(new Text("hello"));
-
+        pane.add(backward, 10, 12);
 
 
         Scene scene = new Scene(pane);
@@ -66,6 +65,7 @@ public class Layout extends Application {
 
     public static void main() {
         launch(Layout.class);
+
     }
 }
 
