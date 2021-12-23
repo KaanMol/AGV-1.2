@@ -1,9 +1,11 @@
+import GUI.Layout;
 import TI.BoeBot;
 import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
 import interfaces.*;
+import javafx.stage.Stage;
 import vehicle.*;
 
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Button startButton;
 
     ControlOwner controlOwner = ControlOwner.Line;
+
+    //For the gui
+    private Layout layout;
 
     public static void main(String[] args) {
         new RobotMain();
