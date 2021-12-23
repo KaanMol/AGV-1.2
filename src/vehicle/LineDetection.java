@@ -13,7 +13,6 @@ public class LineDetection implements Updatable {
     private LineFollower leftLineFollower;
     private LineFollower middleLineFollower;
     private LineFollower rightLineFollower;
-    private Timer timer = new Timer(250);
 
     /**
      * Constructor
@@ -24,16 +23,12 @@ public class LineDetection implements Updatable {
         this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin) ;
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
-        this.timer.mark();
     }
 
     /**
      * Checks which linefollowers are on line, and calls the callback attribute with the status.
      */
     public void update() {
-        if (this.timer.timeout() == false) {
-            return;
-        }
         if (middleLineFollower.isOnLine() == false
                 && leftLineFollower.isOnLine() == false
                 && rightLineFollower.isOnLine() == false) {
@@ -47,6 +42,5 @@ public class LineDetection implements Updatable {
         } else {
             this.callback.onLineDetectionUpdate(LineDirection.FORWARD);
         }
-        timer.mark();
     }
 }
