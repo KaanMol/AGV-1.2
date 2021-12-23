@@ -85,6 +85,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      */
     private void updater() {
         while (true) {
+            this.remote.update();
             BoeBot.wait(1);
             if (this.emergencyStopActivated == false) {
                 for (Updatable process : processes) {
@@ -96,6 +97,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                     }
                     if (this.emergencyStopActivated) {
                         this.movement.neutral();
+                        break;
                     }
                     process.update();
                 }
@@ -144,12 +146,17 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (signal == Config.remoteNeutral) {
             this.movement.neutral();
         } else if (signal == Config.remoteEmergencyStop) {
+            this.movement.neutral();
             this.emergencyStopActivated = true;
         } else if (signal == Config.remoteControlTransfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
         } else if (signal == Config.remoteGripper) {
             this.gripper.toggle();
+        }
+        else if(signal == Config.remoteContinue){
+            this.movement.forward();
+            this.emergencyStopActivated = false;
         }
     }
 

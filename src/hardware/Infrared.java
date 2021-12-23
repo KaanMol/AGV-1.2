@@ -23,7 +23,7 @@ public class Infrared {
                     output = output | (1 << i);
                 }
             }
-
+            System.out.println(output);
             return output;
         } else {
             return -1;
