@@ -119,9 +119,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * This method is called when the distance from the ultrasonic sensor is too little
      */
     public void onDistanceDetectionUpdate(boolean hasObstacle) {
-        if (hasObstacle) {
+        if (hasObstacle && this.movement.getHeading() == Direction.BACKWARD) {
             this.movement.neutral();
         }
+
     }
 
     /**

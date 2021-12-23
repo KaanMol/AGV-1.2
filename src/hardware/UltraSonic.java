@@ -20,6 +20,8 @@ public class  UltraSonic {
         BoeBot.digitalWrite(outputPin, true);
         BoeBot.digitalWrite(outputPin, false);
         int pulse = BoeBot.pulseIn(inputPin, true, 10000);
+        pulse = pulse / 58;
+        System.out.println(pulse);
         return pulse;
     }
 }

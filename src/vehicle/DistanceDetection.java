@@ -24,7 +24,7 @@ public class DistanceDetection implements Updatable {
 
         int distance = ultraSonic.Readings();
         boolean hasObstacle = false;
-        if (distance <= 750 && distance > 150) {
+        if (distance <= 15 && distance > 1) {
             hasObstacle = true;
         }
 
