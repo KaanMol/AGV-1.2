@@ -2,7 +2,6 @@ package vehicle;
 
 import TI.Timer;
 import enums.Direction;
-import enums.LineDirection;
 import enums.Manoeuvre;
 import hardware.Motor;
 import interfaces.MovementUpdater;
@@ -19,6 +18,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private Manoeuvre manoeuvre = Manoeuvre.NONE;
     private Timer timer;
     private Timer accelerationTimer;
+    private boolean isDecelerating = false;
 
     private int step = 0;
 
@@ -60,6 +60,10 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.setAcceleratingDirection(Direction.BACKWARD, 0, 0);
     }
 
+    public void brake() {
+        this.setDeceleratingDirection();
+    }
+
     /**
      * Sets the direction of the vehicle to right
      */
@@ -82,6 +86,11 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.rightServo.setSpeed(1500);
         this.leftServo.setSpeed(1500);
         this.setDirection(Direction.NEUTRAL, 0, 0);
+    }
+
+    private void setDeceleratingDirection() {
+        this.isDecelerating = true;
+        this.accelerationTimer.mark();
     }
 
     /**
@@ -176,30 +185,27 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
         if (this.currentHeading == Direction.FORWARD || this.currentHeading == Direction.BACKWARD) {
             if (this.accelerationTimer.timeout()) {
-
-                if (this.leftMotorSpeed < 100 && this.rightMotorSpeed > -100) {
+                if (this.leftMotorSpeed < 100 && this.rightMotorSpeed > -100 && this.isDecelerating == false) {
                     this.leftMotorSpeed += Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;
-                }
-            }
-        }
-        else if (this.currentHeading == Direction.NEUTRAL) {
-            if (this.accelerationTimer.timeout()) {
-                if (this.leftMotorSpeed > 100 && this.rightMotorSpeed < -100) {
+                } else if (this.leftMotorSpeed != 0 && this.rightMotorSpeed != 0 && this.isDecelerating == true) {
                     this.leftMotorSpeed -= Config.accelerationStep;
-                    this.rightMotorSpeed -= Config.accelerationStep;
+                    this.rightMotorSpeed += Config.accelerationStep;
+                } else if (this.leftMotorSpeed == 0 && this.rightMotorSpeed == 0 && this.isDecelerating == true) {
+                    this.isDecelerating = false;
+                    this.currentHeading = Direction.NEUTRAL;
                 }
             }
         }
 
         if (this.getHeading() == Direction.BACKWARD) {
-
             this.rightServo.setSpeed(1500 + (this.rightMotorSpeed * -1));
             this.leftServo.setSpeed(1500 + (this.leftMotorSpeed * -1));
         } else {
             this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
             this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
         }
+
         this.callback.onMovementUpdate(this.getHeading());
     }
 }
