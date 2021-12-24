@@ -27,35 +27,61 @@ public class Layout extends Application {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        Button forward = new Button("^" );
+        Button forward = new Button("↑" );
+        forward.setPrefSize(60, 60);
         forward.setOnAction(movingForward -> {
             commands.forwardbutton();
         });
 
-        Button left = new Button("<" );
+        Button left = new Button("←" );
+        left.setPrefSize(60, 60);
         left.setOnAction(movingLeft -> {
             commands.leftButton();
         });
 
-        Button right = new Button(">");
+        Button right = new Button("→");
+        right.setPrefSize(60, 60);
         right.setOnAction(movingRight -> {
             commands.rightButton();
         });
 
-        Button backward = new Button("|");
+        Button backward = new Button("↓");
+        backward.setPrefSize(60, 60);
         backward.setOnAction(movingBackward -> {
             commands.backwardButton();
         });
 
+        Button neutral = new Button("o");
+        neutral.setPrefSize(60, 60);
+        backward.setOnAction(notMoving -> {
+            commands.neutralButton();
+        });
 
-        pane.add(forward, 10, 10);
+        Button emergencyStop = new Button("Noodstop");
+        emergencyStop.setPrefSize(150, 60);
+        emergencyStop.setOnAction(immediateStop -> {
+            commands.emergencyButton();
+        });
 
-        pane.add(left, 9, 11);
+        Button gripper = new Button("Gripper");
+        gripper.setPrefSize(100, 60);
+        gripper.setOnAction(gripperMove -> {
+            commands.gripperButton();
+        });
 
-        pane.add(right, 11, 11);
+        pane.add(forward, 8, 72);
 
-        pane.add(backward, 10, 12);
+        pane.add(left, 5, 75);
 
+        pane.add(right, 11, 75);
+
+        pane.add(backward, 8, 78);
+
+        pane.add(neutral, 8, 75);
+
+        pane.add(emergencyStop, 16, 75);
+
+        pane.add(gripper, 135, 75);
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);

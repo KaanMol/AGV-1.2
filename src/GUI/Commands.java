@@ -77,4 +77,35 @@ public class Commands {
             e.printStackTrace();
         }
     }
+
+    public void neutralButton() {
+        try {
+            //writing neutral character
+            serialPort.writeString("s");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void emergencyButton() {
+        try {
+            //writing emergencyStop character
+            serialPort.writeString("s");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void gripperButton() {
+        try {
+            //writing gripper character
+            serialPort.writeString("s");
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
