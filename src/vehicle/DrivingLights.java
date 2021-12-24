@@ -14,7 +14,6 @@ public class DrivingLights {
     private Led bottomRight;
     private Led bottomMiddle;
     private Direction direction;
-    private Color color;
     private boolean frontLightsOn;
     private boolean backLightsOn;
     private boolean brakeLightsOn;
@@ -40,7 +39,7 @@ public class DrivingLights {
      * @param direction - The direction that the Bot is currently heading.
      */
     public void start(Direction direction) {
-        if(this.direction == direction){
+        if (this.direction == direction) {
             return;
         }
         this.direction = direction;
@@ -52,7 +51,7 @@ public class DrivingLights {
      */
     public void on() {
         if (this.direction == Direction.FORWARD) {
-            if(this.backLightsOn == true || this.brakeLightsOn == true) {
+            if (this.backLightsOn == true || this.brakeLightsOn == true) {
                 this.off();
             }
             topRight.setColor(Color.WHITE);
@@ -61,7 +60,7 @@ public class DrivingLights {
             this.frontLightsOn = true;
         }
         else if (this.direction == Direction.BACKWARD) {
-            if(this.frontLightsOn == true || this.brakeLightsOn == true) {
+            if (this.frontLightsOn == true || this.brakeLightsOn == true) {
                 this.off();
             }
             bottomRight.setColor(Color.getHSBColor(0, 1, 0.1f));
@@ -70,7 +69,7 @@ public class DrivingLights {
             this.backLightsOn = true;
         }
         else if (this.direction == Direction.NEUTRAL) {
-            if(this.frontLightsOn == true || this.backLightsOn == true) {
+            if (this.frontLightsOn == true || this.backLightsOn == true) {
                 this.off();
             }
             bottomRight.setColor(Color.RED);
