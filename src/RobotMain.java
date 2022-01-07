@@ -246,6 +246,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             case STOP:
                 this.movement.neutral();
                 this.drivingNotification.start();
+                this.drivinglights.lineLights();
                 break;
         }
     }

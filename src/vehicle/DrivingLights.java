@@ -1,9 +1,9 @@
 package vehicle;
 
+import TI.Timer;
 import common.Config;
 import enums.Direction;
 import hardware.Led;
-
 import java.awt.*;
 
 public class DrivingLights {
@@ -17,6 +17,8 @@ public class DrivingLights {
     private boolean frontLightsOn;
     private boolean backLightsOn;
     private boolean brakeLightsOn;
+    private Timer timer = new Timer(500);
+    private boolean isOn = false;
 
     /**
      * Initializes the LED's and direction.
@@ -76,6 +78,25 @@ public class DrivingLights {
             bottomLeft.setColor(Color.RED);
             bottomMiddle.setColor(Color.RED);
             this.brakeLightsOn = true;
+        }
+    }
+
+    public void lineLights() {
+
+        if (this.isOn == false) {
+            topLeft.setColor(Color.red);
+            topRight.setColor(Color.red);
+            bottomLeft.setColor(Color.red);
+            bottomRight.setColor(Color.red);
+            this.isOn = !this.isOn;
+        }
+        if (timer.timeout() && this.isOn == true) {
+            topLeft.setColor(Color.black);
+            topRight.setColor(Color.black);
+            bottomLeft.setColor(Color.black);
+            bottomRight.setColor(Color.black);
+            this.isOn = !this.isOn;
+            this.timer.mark();
         }
     }
 
