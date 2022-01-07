@@ -1,9 +1,6 @@
 package hardware;
 
-import TI.BoeBot;
 import TI.PWM;
-import TI.PinMode;
-import common.Config;
 
 public class Buzzer {
     private PWM buzzer;
@@ -12,8 +9,8 @@ public class Buzzer {
      *
      * @param outputPin - The pin which is used for the output of the circuit
      */
-    public Buzzer(int outputPin) {
-        this.buzzer = new PWM(outputPin, Config.buzzerDutyCycle);
+    public Buzzer(int outputPin, int dutyCycle) {
+        this.buzzer = new PWM(outputPin, dutyCycle);
     }
 
     /**

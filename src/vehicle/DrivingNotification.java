@@ -1,7 +1,7 @@
 package vehicle;
 
 import TI.Timer;
-import common.Config;
+import configuration.Config;
 import hardware.Buzzer;
 import interfaces.Updatable;
 
@@ -27,7 +27,7 @@ public class DrivingNotification implements Updatable {
         this.isOn = false;
         this.isSet = false;
         this.timer = new Timer(0);
-        this.buzzer = new Buzzer(Config.buzzerPin);
+        this.buzzer = new Buzzer(configuration.Buzzer.OUTPUT_PIN, configuration.Buzzer.DUTY_CYCLE);
     }
 
     /**

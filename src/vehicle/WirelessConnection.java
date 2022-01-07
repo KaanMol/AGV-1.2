@@ -1,5 +1,6 @@
 package vehicle;
 
+import configuration.Wireless;
 import hardware.Bluetooth;
 import interfaces.Updatable;
 import interfaces.WirelessUpdater;
@@ -15,7 +16,7 @@ public class WirelessConnection implements Updatable {
      */
     public WirelessConnection(WirelessUpdater callback) {
         this.callback = callback;
-        this.bluetooth =  new Bluetooth();
+        this.bluetooth =  new Bluetooth(Wireless.BAUDRATE);
     }
 
     /**

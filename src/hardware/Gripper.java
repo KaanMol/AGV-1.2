@@ -9,7 +9,7 @@ public class Gripper {
         this.gripper = new Servo(outputPin);
     }
 
-    public void grab(int targetspeed) {
-        this.gripper.update(targetspeed);
+    public void grab(int targetSpeed) {
+        this.gripper.update(targetSpeed);
     }
 }

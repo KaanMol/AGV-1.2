@@ -14,7 +14,7 @@ public class Remote implements Updatable {
     }
 
     public void initialize() {
-        infrared = new Infrared();
+        infrared = new Infrared(configuration.Remote.INFRA_RED_PIN);
     }
 
     public void update() {

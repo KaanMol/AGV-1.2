@@ -1,7 +1,6 @@
 package vehicle;
 
 import TI.Timer;
-import common.Config;
 import enums.Direction;
 import hardware.Led;
 import java.awt.*;

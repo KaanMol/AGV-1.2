@@ -1,13 +1,12 @@
 package hardware;
 
 import TI.SerialConnection;
-import common.Config;
 
 public class Bluetooth {
     private SerialConnection serial;
 
-    public Bluetooth() {
-        this.serial = new SerialConnection(Config.baudrate);
+    public Bluetooth(int baudRate) {
+        this.serial = new SerialConnection(baudRate);
     }
 
     /**

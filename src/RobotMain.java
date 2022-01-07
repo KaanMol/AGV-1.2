@@ -1,6 +1,6 @@
 import TI.BoeBot;
-import common.Config;
-import common.WirelessConfig;
+import configuration.Config;
+import configuration.Wireless;
 import enums.*;
 import hardware.Button;
 import interfaces.*;
@@ -204,20 +204,22 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.controlOwner = ControlOwner.Wireless;
         }
 
-        if (data == WirelessConfig.backward) {
+        if (data == Wireless.backward) {
             this.movement.backward();
-        } else if (data == WirelessConfig.left) {
+        } else if (data == Wireless.left) {
             this.movement.turnLeft();
-        } else if (data == WirelessConfig.right) {
+        } else if (data == Wireless.right) {
             this.movement.turnRight();
-        } else if (data == WirelessConfig.forward) {
+        } else if (data == Wireless.forward) {
             this.movement.forward();
-        } else if (data == WirelessConfig.stop) {
+        } else if (data == Wireless.stop) {
             this.movement.neutral();
-        } else if (data == WirelessConfig.transfer) {
+        } else if (data == Wireless.transfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
-        } else if (data == WirelessConfig.gripper) {
+        } else if (data == Wireless.gripper) {
+            this.gripper.toggle();
+        } else if (data == Wireless.brake) {
             this.gripper.toggle();
         }
     }

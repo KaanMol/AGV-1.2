@@ -17,23 +17,6 @@ public class Whisker {
     }
 
     /**
-     *
-     * @return The pin that the whisker is connected to
-     */
-    public int getPinNum() {
-        return this.inputPin;
-    }
-
-    /**
-     *
-     * @param inputPin The pin that the whisker is connected to
-     */
-    public void setPinMode(int inputPin) {
-        BoeBot.setMode(inputPin, PinMode.Input);
-        this.inputPin = inputPin;
-    }
-
-    /**
      * Checks if whisker is pressed
      * @return state of parameter
      */

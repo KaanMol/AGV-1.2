@@ -5,7 +5,7 @@ import enums.LineDirection;
 import hardware.LineFollower;
 import interfaces.LineDetectionUpdater;
 import interfaces.Updatable;
-import common.Config;
+import configuration.Config;
 
 public class LineDetection implements Updatable {
 
@@ -20,9 +20,9 @@ public class LineDetection implements Updatable {
      */
     public LineDetection(LineDetectionUpdater callback) {
         this.callback = callback;
-        this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin) ;
-        this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
-        this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
+        this.leftLineFollower = new LineFollower(configuration.LineFollower.LEFT_INPUT_PIN) ;
+        this.middleLineFollower = new LineFollower(configuration.LineFollower.MIDDLE_INPUT_PIN);
+        this.rightLineFollower = new LineFollower(configuration.LineFollower.RIGHT_INPUT_PIN);
     }
 
     /**

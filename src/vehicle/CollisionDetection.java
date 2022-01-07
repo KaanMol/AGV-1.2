@@ -1,6 +1,6 @@
 package vehicle;
 
-import common.Config;
+import configuration.Config;
 import enums.WhiskerStatus;
 import hardware.Whisker;
 import interfaces.CollisionDetectionUpdater;
@@ -17,8 +17,8 @@ public class CollisionDetection implements Updatable {
      */
     public CollisionDetection(CollisionDetectionUpdater callback) {
         this.callback = callback;
-        this.leftWhisker = new Whisker(Config.leftWhiskerPin);
-        this.rightWhisker = new Whisker(Config.rightWhiskerPin);
+        this.leftWhisker = new Whisker(configuration.Whisker.LEFT_PIN);
+        this.rightWhisker = new Whisker(configuration.Whisker.RIGHT_PIN);
     }
 
     /**

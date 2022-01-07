@@ -1,7 +1,7 @@
 package vehicle;
 
 import TI.Timer;
-import common.Config;
+import configuration.Config;
 import interfaces.Updatable;
 
 public class Gripper implements Updatable {
@@ -11,7 +11,7 @@ public class Gripper implements Updatable {
     int currentSpeed = 1750;
 
     public Gripper() {
-        this.gripper = new hardware.Gripper(Config.gripperPin);
+        this.gripper = new hardware.Gripper(configuration.Gripper.OUTPUT_PIN);
         this.timer = new Timer(25);
     }
 

@@ -2,12 +2,11 @@ package vehicle;
 
 import TI.Timer;
 import enums.Direction;
-import enums.LineDirection;
 import enums.Manoeuvre;
 import hardware.Motor;
 import interfaces.MovementUpdater;
 import interfaces.Updatable;
-import common.Config;
+import configuration.Config;
 
 public class Movement implements interfaces.hardware.Movement, Updatable {
     private Motor rightServo;
@@ -19,6 +18,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private Manoeuvre manoeuvre = Manoeuvre.NONE;
     private Timer timer;
     private Timer accelerationTimer;
+    private final int accelerationStep = configuration.Movement.accelerationStep;
 
     private int step = 0;
 
@@ -30,9 +30,9 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     public Movement(MovementUpdater callback) {
         this.callback = callback;
         this.timer = new Timer(0);
-        this.accelerationTimer = new Timer(Config.accelerationSpeedStep);
-        this.rightServo = new Motor(Config.rightServoPin);
-        this.leftServo = new Motor(Config.leftServoPin);
+        this.accelerationTimer = new Timer(configuration.Movement.accelerationSpeedStep);
+        this.rightServo = new Motor(configuration.Movement.RIGHT_SERVO_PIN);
+        this.leftServo = new Motor(configuration.Movement.LEFT_SERVO_PIN);
     }
 
     /**
@@ -178,16 +178,16 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
             if (this.accelerationTimer.timeout()) {
 
                 if (this.leftMotorSpeed < 100 && this.rightMotorSpeed > -100) {
-                    this.leftMotorSpeed += Config.accelerationStep;
-                    this.rightMotorSpeed -= Config.accelerationStep;
+                    this.leftMotorSpeed += this.accelerationStep;
+                    this.rightMotorSpeed -= this.accelerationStep;
                 }
             }
         }
         else if (this.currentHeading == Direction.NEUTRAL) {
             if (this.accelerationTimer.timeout()) {
                 if (this.leftMotorSpeed > 100 && this.rightMotorSpeed < -100) {
-                    this.leftMotorSpeed -= Config.accelerationStep;
-                    this.rightMotorSpeed -= Config.accelerationStep;
+                    this.leftMotorSpeed -= this.accelerationStep;
+                    this.rightMotorSpeed -= this.accelerationStep;
                 }
             }
         }

@@ -1,29 +1,29 @@
 package vehicle;
 
 import TI.Timer;
-import configuration.Config;
-import configuration.Movement;
 import enums.Direction;
 import hardware.Led;
 import interfaces.Updatable;
 import java.awt.*;
 
-public class Blinkers implements Updatable {
+public class Lights implements Updatable {
     private Led topLeft;
+    private Led topMiddle;
     private Led topRight;
     private Led bottomLeft;
+    private Led bottomMiddle;
     private Led bottomRight;
 
     private Timer timer;
     private boolean isOn;
     private boolean isSet;
 
-    private Direction direction;
+    private Direction blinkDirection;
 
     /**
      * Constructor
      */
-    public Blinkers() {
+    public Lights() {
         this.initialize();
     }
 
@@ -32,15 +32,17 @@ public class Blinkers implements Updatable {
      */
     public void initialize() {
         this.topLeft = new Led(Led.topLeft);
+        this.topMiddle = new Led(Led.topMiddle);
         this.topRight = new Led(Led.topRight);
         this.bottomLeft = new Led(Led.bottomLeft);
+        this.bottomMiddle = new Led(Led.bottomMiddle);
         this.bottomRight = new Led(Led.bottomRight);
 
         this.timer = new Timer(0);
         this.isOn = false;
         this.isSet = false;
 
-        this.direction = Movement.DEFAULT_DIRECTION;
+        this.blinkDirection = configuration.Movement.DEFAULT_DIRECTION;
 
         this.off();
     }
@@ -49,17 +51,41 @@ public class Blinkers implements Updatable {
      * Starts the blinker cycle
      * @param direction - The direction the blinkers should turn on
      */
-    public void start(Direction direction) {
-        if (this.direction == direction) {
+    public void blink(Direction direction) {
+        if (this.blinkDirection == direction) {
             return;
         }
 
-        this.direction = direction;
+        this.blinkDirection = direction;
         this.isOn = true;
         this.isSet = true;
         this.timer.setInterval(500);
 
         this.on();
+    }
+
+    public void emergencyLights() {
+        this.topLeft.setColor(Color.RED);
+        this.topMiddle.setColor(Color.RED);
+        this.topRight.setColor(Color.RED);
+        this.bottomLeft.setColor(Color.RED);
+        this.topMiddle.setColor(Color.RED);
+        this.topRight.setColor(Color.RED);
+
+        this.isOn = true;
+        this.isSet = true;
+        this.timer.setInterval(500);
+    }
+
+    public void drivingLights() {
+        this.off();
+
+        this.topLeft.setColor(Color.WHITE);
+        this.topMiddle.setColor(Color.WHITE);
+        this.topRight.setColor(Color.WHITE);
+        this.bottomLeft.setColor(Color.RED);
+        this.topMiddle.setColor(Color.RED);
+        this.topRight.setColor(Color.RED);
     }
 
     /**
@@ -71,7 +97,7 @@ public class Blinkers implements Updatable {
         }
         this.isOn = false;
         this.isSet = false;
-        this.direction = Direction.NEUTRAL;
+        this.blinkDirection = Direction.NEUTRAL;
         this.off();
     }
 
@@ -80,7 +106,7 @@ public class Blinkers implements Updatable {
      * This uses the attribute direction
      */
     private void on() {
-        if (this.direction == Direction.LEFT) {
+        if (this.blinkDirection == Direction.LEFT) {
             this.topLeft.setColor(Color.YELLOW);
             this.bottomLeft.setColor(Color.YELLOW);
         } else {
@@ -93,7 +119,6 @@ public class Blinkers implements Updatable {
      * Turns off all the blinkers
      */
     private void off() {
-
         this.topLeft.off();
         this.topRight.off();
         this.bottomLeft.off();

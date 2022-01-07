@@ -1,7 +1,8 @@
 package vehicle;
 
 import TI.Timer;
-import common.Config;
+import configuration.Config;
+import configuration.DistanceSensor;
 import hardware.UltraSonic;
 import interfaces.DistanceDetectionUpdater;
 import interfaces.Updatable;
@@ -14,7 +15,7 @@ public class DistanceDetection implements Updatable {
     public DistanceDetection(DistanceDetectionUpdater callback) {
         this.callback = callback;
         this.timer = new Timer(250);
-        this.ultraSonic = new UltraSonic(Config.UltraSonicInputPin, Config.UltraSonicOutputPin);
+        this.ultraSonic = new UltraSonic(DistanceSensor.INPUT_PIN, DistanceSensor.OUTPUT_PIN);
     }
 
     public void update() {
