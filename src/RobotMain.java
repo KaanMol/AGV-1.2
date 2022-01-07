@@ -133,22 +133,22 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.controlOwner = ControlOwner.Remote;
         }
 
-        if (signal == Config.remoteForward) {
+        if (signal == configuration.Remote.FORWARD_COMMAND) {
             this.movement.forward();
-        } else if (signal == Config.remoteBackward) {
+        } else if (signal == configuration.Remote.BACKWARD_COMMAND) {
             this.movement.backward();
-        } else if (signal == Config.remoteRight) {
+        } else if (signal == configuration.Remote.RIGHT_COMMAND) {
             this.movement.turnRight();
-        } else if (signal == Config.remoteLeft) {
+        } else if (signal == configuration.Remote.LEFT_COMMAND) {
             this.movement.turnLeft();
-        } else if (signal == Config.remoteNeutral) {
+        } else if (signal == configuration.Remote.NEUTRAL_COMMAND) {
             this.movement.neutral();
-        } else if (signal == Config.remoteEmergencyStop) {
+        } else if (signal == configuration.Remote.EMERGENCY_STOP_COMMAND) {
             this.emergencyStopActivated = true;
-        } else if (signal == Config.remoteControlTransfer) {
-            System.out.println("Linefollower was given control!");
+        } else if (signal == configuration.Remote.TRANSFER_CONTROL_COMMAND) {
+            System.out.println("Line follower was given control!");
             this.controlOwner = ControlOwner.Line;
-        } else if (signal == Config.remoteGripper) {
+        } else if (signal == configuration.Remote.GRIPPER_COMMAND) {
             this.gripper.toggle();
         }
     }
@@ -195,7 +195,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     }
 
     /**
-     * Callbakc that gets called when the vehicle detects Bluetooth
+     * Callback that gets called when the vehicle detects Bluetooth
      * @param data Which ASCII Number is given
      */
     public void onWirelessUpdate(int data) {
