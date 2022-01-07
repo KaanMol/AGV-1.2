@@ -90,6 +90,12 @@ public class Layout extends Application {
             route.add(Direction.PUTDOWN);
         });
 
+        Button startRoute = new Button("Start route");
+        startRoute.setPrefSize(100, 60);
+        startRoute.setOnAction(gripperMove -> {
+
+        });
+
         Button switchScene = new Button("Route plannen");
         switchScene.setPrefSize(300, 60);
         switchScene.setOnAction(swithcingScene -> {
@@ -117,6 +123,8 @@ public class Layout extends Application {
 
         pane.add(gripperIn, 90, 75);
         pane.add(gripperOut, 95, 75);
+
+        pane.add(startRoute, 0, 75);
 
         pane.add(switchScene, 30, 0);
         pane.add(switchScene2, 0, 0);
