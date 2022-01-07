@@ -46,7 +46,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      */
     private void initialize() {
         this.processes = new ArrayList<>();
-        this.emergencyStop = new Button(Config.emergencyStopButtonPin);
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
@@ -77,6 +76,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.distanceDetection = new DistanceDetection(this);
         this.processes.add(this.distanceDetection);
+
+        this.emergencyStop = new Button(Config.emergencyStopButtonPin);
+
         this.startButton = new Button(0);
     }
 
@@ -163,7 +165,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.blinkers.start(heading);
             this.drivingNotification.stop();
 
-        } else if (heading == Direction.FORWARD || heading == Direction.BACKWARD) {
+        } else if (heading == Direction.FORWARD || heading == Direction.BACKWARD || heading == Direction.NEUTRAL) {
             this.blinkers.stop();
             this.drivinglights.start(heading);
             if (heading == Direction.BACKWARD) {
@@ -244,6 +246,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             case STOP:
                 this.movement.neutral();
                 this.drivingNotification.start();
+                this.drivinglights.lineLights();
                 break;
         }
     }
