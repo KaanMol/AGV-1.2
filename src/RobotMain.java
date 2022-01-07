@@ -134,6 +134,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             System.out.println("Remote took control!");
             this.controlOwner = ControlOwner.Remote;
         }
+        System.out.println(signal);
 
         if (signal == Config.remoteForward) {
             this.movement.forward();
@@ -144,7 +145,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (signal == Config.remoteLeft) {
             this.movement.turnLeft();
         } else if (signal == Config.remoteNeutral) {
-            this.movement.neutral();
+            this.movement.brake();
         } else if (signal == Config.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
         } else if (signal == Config.remoteControlTransfer) {
