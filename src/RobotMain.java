@@ -6,6 +6,7 @@ import hardware.Button;
 import interfaces.*;
 import vehicle.*;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
@@ -25,6 +26,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Gripper gripper;
     private DistanceDetection distanceDetection;
     private Button startButton;
+    private VehicleRoute vehicleRoute;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -248,7 +250,23 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 this.drivingNotification.start();
                 this.drivinglights.lineLights();
                 break;
+            case ALL:
+                this.movement.neutral();
         }
+    }
+
+    public void intersectionhandler(VehicleRoute vehicleRoute) {
+       if (this.lineDetection ==
+        if (vehicleRoute.readFile().equals("Left")) {
+            this.movement.turnLeft();
+        } else if (vehicleRoute.readFile().equals("Right")) {
+            this.movement.turnRight();
+        } else if (vehicleRoute.readFile().equals("Straight")) {
+            this.movement.forward();
+        } else if (vehicleRoute.readFile().equals("Backwards")) {
+            this.movement.forward();
+        } else if (vehicleRoute.readFile().equals("");
+
     }
 
     public void emergencyStop() {

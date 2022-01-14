@@ -16,11 +16,12 @@ public class LineDetection implements Updatable {
 
     /**
      * Constructor
+     *
      * @param callback - Is used to send the state of the linefollowers to
      */
     public LineDetection(LineDetectionUpdater callback) {
         this.callback = callback;
-        this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin) ;
+        this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin);
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
     }
@@ -29,7 +30,11 @@ public class LineDetection implements Updatable {
      * Checks which linefollowers are on line, and calls the callback attribute with the status.
      */
     public void update() {
-        if (middleLineFollower.isOnLine() == false
+        if (leftLineFollower.isOnLine() == true
+                && rightLineFollower.isOnLine() == true) {
+            this.callback.onLineDetectionUpdate(LineDirection.ALL);
+            boolean intersection = true;
+        } else if (middleLineFollower.isOnLine() == false
                 && leftLineFollower.isOnLine() == false
                 && rightLineFollower.isOnLine() == false) {
             this.callback.onLineDetectionUpdate(LineDirection.STOP);
@@ -42,5 +47,6 @@ public class LineDetection implements Updatable {
         } else {
             this.callback.onLineDetectionUpdate(LineDirection.FORWARD);
         }
+
     }
 }
