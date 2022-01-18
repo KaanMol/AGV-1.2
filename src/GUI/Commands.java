@@ -69,19 +69,19 @@ public class Commands {
         }
     }
 
-    public void backwardButton() {
-        try {
-            serialPort.writeString("s");
-        }
-        catch (SerialPortException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void backwardButton() {
+//        try {
+//            serialPort.writeString("s");
+//        }
+//        catch (SerialPortException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void neutralButton() {
         try {
             //writing neutral character
-            serialPort.writeString("s");
+            serialPort.writeString("q");
         }
         catch (SerialPortException e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class Commands {
     public void emergencyButton() {
         try {
             //writing emergencyStop character
-            serialPort.writeString("s");
+            serialPort.writeString("q");
         }
         catch (SerialPortException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class Commands {
     public void gripperButton() {
         try {
             //writing gripper character
-            serialPort.writeString("s");
+            serialPort.writeString("e");
         }
         catch (SerialPortException e) {
             e.printStackTrace();

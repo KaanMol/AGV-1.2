@@ -13,6 +13,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import vehicle.Movement;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,14 +26,13 @@ import java.util.Arrays;
 public class Layout extends Application {
     private Commands commands;
     private ArrayList<String> route;
-    private boolean gripperClosed;
+
 
     @Override
     public void start(Stage stage) {
         this.route = new ArrayList<String>();
-        commands = new Commands();
-        //commands.openPort();
-        gripperClosed = true;
+        this.commands = new Commands();
+        //System.out.println(System.getProperty("user.dir"));
 
         this.controlScene(stage);
     }
@@ -38,7 +42,6 @@ public class Layout extends Application {
     }
 
     public void displayRoute(GridPane pane){
-        //this.routePlanScene(stage);
         int l = 0;
         while (l < route.size()) {
             for (int i = 0; (i <= route.size() / 5); i++) {
@@ -53,7 +56,18 @@ public class Layout extends Application {
         }
     }
 
-    //Gui layout for the route planning page
+    public void image(GridPane pane)throws IOException{
+        FileInputStream inputstream = new FileInputStream("src\\GUI\\image\\Barts_Bakkerij_logo.png");
+        Image image = new Image(inputstream);
+        ImageView view = new ImageView(image);
+        pane.add(view, 2, 0);
+    }
+
+    /**
+     * Displays the page where the user can customize a new route and save it to the boebot
+     *
+     * @param route - Arraylist with the directions the boebot has to follow
+     */
     public void routePlanScene(Stage stage, ArrayList<String> route){
         GridPane pane = new GridPane();
         GridPane routePane = new GridPane();
@@ -61,6 +75,15 @@ public class Layout extends Application {
         pane.setHgap(10);
         pane.setVgap(10);
 
+        try{
+            image(pane);
+        }
+        catch(IOException exception){
+
+        }
+
+
+        //With these buttons the user can add a manouvre to the route
         Button forward = new Button("↑" );
         forward.setPrefSize(60, 60);
         forward.setOnAction(movingForward -> {
@@ -97,12 +120,12 @@ public class Layout extends Application {
             this.routePlanScene(stage, this.route);
         });
 
-        Button emergencyStop = new Button("Noodstop");
-        emergencyStop.setPrefSize(150, 60);
-        emergencyStop.setOnAction(immediateStop -> {
-            commands.emergencyButton();
-
-        });
+//        Button emergencyStop = new Button("Noodstop");
+//        emergencyStop.setPrefSize(150, 60);
+//        emergencyStop.setOnAction(immediateStop -> {
+//            commands.emergencyButton();
+//
+//        });
 
         Button gripperOut = new Button("Gripper open");
         gripperOut.setPrefSize(120, 60);
@@ -118,18 +141,21 @@ public class Layout extends Application {
             this.routePlanScene(stage, this.route);
         });
 
+        //Makes the boebot execute the manouvres in the route
         Button startRoute = new Button("Start route");
         startRoute.setPrefSize(100, 60);
         startRoute.setOnAction(gripperMove -> {
 
         });
 
+        //Saves the route to the boebot
         Button storeRouteButton = new Button("route opslaan");
         storeRouteButton.setPrefSize(120, 60);
         storeRouteButton.setOnAction(storeRoute -> {
 
         });
 
+        //Deletes the last added manouvre from the route
         Button backSpaceButton = new Button("Terug");
         backSpaceButton.setPrefSize(100, 60);
         backSpaceButton.setOnAction(backSpace -> {
@@ -142,22 +168,23 @@ public class Layout extends Application {
             this.routePlanScene(stage, this.route);
         });
 
+        //Switches to the page where the user can control the boebot directly
         Button controlSceneButton = new Button("Besturen");
         controlSceneButton.setMinSize(150, 50);
         controlSceneButton.setOnAction(swithcingScene -> {
             this.controlScene(stage);
         });
 
+
         displayRoute(routePane);
 
-        //pane.add(pane1, 10, 10);
 
         pane.add(forward, 10, 52);
         pane.add(left, 7, 55);
         pane.add(right, 13, 55);
         pane.add(backward, 10, 58);
         pane.add(neutral, 10, 55);
-        pane.add(emergencyStop, 20, 55);
+        //pane.add(emergencyStop, 20, 55);
         pane.add(gripperIn, 14, 55);
         pane.add(gripperOut, 14, 58);
         pane.add(startRoute, 4, 55);
@@ -166,7 +193,9 @@ public class Layout extends Application {
         pane.add(controlSceneButton, 0, 0);
         pane.add(backSpaceButton, 6, 55);
         pane.add(routePane, 0, 25, 30, 20);
+        //pane.add(image(), 10, 10);
 
+        //Sets all the buttons to the page to display them
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.show();
@@ -184,6 +213,13 @@ public class Layout extends Application {
         //BorderPane borderPane = new BorderPane();
         pane.setHgap(10);
         pane.setVgap(10);
+
+        try{
+            image(pane);
+        }
+        catch(IOException exception){
+
+        }
 
         Button forward = new Button("↑" );
         forward.setMinSize(60, 60);
@@ -206,17 +242,17 @@ public class Layout extends Application {
             commands.rightButton();
         });
 
-        Button backward = new Button("↓");
-        forward.setMinSize(60, 60);
-        backward.setPrefSize(60, 60);
-        backward.setOnAction(movingBackward -> {
-            commands.backwardButton();
-        });
+//        Button backward = new Button("↓");
+//        forward.setMinSize(60, 60);
+//        backward.setPrefSize(60, 60);
+//        backward.setOnAction(movingBackward -> {
+//            commands.backwardButton();
+//        });
 
         Button neutral = new Button("o");
         forward.setMinSize(60, 60);
         neutral.setPrefSize(60, 60);
-        backward.setOnAction(notMoving -> {
+        neutral.setOnAction(notMoving -> {
             commands.neutralButton();
         });
 
@@ -247,7 +283,7 @@ public class Layout extends Application {
         pane.add(forward, 10, 52);
         pane.add(left, 7, 55);
         pane.add(right, 13, 55);
-        pane.add(backward, 10, 58);
+        //pane.add(backward, 10, 58);
         pane.add(neutral, 10, 55);
         pane.add(emergencyStop, 20, 55);
         pane.add(gripper, 14, 55);
