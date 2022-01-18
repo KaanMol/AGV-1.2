@@ -209,9 +209,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         if (command == WirelessConfig.routeTransmissionStart) {
             this.lineDetection.startListeningRoutes();
-            System.out.println("Started Listening routes");
+            this.movement.neutral();
         } else if (command == WirelessConfig.routeTransmissionEnd) {
             this.lineDetection.stopListeningRoutes();
+            this.controlOwner = ControlOwner.Line;
+            this.movement.forward();
         } else if (command >= 48 && command <= 52) {
             this.lineDetection.setRoute(command);
         } else if (command == WirelessConfig.backward) {
@@ -237,7 +239,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param lineDetection
      */
     public void onLineDetectionUpdate(Route lineDetection) {
-//        System.out.println(lineDetection);
+
         if (this.controlOwner != ControlOwner.Line) {
             return;
         }
@@ -247,9 +249,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 this.movement.forward();
                 break;
             case LEFT:
+                System.out.println("GO LEFT");
                 this.movement.turnLeft();
                 break;
             case RIGHT:
+                System.out.println("GO RIGHT");
                 this.movement.turnRight();
                 break;
             case STOP:

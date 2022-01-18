@@ -7,11 +7,9 @@ import interfaces.LineDetectionUpdater;
 import interfaces.Updatable;
 import common.Config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LineDetection implements Updatable {
 
@@ -46,16 +44,14 @@ public class LineDetection implements Updatable {
 
     public void startListeningRoutes() {
         this.listenForRoutes = true;
-        System.out.println("Started Listening routes");
-        this.route = new ArrayList<>();
+        this.route.clear();
     }
 
     public void stopListeningRoutes() {
         this.listenForRoutes = false;
-        for (int i = 0; i < this.route.size(); i++) {
-            System.out.println(this.route.get(i));
-        }
+        this.turning = false;
         System.out.println("Stopped Listening routes");
+        System.out.println(this.route.size());
     }
 
     public void setRoute(int receivedDirection) {
@@ -64,7 +60,7 @@ public class LineDetection implements Updatable {
         }
 
         final int startNumber = 48;
-        final int direction = startNumber + receivedDirection;
+        final int direction = receivedDirection - startNumber;
 
         if (direction == 0) {
             this.route.add(Route.FORWARD);
@@ -77,7 +73,7 @@ public class LineDetection implements Updatable {
         } else if (direction == 4) {
             this.route.add(Route.GRIPPER);
         }
-        System.out.println("Direction : " + direction);
+        System.out.println("Direction : " + this.route.get(this.route.size() - 1).name());
     }
 
     /**
@@ -111,40 +107,52 @@ public class LineDetection implements Updatable {
      * Checks which linefollowers are on line, and calls the callback attribute with the status.
      */
     public void update() {
-        if (this.route.size() == 1) {
-            this.route.add(Route.FORWARD);
-            this.route.add(Route.RIGHT);
-            this.route.add(Route.FORWARD);
-            this.route.add(Route.LEFT);
+        if (this.listenForRoutes == true) {
+            return;
         }
 
-        if (this.turning) {
-            if (this.middleLineFollower.isOnLine() == true && this.actionDelay.timeout()) {
-                this.turning = false;
-                this.route.remove(0);
+        try {
+//            if (this.route.size() == 1) {
+//                this.route.add(Route.FORWARD);
+//                this.route.add(Route.RIGHT);
+//                this.route.add(Route.FORWARD);
+//                this.route.add(Route.LEFT);
+//            }
+
+            if (this.turning) {
+                if (this.middleLineFollower.isOnLine() == true && this.actionDelay.timeout()) {
+                    this.turning = false;
+                    final Route currentAction = this.route.get(0);
+                    this.route.remove(0);
+                    System.out.println(currentAction);
+                    this.actionDelay.mark();
+                    this.callback.onLineDetectionUpdate(currentAction);
+                }
+                return;
+            }
+
+            if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
                 final Route currentAction = this.route.get(0);
-                this.actionDelay.mark();
+                this.route.remove(0);
+                System.out.println(currentAction);
+
+                if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
+                    this.turning = true;
+                }
+
                 this.callback.onLineDetectionUpdate(currentAction);
+
+                System.out.println("intersection found");
+                this.actionDelay.mark();
+
+                return;
             }
-            return;
-        }
-
-        if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
-            this.route.remove(0);
-            final Route currentAction = this.route.get(0);
-
-
-            if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
-                this.turning = true;
-            }
-
-            this.callback.onLineDetectionUpdate(currentAction);
-
-            System.out.println("intersection found");
-
-            this.actionDelay.mark();
-
-            return;
+        } catch (Exception e) {
+//            this.route.add(Route.FORWARD);
+//            this.route.add(Route.RIGHT);
+//            this.route.add(Route.FORWARD);
+//            this.route.add(Route.LEFT);
+            System.out.println(e);
         }
     }
 }
