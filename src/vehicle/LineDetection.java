@@ -22,7 +22,6 @@ public class LineDetection implements Updatable {
     private Timer actionDelay;
     private ArrayList<Route> route;
     private int i = 0;
-    boolean detected = false;
     boolean turning = false;
 
     /**
@@ -36,7 +35,7 @@ public class LineDetection implements Updatable {
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
         this.route = new ArrayList<>();
-        this.actionDelay = new Timer(500);
+        this.actionDelay = new Timer(1000);
         this.route.add(Route.FORWARD);
         this.route.add(Route.RIGHT);
         this.route.add(Route.FORWARD);
@@ -77,92 +76,40 @@ public class LineDetection implements Updatable {
      * Checks which linefollowers are on line, and calls the callback attribute with the status.
      */
     public void update() {
-//        if (this.turning && (this.leftLineFollower.isOnLine() == false && this.rightLineFollower.isOnLine() == false)) {
-//            this.turning = false;
-//            this.callback.onLineDetectionUpdate(Route.FORWARD);
-//            return;
-//        }
-
-        if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
-//            this.detected = true;
-            if (this.middleLineFollower.isOnLine() == false && this.turning) {
-                return;
-            }
-
-            if (this.middleLineFollower.isOnLine()) {
-                this.turning = false;
-            }
-
-            final Route currentAction = this.route.get(0);
-            this.callback.onLineDetectionUpdate(currentAction);
-
-            if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
-               this.turning = true;
-            }
-
-
-            this.route.remove(0);
-            System.out.println("intersection found");
-            this.actionDelay.mark();
-
-            if (this.route.size() == 0) {
-                this.route.add(Route.FORWARD);
-                this.route.add(Route.RIGHT);
-                this.route.add(Route.FORWARD);
-                this.route.add(Route.LEFT);
-            }
-
-            return;
-
-//            this.route.remove(0);
+        if (this.route.size() == 1) {
+            this.route.add(Route.FORWARD);
+            this.route.add(Route.RIGHT);
+            this.route.add(Route.FORWARD);
+            this.route.add(Route.LEFT);
         }
 
-//        this.callback.onLineDetectionUpdate(Route.FORWARD);
+        if (this.turning) {
+            if (this.middleLineFollower.isOnLine() == true && this.actionDelay.timeout()) {
+                this.turning = false;
+                this.route.remove(0);
+                final Route currentAction = this.route.get(0);
+                this.actionDelay.mark();
+                this.callback.onLineDetectionUpdate(currentAction);
+            }
+            return;
+        }
 
-//        this.middleLineFollower.isOnLine()
-
-
-
-//        if (this.detected == true ) {
-//            final Route currentAction = ;
-////
-//
-//
-//            this.detected = false;
-//            this.actionDelay.mark();
-//        }
-
-
+        if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
+            this.route.remove(0);
+            final Route currentAction = this.route.get(0);
 
 
+            if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
+                this.turning = true;
+            }
 
-//        if (this.leftLineFollower.isOnLine()
-//                && rightLineFollower.isOnLine()
-//                && middleLineFollower.isOnLine()) {
-//            if (this.route.get(i).equals(Route.FORWARD)) {
-//            }
-//
-//
-//        } else if (middleLineFollower.isOnLine()
-//                && rightLineFollower.isOnLine()) {
-//            this.callback.onLineDetectionUpdate(Route.ALL);
-//        } else if (middleLineFollower.isOnLine()
-//                && leftLineFollower.isOnLine()) {
-//            this.callback.onLineDetectionUpdate(Route.ALL);
-//
-//        } else if (middleLineFollower.isOnLine() == false
-//                && leftLineFollower.isOnLine() == false
-//                && rightLineFollower.isOnLine() == false) {
-//            this.callback.onLineDetectionUpdate(Route.STOP);
-//        } else if (this.leftLineFollower.isOnLine() == true
-//                && this.rightLineFollower.isOnLine() == false) {
-//            this.callback.onLineDetectionUpdate(Route.LEFT);
-//        } else if (!leftLineFollower.isOnLine() == false
-//                && this.rightLineFollower.isOnLine() == true) {
-//            this.callback.onLineDetectionUpdate(Route.RIGHT);
-//        } else {
-//            this.callback.onLineDetectionUpdate(Route.FORWARD);
-//        }
+            this.callback.onLineDetectionUpdate(currentAction);
 
+            System.out.println("intersection found");
+
+            this.actionDelay.mark();
+
+            return;
+        }
     }
 }
