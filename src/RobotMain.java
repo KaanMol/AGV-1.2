@@ -200,26 +200,34 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Callbakc that gets called when the vehicle detects Bluetooth
      * @param data Which ASCII Number is given
      */
-    public void onWirelessUpdate(int data) {
+    public void onWirelessUpdate(int command) {
         if (this.controlOwner != ControlOwner.Wireless) {
             System.out.println("Wireless took control!");
             this.controlOwner = ControlOwner.Wireless;
         }
 
-        if (data == WirelessConfig.backward) {
+
+        if (command == WirelessConfig.routeTransmissionStart) {
+            this.lineDetection.startListeningRoutes();
+            System.out.println("Started Listening routes");
+        } else if (command == WirelessConfig.routeTransmissionEnd) {
+            this.lineDetection.stopListeningRoutes();
+        } else if (command >= 48 && command <= 52) {
+            this.lineDetection.setRoute(command);
+        } else if (command == WirelessConfig.backward) {
             this.movement.backward();
-        } else if (data == WirelessConfig.left) {
+        } else if (command == WirelessConfig.left) {
             this.movement.turnLeft();
-        } else if (data == WirelessConfig.right) {
+        } else if (command == WirelessConfig.right) {
             this.movement.turnRight();
-        } else if (data == WirelessConfig.forward) {
+        } else if (command == WirelessConfig.forward) {
             this.movement.forward();
-        } else if (data == WirelessConfig.stop) {
+        } else if (command == WirelessConfig.stop) {
             this.movement.neutral();
-        } else if (data == WirelessConfig.transfer) {
+        } else if (command == WirelessConfig.transfer) {
             System.out.println("Linefollower was given control!");
             this.controlOwner = ControlOwner.Line;
-        } else if (data == WirelessConfig.gripper) {
+        } else if (command == WirelessConfig.gripper) {
             this.gripper.toggle();
         }
     }
@@ -229,7 +237,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param lineDetection
      */
     public void onLineDetectionUpdate(Route lineDetection) {
-        System.out.println(lineDetection);
+//        System.out.println(lineDetection);
         if (this.controlOwner != ControlOwner.Line) {
             return;
         }

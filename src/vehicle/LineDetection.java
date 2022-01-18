@@ -23,6 +23,7 @@ public class LineDetection implements Updatable {
     private ArrayList<Route> route;
     private int i = 0;
     boolean turning = false;
+    boolean listenForRoutes = false;
 
     /**
      * Constructor
@@ -41,6 +42,42 @@ public class LineDetection implements Updatable {
         this.route.add(Route.FORWARD);
         this.route.add(Route.LEFT);
         arrayRoute();
+    }
+
+    public void startListeningRoutes() {
+        this.listenForRoutes = true;
+        System.out.println("Started Listening routes");
+        this.route = new ArrayList<>();
+    }
+
+    public void stopListeningRoutes() {
+        this.listenForRoutes = false;
+        for (int i = 0; i < this.route.size(); i++) {
+            System.out.println(this.route.get(i));
+        }
+        System.out.println("Stopped Listening routes");
+    }
+
+    public void setRoute(int receivedDirection) {
+        if (this.listenForRoutes == false) {
+            return;
+        }
+
+        final int startNumber = 48;
+        final int direction = startNumber + receivedDirection;
+
+        if (direction == 0) {
+            this.route.add(Route.FORWARD);
+        } else if (direction == 1) {
+            this.route.add(Route.RIGHT);
+        } else if (direction == 2) {
+            this.route.add(Route.BACKWARDS);
+        } else if (direction == 3) {
+            this.route.add(Route.LEFT);
+        } else if (direction == 4) {
+            this.route.add(Route.GRIPPER);
+        }
+        System.out.println("Direction : " + direction);
     }
 
     /**
