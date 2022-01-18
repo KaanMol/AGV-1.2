@@ -1,9 +1,11 @@
 package enums;
 
-public enum LineDirection {
+public enum Route {
     FORWARD,
     LEFT,
+    BACKWARDS,
     RIGHT,
     STOP,
     ALL,
+    GRIPPER,
 }

@@ -2,7 +2,6 @@ package vehicle;
 
 import TI.Timer;
 import enums.Direction;
-import enums.LineDirection;
 import enums.Manoeuvre;
 import hardware.Motor;
 import interfaces.MovementUpdater;
@@ -64,14 +63,14 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
      * Sets the direction of the vehicle to right
      */
     public void turnRight() {
-        this.setDirection(Direction.RIGHT, 25, 25);
+        this.setDirection(Direction.RIGHT, 20, 20);
     }
 
     /**
      * Sets the direction of the vehicle to left
      */
     public void turnLeft() {
-        this.setDirection(Direction.LEFT, -25, -25);
+        this.setDirection(Direction.LEFT, -20, -20);
     }
 
     /**
@@ -177,7 +176,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         if (this.currentHeading == Direction.FORWARD || this.currentHeading == Direction.BACKWARD) {
             if (this.accelerationTimer.timeout()) {
 
-                if (this.leftMotorSpeed < 100 && this.rightMotorSpeed > -100) {
+                if (this.leftMotorSpeed < 30 && this.rightMotorSpeed > -30) {
                     this.leftMotorSpeed += Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;
                 }
@@ -185,7 +184,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         }
         else if (this.currentHeading == Direction.NEUTRAL) {
             if (this.accelerationTimer.timeout()) {
-                if (this.leftMotorSpeed > 100 && this.rightMotorSpeed < -100) {
+                if (this.leftMotorSpeed > 30 && this.rightMotorSpeed < -30) {
                     this.leftMotorSpeed -= Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;
                 }
