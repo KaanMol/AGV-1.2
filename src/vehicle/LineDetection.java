@@ -54,21 +54,19 @@ public class LineDetection implements Updatable {
         final String route = "0,0,0,1,0,3,0,4,1,0,0,4";
         String[] parts = route.split(",");
 
-        String lol = "";
         for (int i = 0; i < parts.length; i++) {
-            lol += parts[i];
-        }
 
-        if (parts[i].equals("0")) {
-            this.route.add(Route.FORWARD);
-        } else if (parts[i].equals("1")) {
-            this.route.add(Route.RIGHT);
-        } else if (parts[i].equals("2")) {
-            this.route.add(Route.BACKWARDS);
-        } else if (parts[i].equals("3")) {
-            this.route.add(Route.LEFT);
-        } else if (parts[1].equals("4")) {
-            this.route.add(Route.GRIPPER);
+            if (parts[i].equals("0")) {
+                this.route.add(Route.FORWARD);
+            } else if (parts[i].equals("1")) {
+                this.route.add(Route.RIGHT);
+            } else if (parts[i].equals("2")) {
+                this.route.add(Route.BACKWARDS);
+            } else if (parts[i].equals("3")) {
+                this.route.add(Route.LEFT);
+            } else if (parts[1].equals("4")) {
+                this.route.add(Route.GRIPPER);
+            }
         }
     }
 
