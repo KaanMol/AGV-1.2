@@ -44,14 +44,15 @@ public class RoutePlanScene {
         this.routeCommands = routeCommands;
         this.pane = new GridPane();
         this.routePane = new GridPane();
+        this.bluetoothCommands = new Commands();
         routePane.setHgap(30);
         pane.setHgap(10);
         pane.setVgap(10);
 
-        try{
+        try {
             this.commands.image(pane);
         }
-        catch(IOException exception){
+        catch (IOException exception) {
 
         }
 
@@ -61,7 +62,6 @@ public class RoutePlanScene {
         forward.setOnAction(movingForward -> {
             this.route.add("Vooruit ↑");
             this.routeCommands.add(0);
-
             this.commands.displayRoute(this.routePane, this.route);
         });
 
@@ -70,11 +70,7 @@ public class RoutePlanScene {
         left.setOnAction(movingLeft -> {
             this.route.add("Links ←");
             this.routeCommands.add(3);
-
-
             this.commands.displayRoute(routePane, this.route);
-
-
         });
 
         Button right = new Button("→");
@@ -82,7 +78,6 @@ public class RoutePlanScene {
         right.setOnAction(movingRight -> {
             this.route.add("Rechts →");
             this.routeCommands.add(1);
-
             this.commands.displayRoute(routePane, this.route);
         });
 
@@ -93,14 +88,12 @@ public class RoutePlanScene {
             this.route.add("Achteruit ↓");
             this.routeCommands.add(2);
             this.commands.displayRoute(routePane, this.route);
-
         });
 
         Button neutral = new Button("o");
         neutral.setPrefSize(60, 60);
         backward.setOnAction(notMoving -> {
             route.add("Neutraal ");
-
             this.commands.displayRoute(routePane, this.route);
         });
 
@@ -109,7 +102,6 @@ public class RoutePlanScene {
         gripperOut.setOnAction(gripperMove -> {
             this.route.add("Brood neerzetten");
             this.routeCommands.add(4);
-
             this.commands.displayRoute(routePane, this.route);
         });
 
@@ -118,7 +110,6 @@ public class RoutePlanScene {
         gripperIn.setOnAction(gripperMove -> {
             this.route.add("Brood oppakken");
             this.routeCommands.add(4);
-
             this.commands.displayRoute(routePane, this.route);
         });
 
@@ -129,12 +120,12 @@ public class RoutePlanScene {
             this.bluetoothCommands.sendroute(this.routeCommands);
         });
 
-        //Saves the route to the boebot
-        Button storeRouteButton = new Button("Route opslaan");
-        storeRouteButton.setPrefSize(120, 60);
-        storeRouteButton.setOnAction(storeRoute -> {
-
-        });
+//        //Saves the route to the boebot
+//        Button storeRouteButton = new Button("Route opslaan");
+//        storeRouteButton.setPrefSize(120, 60);
+//        storeRouteButton.setOnAction(storeRoute -> {
+//
+//        });
 
         //Deletes the last added manouvre from the route
         Button backSpaceButton = new Button("Terug");
@@ -159,8 +150,8 @@ public class RoutePlanScene {
         pane.add(neutral, 10, 55);
         pane.add(gripperIn, 14, 55);
         pane.add(gripperOut, 14, 58);
-        pane.add(startRoute, 4, 55);
-        pane.add(storeRouteButton, 5, 55);
+        pane.add(startRoute, 5, 55);
+        //pane.add(storeRouteButton, 5, 55);
         pane.add(controlSceneButton, 0, 0);
         pane.add(backSpaceButton, 6, 55);
         pane.add(this.routePane, 0, 25, 30, 20);
