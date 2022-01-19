@@ -34,9 +34,12 @@ public class DistanceDetection implements Updatable {
             return;
         }
 
-        HashMap<Ultrasonic, Boolean> hasObstacle = new HashMap<>();
-        hasObstacle.put(Ultrasonic.BOTTOM, bottomUltraSonic.Readings() <= 150 && bottomUltraSonic.Readings() > 5);
-        hasObstacle.put(Ultrasonic.TOP, topUltraSonic.Readings() <= 750 && topUltraSonic.Readings() > 150);
+        final double bottomDistance = bottomUltraSonic.getDistance();
+        final double topDistance = topUltraSonic.getDistance();
+
+        HashMap<Ultrasonic, Double> hasObstacle = new HashMap<>();
+        hasObstacle.put(Ultrasonic.BOTTOM, bottomDistance);
+        hasObstacle.put(Ultrasonic.TOP, topDistance);
 
         this.timer.mark();
         this.callback.onDistanceDetectionUpdate(hasObstacle);

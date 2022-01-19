@@ -7,5 +7,5 @@ import javafx.util.Pair;
 import java.util.HashMap;
 
 public interface DistanceDetectionUpdater {
-    void onDistanceDetectionUpdate(HashMap<Ultrasonic, Boolean> hasObstacle);
+    void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle);
 }
