@@ -19,11 +19,13 @@ public class ControlScene {
     private int currentX;
     private int currentY;
     private Direction upcomingDirection;
+    private ArrayList<Integer> routeCommands;
 
-    public void controlScene(Stage stage, ArrayList<String> route, ArrayList<String> arrowRoute, int currentX, int currentY, Direction upcomingDirection){
+    public void controlScene(Stage stage, ArrayList<String> route, ArrayList<Integer> routeCommands){
         this.routePlanScene = new RoutePlanScene();
         this.commands = new Commands();
         this.route = route;
+        this.routeCommands = routeCommands;
         this.arrowRoute = arrowRoute;
         this.currentX = currentX;
         this.currentY = currentY;
@@ -90,14 +92,8 @@ public class ControlScene {
         routePlanSceneButton.setPrefSize(150, 50);
         routePlanSceneButton.setOnAction(swithcingScene -> {
             //this.routePlanScene(stage, new ArrayList<String>());
-            this.routePlanScene.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
+            this.routePlanScene.routePlanScene(stage, this.route, this.routeCommands);
         });
-
-//        Button controlSceneButton = new Button("Besturen");
-//        controlSceneButton.setPrefSize(150, 50);
-//        controlSceneButton.setOnAction(swithcingScene -> {
-//            this.controlScene(stage);
-//        });
 
         pane.add(forward, 10, 52);
         pane.add(left, 7, 55);
@@ -107,7 +103,6 @@ public class ControlScene {
         pane.add(emergencyStop, 20, 55);
         pane.add(gripper, 14, 55);
         pane.add(routePlanSceneButton, 0, 0);
-        //pane.add(controlSceneButton, 0, 0);
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);

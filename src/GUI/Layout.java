@@ -31,12 +31,14 @@ public class Layout extends Application {
     private int currentX;
     private int currentY;
     private Direction upcomingDirection;
+    private ArrayList<Integer> routeCommands;
 
 
     @Override
     public void start(Stage stage) {
         this.route = new ArrayList<String>();
         this.arrowRoute = new ArrayList<String>();
+        this.routeCommands = new ArrayList<Integer>();
         this.initializeArrowRoute();
 
         this.commands = new Commands();
@@ -47,7 +49,7 @@ public class Layout extends Application {
         this.currentY = 5;
         this.upcomingDirection = Direction.FORWARD;
 
-        this.controlScene.controlScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
+        this.controlScene.controlScene(stage, this.route, this.routeCommands);
     }
 
     public void initializeArrowRoute(){
