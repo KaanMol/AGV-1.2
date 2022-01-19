@@ -7,6 +7,7 @@ import interfaces.*;
 import vehicle.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, WirelessUpdater, InfraredUpdater, LineDetectionUpdater, DistanceDetectionUpdater {
     private ArrayList<Updatable> processes;
@@ -120,9 +121,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     /**
      * This method is called when the distance from the ultrasonic sensor is too little
      */
-    public void onDistanceDetectionUpdate(boolean hasObstacle) {
-        if (hasObstacle) {
-            this.movement.neutral();
+    public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Boolean> hasObstacle) {
+        if((hasObstacle.get(Ultrasonic.TOP)) || (!this.gripper.gripperStatus() && hasObstacle.get(Ultrasonic.BOTTOM))){
+            this.movement.forward();
         }
     }
 
