@@ -26,6 +26,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private Gripper gripper;
     private DistanceDetection distanceDetection;
     private Button startButton;
+    private boolean bottomSensorActive = true;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -53,19 +54,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
-        this.processes.add(this.collisionDetection);
+//        this.processes.add(this.collisionDetection);
 
         this.lineDetection = new LineDetection(this);
-        this.processes.add(this.lineDetection);
+//        this.processes.add(this.lineDetection);
 
         this.drivingNotification = new DrivingNotification();
-        this.processes.add(this.drivingNotification);
+//        this.processes.add(this.drivingNotification);
 
         this.blinkers = new Blinkers();
-        this.processes.add(this.blinkers);
+//        this.processes.add(this.blinkers);
 
         this.remote = new Remote(this);
-        this.processes.add(this.remote);
+//        this.processes.add(this.remote);
 
         this.drivinglights = new DrivingLights();
 
@@ -121,11 +122,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     /**
      * This method is called when the distance from the ultrasonic sensor is too little
      */
-    public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Boolean> hasObstacle) {
-        if((hasObstacle.get(Ultrasonic.TOP)) || (!this.gripper.gripperStatus() && hasObstacle.get(Ultrasonic.BOTTOM))){
-            this.movement.forward();
+    public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
+
+        if (this.bottomSensorActive) {
+            if (hasObstacle.get(Ultrasonic.BOTTOM) < 5) {
+                this.movement.neutral();;
+
+            }
+        } else if (hasObstacle.get(Ultrasonic.TOP) < 7) {
+            this.movement.neutral();
         }
     }
+
+
 
     /**
      * This method moves the robot towards the side the user told it to with the remote
