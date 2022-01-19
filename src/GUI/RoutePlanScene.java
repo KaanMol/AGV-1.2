@@ -20,13 +20,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RoutePlanScene {
+    private Commands commands;
     private ControlScene controlScene;
     private ArrayList<String> route;
+    private ArrayList<Integer> routeCommands;
     private ArrayList<String> arrowRoute;
     private int currentX;
     private int currentY;
     private Direction upcomingDirection;
     private ArrayList<String> arrows;
+    private Direction previousDirection;
 
 
 
@@ -36,12 +39,15 @@ public class RoutePlanScene {
      * @param route - Arraylist with the directions the boebot has to follow
      */
     public void routePlanScene(Stage stage, ArrayList<String> route, ArrayList<String> arrowRoute, int currentX, int currentY, Direction upcomingDirection){
+        this.commands = new Commands();
         this.controlScene = new ControlScene();
         this.route = route;
+        this.routeCommands = new ArrayList<Integer>();
         this.arrowRoute = arrowRoute;
         this.currentX = currentX;
         this.currentY = currentY;
         this.upcomingDirection = upcomingDirection;
+        this.previousDirection = upcomingDirection;
         this.arrows = new ArrayList<>(Arrays.asList("←", "↑", "→"));
         GridPane pane = new GridPane();
         GridPane routePane = new GridPane();
@@ -61,7 +67,9 @@ public class RoutePlanScene {
         Button forward = new Button("↑" );
         forward.setPrefSize(60, 60);
         forward.setOnAction(movingForward -> {
-            route.add("Vooruit ↑");
+            this.route.add("Vooruit ↑");
+            this.routeCommands.add(0);
+            System.out.println(this.upcomingDirection);
             int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
             String newArrow = "";
             switch (this.upcomingDirection){
@@ -89,53 +97,69 @@ public class RoutePlanScene {
         Button left = new Button("←" );
         left.setPrefSize(60, 60);
         left.setOnAction(movingLeft -> {
-            route.add("Links ←");
+            this.route.add("Links ←");
+            this.routeCommands.add(3);
+            this.previousDirection = this.upcomingDirection;
             int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
             //this.upcomingDirection = Direction.FORWARD;
             String newArrow = "";
             if(this.upcomingDirection == Direction.FORWARD){
                 newArrow = "←";
+                this.upcomingDirection = Direction.LEFT;
+                this.currentX -= 1;
             }
             else if(this.upcomingDirection == Direction.LEFT){
                 newArrow = "↓";
+                this.upcomingDirection = Direction.BACKWARD;
+                this.currentY += 1;
             }
             else if(this.upcomingDirection == Direction.RIGHT){
                 newArrow = "↑";
+                this.upcomingDirection = Direction.FORWARD;
+                this.currentY -= 1;
             }
             else if(this.upcomingDirection == Direction.BACKWARD){
                 newArrow = "→";
+                this.upcomingDirection = Direction.RIGHT;
+                this.currentX += 1;
             }
 
-            this.upcomingDirection = Direction.LEFT;
+
             this.arrowRoute.set(index, newArrow);
-            this.currentX -= 1;
             this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
         });
 
         Button right = new Button("→");
         right.setPrefSize(60, 60);
         right.setOnAction(movingRight -> {
-            route.add("Rechts →");
+            this.route.add("Rechts →");
+            this.routeCommands.add(1);
             int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
             //this.upcomingDirection = Direction.FORWARD;
             String newArrow = "";
 
             if(this.upcomingDirection == Direction.FORWARD){
                 newArrow = "→";
+                this.upcomingDirection = Direction.RIGHT;
+                this.currentX += 1;
             }
             else if(this.upcomingDirection == Direction.LEFT){
                 newArrow = "↑";
+                this.upcomingDirection = Direction.FORWARD;
+                this.currentY -= 1;
             }
             else if(this.upcomingDirection == Direction.RIGHT){
                 newArrow = "↓";
+                this.upcomingDirection = Direction.BACKWARD;
+                this.currentY += 1;
             }
             else if(this.upcomingDirection == Direction.BACKWARD){
                 newArrow = "←";
+                this.upcomingDirection = Direction.LEFT;
+                this.currentX -= 1;
             }
 
-            this.upcomingDirection = Direction.RIGHT;
             this.arrowRoute.set(index, newArrow);
-            this.currentX += 1;
             this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
         });
 
@@ -143,7 +167,8 @@ public class RoutePlanScene {
         backward.setPrefSize(60, 60);
         backward.setOnAction(movingBackward -> {
             //boebot mag niet achteruit rijden
-            route.add("Achteruit ↓");
+            this.route.add("Achteruit ↓");
+            this.routeCommands.add(2);
             this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
         });
 
@@ -157,14 +182,16 @@ public class RoutePlanScene {
         Button gripperOut = new Button("Gripper open");
         gripperOut.setPrefSize(120, 60);
         gripperOut.setOnAction(gripperMove -> {
-            route.add("Brood neerzetten");
+            this.route.add("Brood neerzetten");
+            this.routeCommands.add(4);
             this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
         });
 
         Button gripperIn = new Button("Gripper dicht");
         gripperIn.setPrefSize(120, 60);
         gripperIn.setOnAction(gripperMove -> {
-            route.add("Brood oppakken");
+            this.route.add("Brood oppakken");
+            this.routeCommands.add(4);
             this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
         });
 
@@ -172,7 +199,7 @@ public class RoutePlanScene {
         Button startRoute = new Button("Start route");
         startRoute.setPrefSize(100, 60);
         startRoute.setOnAction(gripperMove -> {
-
+            this.commands.sendroute(this.routeCommands);
         });
 
         //Saves the route to the boebot
@@ -211,7 +238,7 @@ public class RoutePlanScene {
         pane.add(controlSceneButton, 0, 0);
         pane.add(backSpaceButton, 6, 55);
         pane.add(routePane, 2, 25, 30, 20);
-        pane.add(routeGridPane, 0, 1, 2, 1);
+        pane.add(routeGridPane, 0, 25, 2, 20);
 
         //Sets all the buttons to the page to display them
         Scene scene = new Scene(pane);
@@ -255,6 +282,71 @@ public class RoutePlanScene {
 
     public void backSpace(Stage stage){
         this.route.remove(this.route.size() - 1);
+        //this.arrowRoute.remove(this.arrowRoute.size() - 1);
+
+        if(this.upcomingDirection == Direction.FORWARD){
+            this.currentY += 1;
+            int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+            if(this.arrowRoute.get(index) != "\t"){
+                this.arrowRoute.set(index, "\t");
+            }
+            else{
+                this.currentY -= 1;
+                if(this.previousDirection == Direction.RIGHT){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+                if(this.previousDirection == Direction.LEFT){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+                if(this.previousDirection == Direction.BACKWARD){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+            }
+
+        }
+        else if(this.upcomingDirection == Direction.LEFT){
+            this.currentX += 1;
+            int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+            if(this.arrowRoute.get(index) != "\t"){
+                this.arrowRoute.set(index, "\t");
+            }
+            else{
+                this.currentX -= 1;
+                if(this.previousDirection == Direction.RIGHT){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+                if(this.previousDirection == Direction.LEFT){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+                if(this.previousDirection == Direction.BACKWARD){
+                    this.currentX += 1;
+                    index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+                    this.arrowRoute.set(index, "\t");
+                }
+            }
+        }
+        else if(this.upcomingDirection == Direction.RIGHT){
+            this.currentX -= 1;
+            int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+            this.arrowRoute.set(index, "\t");
+        }
+        else if(this.upcomingDirection == Direction.BACKWARD){
+            this.currentY -= 1;
+            int index = ((this.currentY - 1) * 10 + this.currentX) - 1;
+            this.arrowRoute.set(index, "\t");
+        }
+
+
         this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection);
     }
 

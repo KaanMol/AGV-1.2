@@ -9,6 +9,8 @@ import jssc.SerialPortException;
 import vehicle.Movement;
 import TI.SerialConnection;
 
+import java.util.ArrayList;
+
 public class Commands {
     private static final String PORT = "COM4";
     private SerialPort serialPort = new SerialPort(PORT);
@@ -38,9 +40,38 @@ public class Commands {
         catch (SerialPortException e) {
             e.printStackTrace();
         }
-
     }
 
+    public void sendroute(ArrayList<Integer> route){
+
+
+        int[] ints = new int[route.size()];
+        for(int i = 0; i < route.size(); i++){
+            ints[i] = route.get(i);
+        }
+        try{
+            serialPort.writeIntArray(ints);
+        }catch (SerialPortException e){
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    public void startRouteButton(ArrayList<Integer> route){
+        try{
+            serialPort.writeInt(82);
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+        try{
+            serialPort.writeInt(82);
+        }
+        catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 
     public void forwardbutton() {
         try {
