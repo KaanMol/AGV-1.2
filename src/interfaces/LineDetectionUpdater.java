@@ -1,7 +1,7 @@
 package interfaces;
 
-import enums.LineDirection;
+import enums.Route;
 
 public interface LineDetectionUpdater {
-    void onLineDetectionUpdate(LineDirection lineDirection);
+    void onLineDetectionUpdate(Route route);
 }

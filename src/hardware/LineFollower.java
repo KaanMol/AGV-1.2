@@ -5,7 +5,7 @@ import TI.PinMode;
 
 public class LineFollower {
     private int inputPin;
-    private final int bound = 800;
+    private final int bound = 1000;
 
     /**
      *

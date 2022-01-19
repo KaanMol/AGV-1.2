@@ -1,9 +1,11 @@
 import GUI.Layout;
 import TI.BoeBot;
+import TI.Timer;
 import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
+import hardware.UltraSonic;
 import interfaces.*;
 import javafx.stage.Stage;
 import vehicle.*;
@@ -29,6 +31,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private DistanceDetection distanceDetection;
     private Button startButton;
     private boolean bottomSensorActive = true;
+    private boolean obstacleExpected = false;
+    private boolean obstaclePicked = false;
+    private Timer pickUpTimer = new Timer(1000);
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -59,19 +64,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
-//        this.processes.add(this.collisionDetection);
+        this.processes.add(this.collisionDetection);
 
         this.lineDetection = new LineDetection(this);
-//        this.processes.add(this.lineDetection);
+        this.processes.add(this.lineDetection);
 
         this.drivingNotification = new DrivingNotification();
-//        this.processes.add(this.drivingNotification);
+        this.processes.add(this.drivingNotification);
 
         this.blinkers = new Blinkers();
-//        this.processes.add(this.blinkers);
+        this.processes.add(this.blinkers);
 
         this.remote = new Remote(this);
-//        this.processes.add(this.remote);
+        this.processes.add(this.remote);
 
         this.drivinglights = new DrivingLights();
 
@@ -128,13 +133,22 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * This method is called when the distance from the ultrasonic sensor is too little
      */
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
-
-        if (this.bottomSensorActive) {
-            if (hasObstacle.get(Ultrasonic.BOTTOM) < 5) {
-                this.movement.neutral();;
-
+        if(this.gripper.gripperStatus()&& obstaclePicked){
+            this.movement.forward();
+            obstaclePicked = false;
+        }
+        if(obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
+            bottomSensorActive = false;
+            this.movement.neutral();
+            gripper.toggle();
+            pickUpTimer.mark();
+            obstacleExpected = false;
+            obstaclePicked = true;
+        } else if (this.bottomSensorActive) {
+            if (hasObstacle.get(Ultrasonic.BOTTOM) < 4) {
+                this.movement.neutral();
             }
-        } else if (hasObstacle.get(Ultrasonic.TOP) < 7) {
+        } else if (hasObstacle.get(Ultrasonic.TOP) < 4) {
             this.movement.neutral();
         }
     }
@@ -148,6 +162,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         if (this.controlOwner != ControlOwner.Remote) {
             System.out.println("Remote took control!");
             this.controlOwner = ControlOwner.Remote;
+            this.lineDetection.setEnabled(false);
         }
 
         if (signal == Config.remoteForward) {
@@ -164,6 +179,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.emergencyStopActivated = true;
         } else if (signal == Config.remoteControlTransfer) {
             System.out.println("Linefollower was given control!");
+            this.lineDetection.setEnabled(true);
             this.controlOwner = ControlOwner.Line;
         } else if (signal == Config.remoteGripper) {
             this.gripper.toggle();
@@ -215,26 +231,39 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Callbakc that gets called when the vehicle detects Bluetooth
      * @param data Which ASCII Number is given
      */
-    public void onWirelessUpdate(int data) {
+    public void onWirelessUpdate(int command) {
         if (this.controlOwner != ControlOwner.Wireless) {
             System.out.println("Wireless took control!");
+            this.lineDetection.setEnabled(false);
             this.controlOwner = ControlOwner.Wireless;
         }
 
-        if (data == WirelessConfig.backward) {
-            this.movement.backward();
-        } else if (data == WirelessConfig.left) {
-            this.movement.turnLeft();
-        } else if (data == WirelessConfig.right) {
-            this.movement.turnRight();
-        } else if (data == WirelessConfig.forward) {
-            this.movement.forward();
-        } else if (data == WirelessConfig.stop) {
+
+        if (command == WirelessConfig.routeTransmissionStart) {
+            this.lineDetection.startListeningRoutes();
             this.movement.neutral();
-        } else if (data == WirelessConfig.transfer) {
-            System.out.println("Linefollower was given control!");
+        } else if (command == WirelessConfig.routeTransmissionEnd) {
+            this.lineDetection.stopListeningRoutes();
+            this.lineDetection.setEnabled(true);
             this.controlOwner = ControlOwner.Line;
-        } else if (data == WirelessConfig.gripper) {
+            this.movement.forward();
+        } else if (command >= 48 && command <= 52) {
+            this.lineDetection.setRoute(command);
+        } else if (command == WirelessConfig.backward) {
+            this.movement.backward();
+        } else if (command == WirelessConfig.left) {
+            this.movement.turnLeft();
+        } else if (command == WirelessConfig.right) {
+            this.movement.turnRight();
+        } else if (command == WirelessConfig.forward) {
+            this.movement.forward();
+        } else if (command == WirelessConfig.stop) {
+            this.movement.neutral();
+        } else if (command == WirelessConfig.transfer) {
+            System.out.println("Linefollower was given control!");
+            this.lineDetection.setEnabled(true);
+            this.controlOwner = ControlOwner.Line;
+        } else if (command == WirelessConfig.gripper) {
             this.gripper.toggle();
         }
     }
@@ -243,19 +272,23 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * Callback that gets called when the vehicle detects a line.
      * @param lineDetection
      */
-    public void onLineDetectionUpdate(LineDirection lineDetection) {
+    public void onLineDetectionUpdate(Route lineDetection) {
+
         if (this.controlOwner != ControlOwner.Line) {
             return;
         }
 
+        this.obstacleExpected = false;
         switch (lineDetection) {
             case FORWARD:
                 this.movement.forward();
                 break;
             case LEFT:
+                System.out.println("GO LEFT");
                 this.movement.turnLeft();
                 break;
             case RIGHT:
+                System.out.println("GO RIGHT");
                 this.movement.turnRight();
                 break;
             case STOP:
@@ -263,6 +296,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 this.drivingNotification.start();
                 this.drivinglights.lineLights();
                 break;
+            case ALL:
+                this.movement.neutral();
+                break;
+            case GRIPPERPICKUP:
+                this.obstacleExpected = true;
+                this.movement.forward();
+                break;
+            case GRIPPERDROP:
+                this.movement.neutral();
+                this.gripper.toggle();
+                bottomSensorActive = true;
+
+
         }
     }
 
