@@ -1,6 +1,7 @@
 package GUI;
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -70,9 +71,10 @@ public class RoutePlanScene {
             this.route.add("Links ←");
             this.routeCommands.add(3);
 
+
             this.commands.displayRoute(routePane, this.route);
-            //this.arrowRoute.set(index, newArrow);
-            //this.routePlanScene(stage, this.route, this.arrowRoute, this.currentX, this.currentY, this.upcomingDirection, this.routeCommands);
+
+
         });
 
         Button right = new Button("→");
@@ -161,7 +163,9 @@ public class RoutePlanScene {
         pane.add(storeRouteButton, 5, 55);
         pane.add(controlSceneButton, 0, 0);
         pane.add(backSpaceButton, 6, 55);
-        pane.add(this.routePane, 2, 25, 30, 20);
+        pane.add(this.routePane, 0, 25, 30, 20);
+
+        this.bluetoothCommands.openPort();
 
         //Sets all the buttons to the page to display them
         Scene scene = new Scene(pane);

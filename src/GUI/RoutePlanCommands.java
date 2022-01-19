@@ -27,9 +27,8 @@ public class RoutePlanCommands {
         pane.add(view, 1, 0);
     }
 
-    public void displayRoute(GridPane pane, ArrayList<String> route){
+    public void displayRoute(GridPane pane, ArrayList<String> route) {
         int l = 0;
-
         while (l < route.size()) {
             for (int i = 0; (i <= route.size() / 5); i++) {
                 for (int c = 0; c < 5; c++) {

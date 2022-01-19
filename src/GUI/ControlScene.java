@@ -104,6 +104,8 @@ public class ControlScene {
         pane.add(gripper, 14, 55);
         pane.add(routePlanSceneButton, 0, 0);
 
+        this.commands.openPort();
+
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.show();
