@@ -121,7 +121,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      */
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Boolean> hasObstacle) {
         if((hasObstacle.get(Ultrasonic.TOP)) || (!this.gripper.gripperStatus() && hasObstacle.get(Ultrasonic.BOTTOM))){
-            this.movement.forward();
+            this.movement.neutral();
         }
     }
 
