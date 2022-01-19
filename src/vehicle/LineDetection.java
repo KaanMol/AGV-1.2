@@ -22,6 +22,7 @@ public class LineDetection implements Updatable {
     private int i = 0;
     boolean turning = false;
     boolean listenForRoutes = false;
+    boolean isEnabled = true;
 
     /**
      * Constructor
@@ -71,7 +72,9 @@ public class LineDetection implements Updatable {
         } else if (direction == 3) {
             this.route.add(Route.LEFT);
         } else if (direction == 4) {
-            this.route.add(Route.GRIPPER);
+            this.route.add(Route.GRIPPERPICKUP);
+        } else if (direction == 5) {
+            this.route.add(Route.GRIPPERDROP);
         }
         System.out.println("Direction : " + this.route.get(this.route.size() - 1).name());
     }
@@ -81,10 +84,11 @@ public class LineDetection implements Updatable {
      * 1 = right
      * 2 = backwards
      * 3 = left
-     * 4 = gripper
+     * 4 = gripper pickup
+     * 5 = gripper drop
      */
     public void arrayRoute() {
-        final String route = "0,0,0,1,0,3,0,4,1,0,0,4";
+        final String route = "0,0,4,1,0,3,0,4,1,0,0,4";
         String[] parts = route.split(",");
 
         for (int i = 0; i < parts.length; i++) {
@@ -98,16 +102,23 @@ public class LineDetection implements Updatable {
             } else if (parts[i].equals("3")) {
                 this.route.add(Route.LEFT);
             } else if (parts[1].equals("4")) {
-                this.route.add(Route.GRIPPER);
+                this.route.add(Route.GRIPPERPICKUP);
+            } else if (parts[1].equals("5")) {
+                this.route.add(Route.GRIPPERDROP);
             }
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.isEnabled = enabled;
     }
 
     /**
      * Checks which linefollowers are on line, and calls the callback attribute with the status.
      */
     public void update() {
-        if (this.listenForRoutes == true) {
+
+        if (this.listenForRoutes == true || this.isEnabled == false) {
             return;
         }
 
