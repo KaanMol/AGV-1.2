@@ -68,14 +68,14 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
      * Sets the direction of the vehicle to right
      */
     public void turnRight() {
-        this.setDirection(Direction.RIGHT, 25, 25);
+        this.setDirection(Direction.RIGHT, 20, 20);
     }
 
     /**
      * Sets the direction of the vehicle to left
      */
     public void turnLeft() {
-        this.setDirection(Direction.LEFT, -25, -25);
+        this.setDirection(Direction.LEFT, -20, -20);
     }
 
     /**

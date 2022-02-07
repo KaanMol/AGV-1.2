@@ -5,5 +5,8 @@ public enum Direction {
     RIGHT,
     BACKWARD,
     LEFT,
-    NEUTRAL
+    NEUTRAL,
+    TURN,
+    PICKUP,
+    PUTDOWN
 }

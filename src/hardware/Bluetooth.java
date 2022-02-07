@@ -25,7 +25,9 @@ public class Bluetooth {
      * @return received byte
      */
     public int readByte() {
-        return this.serial.readByte();
+        int data = this.serial.readByte();
+        System.out.println("BLUETOOTH: " + data);
+        return data;
     }
 
     /**
