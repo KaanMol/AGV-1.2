@@ -5,9 +5,7 @@ import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
-import hardware.UltraSonic;
 import interfaces.*;
-import javafx.stage.Stage;
 import vehicle.*;
 
 import java.util.ArrayList;
@@ -133,23 +131,39 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * This method is called when the distance from the ultrasonic sensor is too little
      */
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
-        if(this.gripper.gripperStatus()&& obstaclePicked){
-            this.movement.forward();
-            obstaclePicked = false;
+//        if(this.gripper.gripperStatus()&& obstaclePicked){
+//            this.movement.forward();
+//            obstaclePicked = false;
+//        }
+//        if(obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
+//            bottomSensorActive = false;
+//            gripper.toggle();
+//            pickUpTimer.mark();
+//            obstacleExpected = false;
+//            obstaclePicked = true;
+//        } else if (this.bottomSensorActive) {
+//            if (hasObstacle.get(Ultrasonic.BOTTOM) < 4) {
+//                this.movement.neutral();
+//            }
+//        } else if (hasObstacle.get(Ultrasonic.TOP) < 4) {
+//            this.movement.neutral();
+//        }
+        System.out.println(hasObstacle.get(Ultrasonic.BOTTOM) + "bottom");
+        System.out.println(hasObstacle.get(Ultrasonic.TOP) + "top");
+
+        if (hasObstacle.get(Ultrasonic.BOTTOM) <= 8 || hasObstacle.get(Ultrasonic.TOP) <= 10) {
+            this.movement.pause();
+            System.out.println("STOP");
+            this.hasObstacle = true;
         }
-        if(obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
-            bottomSensorActive = false;
-            this.movement.neutral();
-            gripper.toggle();
-            pickUpTimer.mark();
-            obstacleExpected = false;
-            obstaclePicked = true;
-        } else if (this.bottomSensorActive) {
-            if (hasObstacle.get(Ultrasonic.BOTTOM) < 4) {
-                this.movement.neutral();
-            }
-        } else if (hasObstacle.get(Ultrasonic.TOP) < 4) {
-            this.movement.neutral();
+
+
+        if (this.hasObstacle == true
+                && hasObstacle.get(Ultrasonic.BOTTOM) > 8
+                && hasObstacle.get(Ultrasonic.TOP) > 10) {
+            System.out.println("START");
+            this.hasObstacle = false;
+            this.movement.play();
         }
     }
 
@@ -164,7 +178,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.controlOwner = ControlOwner.Remote;
             this.lineDetection.setEnabled(false);
         }
-        System.out.println(signal);
+//        System.out.println(signal);
 
         if (signal == Config.remoteForward) {
             this.movement.forward();
@@ -248,7 +262,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.lineDetection.setEnabled(true);
             this.controlOwner = ControlOwner.Line;
             this.movement.forward();
-        } else if (command >= 48 && command <= 52) {
+        } else if (command >= 0 && command <= 4) {
+            System.out.println("ENTER");
             this.lineDetection.setRoute(command);
         } else if (command == WirelessConfig.backward) {
             this.movement.backward();
@@ -300,7 +315,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             case ALL:
                 this.movement.neutral();
                 break;
-            case GRIPPERPICKUP:
+            case GRIPPER:
                 this.obstacleExpected = true;
                 this.movement.forward();
                 break;

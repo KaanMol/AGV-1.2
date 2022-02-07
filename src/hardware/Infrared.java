@@ -23,7 +23,6 @@ public class Infrared {
                     output = output | (1 << i);
                 }
             }
-
             return output;
         } else {
             return -1;
