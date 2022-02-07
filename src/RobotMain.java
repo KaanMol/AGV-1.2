@@ -5,9 +5,7 @@ import common.Config;
 import common.WirelessConfig;
 import enums.*;
 import hardware.Button;
-import hardware.UltraSonic;
 import interfaces.*;
-import javafx.stage.Stage;
 import vehicle.*;
 
 import java.util.ArrayList;
@@ -24,13 +22,11 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private LineDetection lineDetection;
     private Button emergencyStop;
     private boolean emergencyStopActivated = false;
-    private boolean hasObstacle = false;
     private Direction lastHeading = Direction.FORWARD;
     private DrivingLights drivinglights;
     private Gripper gripper;
     private DistanceDetection distanceDetection;
     private Button startButton;
-    private boolean bottomSensorActive = true;
     private boolean obstacleExpected = false;
     private boolean obstaclePicked = false;
     private Timer pickUpTimer = new Timer(1000);
@@ -133,21 +129,18 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * This method is called when the distance from the ultrasonic sensor is too little
      */
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
-        if(this.gripper.gripperStatus()&& obstaclePicked){
+
+
+        if(this.gripper.gripperIsClosed()&& obstaclePicked){
             this.movement.forward();
             obstaclePicked = false;
         }
         if(obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
-            bottomSensorActive = false;
             this.movement.neutral();
             gripper.toggle();
             pickUpTimer.mark();
             obstacleExpected = false;
             obstaclePicked = true;
-        } else if (this.bottomSensorActive) {
-            if (hasObstacle.get(Ultrasonic.BOTTOM) < 4) {
-                this.movement.neutral();
-            }
         } else if (hasObstacle.get(Ultrasonic.TOP) < 4) {
             this.movement.neutral();
         }
@@ -165,23 +158,23 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.lineDetection.setEnabled(false);
         }
 
-        if (signal == Config.remoteForward) {
+        if (signal == WirelessConfig.remoteForward) {
             this.movement.forward();
-        } else if (signal == Config.remoteBackward) {
+        } else if (signal == WirelessConfig.remoteBackward) {
             this.movement.backward();
-        } else if (signal == Config.remoteRight) {
+        } else if (signal == WirelessConfig.remoteRight) {
             this.movement.turnRight();
-        } else if (signal == Config.remoteLeft) {
+        } else if (signal == WirelessConfig.remoteLeft) {
             this.movement.turnLeft();
-        } else if (signal == Config.remoteNeutral) {
+        } else if (signal == WirelessConfig.remoteNeutral) {
             this.movement.neutral();
-        } else if (signal == Config.remoteEmergencyStop) {
+        } else if (signal == WirelessConfig.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
-        } else if (signal == Config.remoteControlTransfer) {
+        } else if (signal == WirelessConfig.remoteControlTransfer) {
             System.out.println("Linefollower was given control!");
             this.lineDetection.setEnabled(true);
             this.controlOwner = ControlOwner.Line;
-        } else if (signal == Config.remoteGripper) {
+        } else if (signal == WirelessConfig.remoteGripper) {
             this.gripper.toggle();
         }
     }
@@ -229,7 +222,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
     /**
      * Callbakc that gets called when the vehicle detects Bluetooth
-     * @param data Which ASCII Number is given
+     * @param command Which ASCII Number is given
      */
     public void onWirelessUpdate(int command) {
         if (this.controlOwner != ControlOwner.Wireless) {
@@ -306,7 +299,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             case GRIPPERDROP:
                 this.movement.neutral();
                 this.gripper.toggle();
-                bottomSensorActive = true;
 
 
         }
