@@ -2,18 +2,18 @@ package hardware;
 
 import TI.BoeBot;
 import TI.PinMode;
-import common.Config;
+import common.WirelessConfig;
 
 public class Infrared {
 
     public int getRemoteCode() {
-        BoeBot.setMode(Config.InfraredPin, PinMode.Input);
-        int pulseLen = BoeBot.pulseIn(Config.InfraredPin, false, 6000);
+        BoeBot.setMode(WirelessConfig.InfraredPin, PinMode.Input);
+        int pulseLen = BoeBot.pulseIn(WirelessConfig.InfraredPin, false, 6000);
 
         if (pulseLen > 2000) {
             int lengths[] = new int[12];
             for (int i = 0; i < 12; i++) {
-                lengths[i] = BoeBot.pulseIn(Config.InfraredPin, false, 20000);
+                lengths[i] = BoeBot.pulseIn(WirelessConfig.InfraredPin, false, 20000);
             }
 
             int output = 0;

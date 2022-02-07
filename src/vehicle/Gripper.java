@@ -7,7 +7,7 @@ import interfaces.Updatable;
 public class Gripper implements Updatable {
     private hardware.Gripper gripper;
     private Timer timer;
-    boolean isClosing = false;
+    boolean isClosed = false;
     int currentSpeed = 1750;
 
     public Gripper() {
@@ -16,11 +16,11 @@ public class Gripper implements Updatable {
     }
 
     public void toggle() {
-        this.isClosing = !this.isClosing;
+        this.isClosed = !this.isClosed;
     }
 
-    public boolean gripperStatus() {
-        return this.isClosing;
+    public boolean gripperIsClosed() {
+        return this.isClosed;
     }
 
     public void update() {
@@ -28,9 +28,9 @@ public class Gripper implements Updatable {
             return;
         }
 
-        if (this.isClosing == true && this.currentSpeed > 1150) {
+        if (this.isClosed == true && this.currentSpeed > 1150) {
             this.currentSpeed -= 10;
-        } else if (this.isClosing == false && this.currentSpeed < 1750) {
+        } else if (this.isClosed == false && this.currentSpeed < 1750) {
             this.currentSpeed += 10;
         }
 
