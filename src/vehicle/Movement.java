@@ -21,6 +21,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private boolean isDecelerating = false;
     private boolean isPaused = false;
     private Direction lastDirection = Direction.NEUTRAL;
+    private boolean isLookingForBread;
 
     private int step = 0;
 
@@ -35,6 +36,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.accelerationTimer = new Timer(Config.accelerationSpeedStep);
         this.rightServo = new Motor(Config.rightServoPin);
         this.leftServo = new Motor(Config.leftServoPin);
+        this.isLookingForBread = false;
     }
 
     /**
@@ -118,6 +120,10 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.leftServo.setSpeed(1500);
         this.setDirection(Direction.NEUTRAL, 0, 0);
     }
+
+//    public void setLookingForBread(boolean isLookingForBread) {
+//        this.isLookingForBread = isLookingForBread;
+//    }
 
     private void setDeceleratingDirection() {
         this.isDecelerating = true;
@@ -228,6 +234,10 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
                 }
             }
         }
+
+//        if(this.isLookingForBread){
+//
+//        }
 
         if (this.getHeading() == Direction.BACKWARD) {
             this.rightServo.setSpeed(1500 + (this.rightMotorSpeed * -1));

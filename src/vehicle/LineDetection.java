@@ -15,10 +15,12 @@ public class LineDetection implements Updatable {
     private LineFollower leftLineFollower;
     private LineFollower middleLineFollower;
     private LineFollower rightLineFollower;
+    private Gripper gripper;
     private Timer actionDelay;
     private ArrayList<Route> route;
     private int i = 0;
     boolean turning = false;
+    boolean isGrippering = false;
     boolean listenForRoutes = false;
     boolean isEnabled = true;
 
@@ -32,6 +34,7 @@ public class LineDetection implements Updatable {
         this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin);
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
+        this.gripper = new Gripper();
         this.route = new ArrayList<>();
         this.actionDelay = new Timer(1000);
         this.route.add(Route.FORWARD);
@@ -101,7 +104,7 @@ public class LineDetection implements Updatable {
                 this.route.add(Route.BACKWARDS);
             } else if (parts[i].equals("3")) {
                 this.route.add(Route.LEFT);
-            } else if (parts[1].equals("4")) {
+            } else if (parts[i].equals("4")) {
                 this.route.add(Route.GRIPPER);
             }
         }
@@ -140,6 +143,12 @@ public class LineDetection implements Updatable {
                 return;
             }
 
+//            if(this.isGrippering) {
+//                this.callback.onLineDetectionUpdate(Route.GRIPPER);
+//                return;
+//            }
+
+
             if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
                 final Route currentAction = this.route.get(0);
                 this.route.remove(0);
@@ -151,8 +160,10 @@ public class LineDetection implements Updatable {
 
                 this.callback.onLineDetectionUpdate(currentAction);
 
+
                 System.out.println("intersection found");
                 this.actionDelay.mark();
+
 
                 return;
             }

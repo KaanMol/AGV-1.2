@@ -20,6 +20,7 @@ public class DistanceDetection implements Updatable {
     private Pair<Ultrasonic, Boolean> top;
     private boolean bottomObstacle = false;
     private boolean topObstacle = false;
+    private boolean isLookingForBread;
 
     public DistanceDetection(DistanceDetectionUpdater callback) {
         this.callback = callback;
@@ -28,6 +29,19 @@ public class DistanceDetection implements Updatable {
         this.topUltraSonic = new UltraSonic(Config.topUltraSonicInputPin, Config.topUltraSonicOutputPin);
 
     }
+
+//    public void setLookingForBread(boolean isLookingForBread){
+//        this.isLookingForBread = isLookingForBread;
+//    }
+
+//    public boolean isCloseToBread(){
+//        if(bottomUltraSonic.getDistance() <= 10){
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
+//    }
 
     public void update() {
         if (this.timer.timeout() == false) {
@@ -41,7 +55,19 @@ public class DistanceDetection implements Updatable {
         hasObstacle.put(Ultrasonic.BOTTOM, bottomDistance);
         hasObstacle.put(Ultrasonic.TOP, topDistance);
 
+//        if(this.isLookingForBread){
+//            if(bottomDistance < 20) {
+//                System.out.println("Bread Found");
+//
+//            }
+//        }
+
+        if(this.bottomUltraSonic.getDistance() < 10){
+            bottomObstacle = true;
+        }
+
         this.timer.mark();
         this.callback.onDistanceDetectionUpdate(hasObstacle);
+        //this.callback.onDistanceDetectionUpdate(bottomObstacle);
     }
 }
