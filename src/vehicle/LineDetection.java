@@ -78,6 +78,8 @@ public class LineDetection implements Updatable {
             this.route.add(Route.LEFT);
         } else if (receivedDirection == 4) {
             this.route.add(Route.GRIPPER);
+        } else if (receivedDirection == 5) {
+            this.route.add(Route.GRIPPERDROP);
         }
 //        System.out.println("Direction : " + this.route.get(this.route.size() - 1).name());
     }
@@ -100,14 +102,16 @@ public class LineDetection implements Updatable {
                 this.route.add(Route.FORWARD);
             } else if (parts[i].equals("1")) {
                 this.route.add(Route.RIGHT);
-                this.route.add(Route.FORWARD);
+                //this.route.add(Route.FORWARD);
             } else if (parts[i].equals("2")) {
                 this.route.add(Route.BACKWARDS);
             } else if (parts[i].equals("3")) {
                 this.route.add(Route.LEFT);
-                this.route.add(Route.FORWARD);
+                //this.route.add(Route.FORWARD);
             } else if (parts[i].equals("4")) {
                 this.route.add(Route.GRIPPER);
+            } else if (parts[i].equals("5")) {
+                this.route.add(Route.GRIPPERDROP);
             }
         }
     }

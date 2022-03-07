@@ -15,6 +15,10 @@ public class Gripper implements Updatable {
         this.timer = new Timer(25);
     }
 
+    public hardware.Gripper getGripper(){
+        return this.gripper;
+    }
+
     public void toggle() {
         this.isClosing = !this.isClosing;
     }

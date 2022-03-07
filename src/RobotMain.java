@@ -90,6 +90,8 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.emergencyStop = new Button(Config.emergencyStopButtonPin);
 
         this.startButton = new Button(0);
+
+        this.gripper.getGripper().getGripper().update(1300);
     }
 
     /**
@@ -140,18 +142,30 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
 
 
-        if(this.gripper.gripperStatus()&& obstaclePicked){
-            this.movement.forward();
-            obstaclePicked = false;
-        }
-        if(obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
+//        if (this.gripper.gripperStatus() && obstaclePicked) {
+//            this.movement.forward();
+//            obstaclePicked = false;
+//        }
+        if (!this.obstaclePicked && obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
             System.out.println("gripper toggle");
+            //this.movement.pause();
             bottomSensorActive = false;
             gripper.toggle();
             pickUpTimer.mark();
             obstacleExpected = false;
             obstaclePicked = true;
         }
+        if(obstaclePicked && obstacleExpected){
+            System.out.println("gripper toggle");
+            bottomSensorActive = true;
+            //this.gripper.getGripper().getGripper().update(1300);
+            this.gripper.toggle();
+            pickUpTimer.mark();
+            this.obstaclePicked = false;
+            this.obstacleExpected = false;
+            this.movement.neutral();
+        }
+
 //        else if (this.bottomSensorActive) {
 //            if (hasObstacle.get(Ultrasonic.BOTTOM) < 4) {
 //                this.movement.neutral();
@@ -255,7 +269,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
     /**
      * Callbakc that gets called when the vehicle detects Bluetooth
-     * @param data Which ASCII Number is given
+     * //@param data Which ASCII Number is given
      */
     public void onWirelessUpdate(int command) {
         System.out.println("bluetooth method triggered");
@@ -339,15 +353,19 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                 //this.gripper.toggle();
                 this.obstacleExpected = true;
                 System.out.println("obstacle on");
-                //BoeBot.wait(100000);
+
+                //this.obstaclePicked = true;
                 break;
-            case GRIPPERDROP:
-                this.movement.neutral();
-                this.gripper.toggle();
-                bottomSensorActive = true;
-
-
         }
+                //BoeBot.wait(100000);
+//            case GRIPPERDROP:
+//                System.out.println("gripper toggle");
+//                bottomSensorActive = true;
+//                this.gripper.getGripper().getGripper().update(1300);
+//                pickUpTimer.mark();
+//                obstaclePicked = false;
+//                this.movement.neutral();
+//                break;
     }
 
     public void emergencyStop() {
