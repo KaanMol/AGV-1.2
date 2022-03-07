@@ -19,6 +19,10 @@ public class Gripper implements Updatable {
         this.isClosing = !this.isClosing;
     }
 
+    public boolean gripperStatus() {
+        return this.isClosing;
+    }
+
     public void update() {
         if (this.timer.timeout() == false) {
             return;

@@ -87,7 +87,7 @@ public class Config {
     /**
      * The number that the ir remote sends for moving forward
      */
-    public static final int remoteForward = 216;
+    public static final int remoteForward =216;
 
     /**
      * The number that the ir remote sends for moving backward
@@ -107,7 +107,7 @@ public class Config {
     /**
      * The number that the ir remote sends for turning the wheels off
      */
-    public static final int remoteNeutral = 223;
+    public static final int remoteNeutral = 148;
 
     /**
      * The number that the ir remote sends for emergency stop
@@ -117,9 +117,9 @@ public class Config {
     /**
      * The number that the ir remote sends for emergency stop
      */
-    public static final int remoteControlTransfer = 151;
+    public static final int remoteControlTransfer = 219;
 
-    public static final int remoteGripper = 219;
+    public static final int remoteGripper = 151;
 
 
     /**
@@ -128,12 +128,21 @@ public class Config {
     public static final int baudrate = 115200;
 
     /**
-     * GPIO pin the UltraSonic output is connected to
+     * GPIO pin the bottom UltraSonic output is connected to
      */
-    public static final int UltraSonicOutputPin = 3;
+    public static final int bottomUltraSonicOutputPin = 3;
 
     /**
-     * GPIO pin the UltraSonic input is connected to
+     * GPIO pin the bottom UltraSonic input is connected to
      */
-    public static final int UltraSonicInputPin = 4;
+    public static final int bottomUltraSonicInputPin = 4;
+    /**
+     * GPIO pin the top UltraSonic output is connected to
+     */
+    public static final int topUltraSonicOutputPin = 5;
+
+    /**
+     * GPIO pin the top UltraSonic input is connected to
+     */
+    public static final int topUltraSonicInputPin = 6;
 }

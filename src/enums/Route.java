@@ -1,4 +1,4 @@
-package GUI;
+package enums;
 
 public enum Route {
     FORWARD,
@@ -8,4 +8,6 @@ public enum Route {
     STOP,
     ALL,
     GRIPPER,
+    GRIPPERDROP,
+
 }
