@@ -81,7 +81,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         this.wirelessConnection = new WirelessConnection(this);
         this.processes.add(this.wirelessConnection);
 
-        this.gripper = new Gripper();
+        this.gripper = new Gripper(this.movement);
         this.processes.add(this.gripper);
 
         this.distanceDetection = new DistanceDetection(this);
@@ -91,7 +91,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.startButton = new Button(0);
 
-        this.gripper.getGripper().getGripper().update(1300);
+        this.gripper.getGripper().getGripper().update(1500);
     }
 
     /**
@@ -150,6 +150,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             System.out.println("gripper toggle");
             //this.movement.pause();
             bottomSensorActive = false;
+            this.movement.neutral();
             gripper.toggle();
             pickUpTimer.mark();
             obstacleExpected = false;

@@ -34,7 +34,7 @@ public class LineDetection implements Updatable {
         this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin);
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
-        this.gripper = new Gripper();
+        //this.gripper = new Gripper();
         this.route = new ArrayList<>();
         this.actionDelay = new Timer(1000);
         this.route.add(Route.FORWARD);
