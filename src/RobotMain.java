@@ -215,7 +215,12 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else if (signal == Config.remoteLeft) {
             this.movement.turnLeft();
         } else if (signal == Config.remoteNeutral) {
-            this.movement.brake();
+            if(this.movement.getHeading() == Direction.LEFT || this.movement.getHeading() == Direction.RIGHT){
+                this.movement.neutral();
+            }
+            else {
+                this.movement.brake();
+            }
         } else if (signal == Config.remoteEmergencyStop) {
             this.emergencyStopActivated = true;
         } else if (signal == Config.remoteControlTransfer) {
