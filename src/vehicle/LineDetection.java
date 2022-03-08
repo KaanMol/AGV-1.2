@@ -1,6 +1,7 @@
 package vehicle;
 
 import TI.Timer;
+import enums.Direction;
 import enums.Route;
 import hardware.LineFollower;
 import interfaces.LineDetectionUpdater;

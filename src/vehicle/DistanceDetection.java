@@ -30,18 +30,13 @@ public class DistanceDetection implements Updatable {
 
     }
 
-//    public void setLookingForBread(boolean isLookingForBread){
-//        this.isLookingForBread = isLookingForBread;
-//    }
+    public UltraSonic getBottomUltraSonic(){
+        return this.bottomUltraSonic;
+    }
 
-//    public boolean isCloseToBread(){
-//        if(bottomUltraSonic.getDistance() <= 10){
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
+    public UltraSonic getTopUltraSonic(){
+        return this.topUltraSonic;
+    }
 
     public void update() {
         if (this.timer.timeout() == false) {

@@ -141,7 +141,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
     public void onDistanceDetectionUpdate(HashMap<Ultrasonic, Double> hasObstacle) {
 
-
 //        if (this.gripper.gripperStatus() && obstaclePicked) {
 //            this.movement.forward();
 //            obstaclePicked = false;
@@ -191,6 +190,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.hasObstacle = false;
             this.movement.play();
         }
+        //System.out.println("has obstacle: " + this.hasObstacle);
     }
 
 
@@ -233,6 +233,14 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param heading - The direction where the vehicle is heading to
      */
     public void onMovementUpdate(Direction heading) {
+        if(this.controlOwner == ControlOwner.Line){
+            if(this.gripper.isGripperClosed()) {
+                if (this.movement.getHeading() == Direction.NEUTRAL) {
+                    this.movement.forward();
+                }
+            }
+        }
+
         if (heading == Direction.LEFT || heading == Direction.RIGHT) {
             this.blinkers.start(heading);
             this.drivingNotification.stop();
@@ -281,7 +289,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         }
 
 
-        System.out.println("Looking for command");
+        System.out.println("Looking for command: " + command);
         if (command == WirelessConfig.routeTransmissionStart) {
             this.lineDetection.startListeningRoutes();
             this.movement.neutral();
@@ -310,6 +318,13 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.controlOwner = ControlOwner.Line;
         } else if (command == WirelessConfig.gripper) {
             this.gripper.toggle();
+        } else if (command == WirelessConfig.brake){
+            if(this.movement.getHeading() == Direction.LEFT || this.movement.getHeading() == Direction.RIGHT){
+                this.movement.neutral();
+            }
+            else {
+                this.movement.brake();
+            }
         }
     }
 
@@ -321,45 +336,42 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         if (this.movement.getHeading() == Direction.NEUTRAL) {
             return;
         }
+        if (this.controlOwner != ControlOwner.Line) {
+            return;
+        }
 
-        if(!this.hasObstacle){
-            if (this.controlOwner != ControlOwner.Line) {
-                return;
-            }
+        this.obstacleExpected = false;
+        switch (lineDetection) {
+            case FORWARD:
+                this.movement.forward();
+                break;
+            case LEFT:
+                System.out.println("GO LEFT");
+                this.movement.turnLeft();
+                break;
+            case RIGHT:
+                System.out.println("GO RIGHT");
+                this.movement.turnRight();
+                break;
+            case STOP:
+                this.movement.neutral();
+                this.drivingNotification.start();
+                this.drivinglights.lineLights();
+                break;
+            case ALL:
+                this.movement.neutral();
+                break;
+            case GRIPPER:
+                //this.obstacleExpected = true;
+                //this.movement.forward();
 
-            this.obstacleExpected = false;
-            switch (lineDetection) {
-                case FORWARD:
-                    this.movement.forward();
-                    break;
-                case LEFT:
-                    System.out.println("GO LEFT");
-                    this.movement.turnLeft();
-                    break;
-                case RIGHT:
-                    System.out.println("GO RIGHT");
-                    this.movement.turnRight();
-                    break;
-                case STOP:
-                    this.movement.neutral();
-                    this.drivingNotification.start();
-                    this.drivinglights.lineLights();
-                    break;
-                case ALL:
-                    this.movement.neutral();
-                    break;
-                case GRIPPER:
-                    //this.obstacleExpected = true;
-                    //this.movement.forward();
+                //this.movement.br();
+                //this.gripper.toggle();
+                this.obstacleExpected = true;
+                System.out.println("obstacle on");
 
-                    //this.movement.br();
-                    //this.gripper.toggle();
-                    this.obstacleExpected = true;
-                    System.out.println("obstacle on");
-
-                    //this.obstaclePicked = true;
-                    break;
-            }
+                //this.obstaclePicked = true;
+                break;
         }
     }
 

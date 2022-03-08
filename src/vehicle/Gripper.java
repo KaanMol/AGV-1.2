@@ -31,6 +31,15 @@ public class Gripper implements Updatable {
         return this.isClosing;
     }
 
+    public boolean isGripperClosed(){
+        if(this.currentSpeed <= 1150){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public void update() {
         if (this.timer.timeout() == false) {
             return;
@@ -40,12 +49,12 @@ public class Gripper implements Updatable {
             if(this.currentSpeed > 1150) {
                 this.currentSpeed -= 10;
             }
-            else{
-                if(this.movement.getHeading() == Direction.NEUTRAL)
-                {
-                    this.movement.forward();
-                }
-            }
+//            else{
+//                if(this.movement.getHeading() == Direction.NEUTRAL)
+//                {
+//                    this.movement.forward();
+//                }
+//            }
         } else if (this.isClosing == false && this.currentSpeed < 1750) {
             this.currentSpeed += 10;
         }
