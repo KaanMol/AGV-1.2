@@ -78,10 +78,7 @@ public class LineDetection implements Updatable {
             this.route.add(Route.LEFT);
         } else if (receivedDirection == 4) {
             this.route.add(Route.GRIPPER);
-        } else if (receivedDirection == 5) {
-            this.route.add(Route.GRIPPERDROP);
         }
-//        System.out.println("Direction : " + this.route.get(this.route.size() - 1).name());
     }
 
     /**

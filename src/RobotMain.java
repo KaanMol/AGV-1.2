@@ -313,60 +313,51 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         }
     }
 
-
-
     /**
      * Callback that gets called when the vehicle detects a line.
      * @param lineDetection
      */
     public void onLineDetectionUpdate(Route lineDetection) {
 
-        if (this.controlOwner != ControlOwner.Line) {
-            return;
+        if(!this.hasObstacle){
+            if (this.controlOwner != ControlOwner.Line) {
+                return;
+            }
+
+            this.obstacleExpected = false;
+            switch (lineDetection) {
+                case FORWARD:
+                    this.movement.forward();
+                    break;
+                case LEFT:
+                    System.out.println("GO LEFT");
+                    this.movement.turnLeft();
+                    break;
+                case RIGHT:
+                    System.out.println("GO RIGHT");
+                    this.movement.turnRight();
+                    break;
+                case STOP:
+                    this.movement.neutral();
+                    this.drivingNotification.start();
+                    this.drivinglights.lineLights();
+                    break;
+                case ALL:
+                    this.movement.neutral();
+                    break;
+                case GRIPPER:
+                    //this.obstacleExpected = true;
+                    //this.movement.forward();
+
+                    //this.movement.br();
+                    //this.gripper.toggle();
+                    this.obstacleExpected = true;
+                    System.out.println("obstacle on");
+
+                    //this.obstaclePicked = true;
+                    break;
+            }
         }
-
-        this.obstacleExpected = false;
-        switch (lineDetection) {
-            case FORWARD:
-                this.movement.forward();
-                break;
-            case LEFT:
-                System.out.println("GO LEFT");
-                this.movement.turnLeft();
-                break;
-            case RIGHT:
-                System.out.println("GO RIGHT");
-                this.movement.turnRight();
-                break;
-            case STOP:
-                this.movement.neutral();
-                this.drivingNotification.start();
-                this.drivinglights.lineLights();
-                break;
-            case ALL:
-                this.movement.neutral();
-                break;
-            case GRIPPER:
-                //this.obstacleExpected = true;
-                //this.movement.forward();
-
-                //this.movement.br();
-                //this.gripper.toggle();
-                this.obstacleExpected = true;
-                System.out.println("obstacle on");
-
-                //this.obstaclePicked = true;
-                break;
-        }
-                //BoeBot.wait(100000);
-//            case GRIPPERDROP:
-//                System.out.println("gripper toggle");
-//                bottomSensorActive = true;
-//                this.gripper.getGripper().getGripper().update(1300);
-//                pickUpTimer.mark();
-//                obstaclePicked = false;
-//                this.movement.neutral();
-//                break;
     }
 
     public void emergencyStop() {
