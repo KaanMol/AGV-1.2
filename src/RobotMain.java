@@ -32,6 +32,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
     private boolean obstacleExpected = false;
     private boolean obstaclePicked = false;
     private Timer pickUpTimer = new Timer(1000);
+    private boolean endOfRoute = false;
 
     ControlOwner controlOwner = ControlOwner.Line;
 
@@ -145,6 +146,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 //            this.movement.forward();
 //            obstaclePicked = false;
 //        }
+        System.out.println(hasObstacle.get(Ultrasonic.BOTTOM));
         if (!this.obstaclePicked && obstacleExpected && hasObstacle.get(Ultrasonic.BOTTOM)<4) {
             System.out.println("gripper toggle");
             //this.movement.pause();
@@ -163,6 +165,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             pickUpTimer.mark();
             this.obstaclePicked = false;
             this.obstacleExpected = false;
+            this.endOfRoute = true;
             this.movement.neutral();
         }
 
@@ -206,6 +209,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         }
 //        System.out.println(signal);
 
+        System.out.println(signal);
         if (signal == Config.remoteForward) {
             this.movement.forward();
         } else if (signal == Config.remoteBackward) {
@@ -262,6 +266,10 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
         } else {
             this.blinkers.stop();
         }
+        if(this.endOfRoute && this.controlOwner == ControlOwner.Line){
+            this.movement.neutral();
+        }
+
     }
 
     /**
@@ -299,6 +307,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
             this.lineDetection.startListeningRoutes();
             this.movement.neutral();
         } else if (command == WirelessConfig.routeTransmissionEnd) {
+            this.endOfRoute = false;
             this.lineDetection.stopListeningRoutes();
             this.lineDetection.setEnabled(true);
             this.controlOwner = ControlOwner.Line;
