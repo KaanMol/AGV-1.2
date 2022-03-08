@@ -41,7 +41,7 @@ public class LineDetection implements Updatable {
         this.route.add(Route.RIGHT);
         this.route.add(Route.FORWARD);
         this.route.add(Route.LEFT);
-        arrayRoute();
+//        arrayRoute();
     }
 
     public void startListeningRoutes() {
@@ -130,13 +130,6 @@ public class LineDetection implements Updatable {
         }
 
         try {
-//            if (this.route.size() == 1) {
-//                this.route.add(Route.FORWARD);
-//                this.route.add(Route.RIGHT);
-//                this.route.add(Route.FORWARD);
-//                this.route.add(Route.LEFT);
-//            }
-
             if (this.turning) {
                 if (this.middleLineFollower.isOnLine() == true && this.actionDelay.timeout()) {
                     this.turning = false;
@@ -149,16 +142,9 @@ public class LineDetection implements Updatable {
                 return;
             }
 
-//            if(this.isGrippering) {
-//                this.callback.onLineDetectionUpdate(Route.GRIPPER);
-//                return;
-//            }
-
-
             if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
                 final Route currentAction = this.route.get(0);
                 this.route.remove(0);
-//                System.out.println(currentAction);
 
                 if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
                     this.turning = true;
@@ -174,11 +160,7 @@ public class LineDetection implements Updatable {
                 return;
             }
         } catch (Exception e) {
-//            this.route.add(Route.FORWARD);
-//            this.route.add(Route.RIGHT);
-//            this.route.add(Route.FORWARD);
-//            this.route.add(Route.LEFT);
-//            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
