@@ -59,7 +59,6 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
         this.movement = new Movement(this);
         this.processes.add(this.movement);
-        this.movement.forward();
 
         this.collisionDetection = new CollisionDetection(this);
         this.processes.add(this.collisionDetection);
@@ -105,6 +104,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
                     if (this.emergencyStop.isPressed()) {
                         System.out.println("stop");
                         this.movement.neutral();
+                        this.drivingNotification.stop();
                         this.emergencyStopActivated = true;
                         break;
                     }
@@ -270,7 +270,7 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
 
     /**
      * Callbakc that gets called when the vehicle detects Bluetooth
-     * //@param data Which ASCII Number is given
+     * @param command Which ASCII Number is given
      */
     public void onWirelessUpdate(int command) {
         System.out.println("bluetooth method triggered");
@@ -318,6 +318,9 @@ public class RobotMain implements MovementUpdater, CollisionDetectionUpdater, Wi
      * @param lineDetection
      */
     public void onLineDetectionUpdate(Route lineDetection) {
+        if (this.movement.getHeading() == Direction.NEUTRAL) {
+            return;
+        }
 
         if(!this.hasObstacle){
             if (this.controlOwner != ControlOwner.Line) {
