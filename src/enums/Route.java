@@ -7,7 +7,7 @@ public enum Route {
     RIGHT,
     STOP,
     ALL,
-    GRIPPERPICKUP,
+    GRIPPER,
     GRIPPERDROP,
 
 }

@@ -1,81 +1,10 @@
 package GUI;
-//
-//import common.WirelessConfig;
-//import javafx.application.Application;
-//import javafx.scene.Scene;
-//import javafx.scene.control.Button;
-//import javafx.scene.control.TextArea;
-//import javafx.scene.control.TextField;
-//import javafx.scene.layout.BorderPane;
-//import javafx.scene.layout.GridPane;
-//import javafx.scene.text.Text;
-//import javafx.stage.Stage;
-//import vehicle.Movement;
-//import javafx.scene.control.Label;
-//import javafx.scene.image.Image;
-//import javafx.scene.image.ImageView;
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//
-//
-//import java.awt.*;
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//
-//public class Layout extends Application {
-//    private Commands commands;
-//    private ArrayList<String> route;
-//    private ArrayList<String> arrowRoute;
-//    private RoutePlanScene routePlanScene;
-//    private ControlScene controlScene;
-//    private int currentX;
-//    private int currentY;
-//    private Direction upcomingDirection;
-//    private ArrayList<Integer> routeCommands;
-//
-//
-//    @Override
-//    public void start(Stage stage) {
-//        this.route = new ArrayList<String>();
-//        this.arrowRoute = new ArrayList<String>();
-//        this.routeCommands = new ArrayList<Integer>();
-//        this.initializeArrowRoute();
-//
-//        this.commands = new Commands();
-//        this.routePlanScene = new RoutePlanScene();
-//        this.controlScene = new ControlScene();
-//
-//        this.currentX = 5;
-//        this.currentY = 5;
-//        this.upcomingDirection = Direction.FORWARD;
-//
-//        this.controlScene.controlScene(stage, this.route, this.routeCommands);
-//    }
-//
-//    public void initializeArrowRoute(){
-//        for(int i = 0; i < 100; i++){
-//            this.arrowRoute.add("\t");
-//        }
-//    }
-//
-//    public static void main() {
-//        launch(Layout.class);
-//    }
-//
-//}
-//
-//
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import jssc.SerialPort;
@@ -93,6 +22,8 @@ public class Layout extends Application {
     private Button disconnectButton = new Button("Disconnect");
     private Button removeCommand = new Button("Commando verwijderen");
     private Button startRoute = new Button("Route starten");
+    private Button brake;
+    private Button emergencyStop;
     private boolean isPlanningRoute = false;
     private ArrayList<Integer> route = new ArrayList<>();
     private ListView routeList = new ListView();
@@ -102,7 +33,9 @@ public class Layout extends Application {
         put(Route.BACKWARDS, new int[]{2, 115});
         put(Route.LEFT, new int[]{3, 97});
         put(Route.GRIPPER, new int[]{4, 101});
+        //put(Route.GripperDrop, new int[]{5, 102});
         put(Route.STOP, new int[]{5, 113});
+        put(Route.Brake, new int[]{6, 98});
     }};
 
     private Consumer<Route> sendCommand = data -> {
@@ -114,9 +47,12 @@ public class Layout extends Application {
 
             return;
         }
+        System.out.println("no route planning");
 
         try {
+            System.out.println(command[1]);
             serialPort.writeInt(command[1]);
+            System.out.println("wrote int");
         } catch (SerialPortException e){
             e.printStackTrace();
         }
@@ -162,26 +98,34 @@ public class Layout extends Application {
 
             this.removeCommand.setDisable(!this.isPlanningRoute);
             this.startRoute.setDisable(!this.isPlanningRoute);
+            this.brake.setDisable(this.isPlanningRoute);
+            this.emergencyStop.setDisable(this.isPlanningRoute);
 
             this.route.clear();
             this.routeList.getItems().clear();
         });
 
         this.removeCommand.setOnMouseClicked(event -> {
-            this.route.remove(this.route.size() - 1);
-            this.routeList.getItems().remove(0);
+            if(this.route.size() > 0){
+                this.route.remove(this.route.size() - 1);
+                this.routeList.getItems().remove(0);
+            }
         });
 
         this.startRoute.setOnMouseClicked(event -> { this.startRoute(); });
 
         // Control points
-        Button stop = new Button("s");
-        gridPane.add(stop, 1, 3);
-        stop.setOnMouseClicked(event -> sendCommand.accept(Route.STOP));
+        this.emergencyStop = new Button("e");
+        gridPane.add(emergencyStop, 4, 3);
+        emergencyStop.setOnMouseClicked(event -> sendCommand.accept(Route.STOP));
+
+        this.brake = new Button("b");
+        gridPane.add(brake, 1, 3);
+        brake.setOnMouseClicked(event -> sendCommand.accept(Route.Brake));
 
         Button gripper = new Button("g");
         gridPane.add(gripper, 3, 3);
-        stop.setOnMouseClicked(event -> sendCommand.accept(Route.GRIPPER));
+        gripper.setOnMouseClicked(event -> sendCommand.accept(Route.GRIPPER));
 
         Button backwards = new Button("↓");
         gridPane.add(backwards, 2, 5);
@@ -205,7 +149,6 @@ public class Layout extends Application {
         Scene scene = new Scene(hBox);
         stage.setScene(scene);
         stage.show();
-
     }
 
     private void startRoute() {
@@ -215,13 +158,17 @@ public class Layout extends Application {
         int[] route = routeClone.stream().mapToInt(i -> i).toArray();
 
         try {
+//            System.out.println(route[0]);
+//            System.out.println(route[1]);
+//            System.out.println(route[2]);
+//            System.out.println(route[3]);
+//            System.out.println(route[4]);
             this.serialPort.writeIntArray(route);
         } catch (SerialPortException e) {
             System.out.println(e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Er is een onbekende fout opgetreden.");
             alert.show();
         }
-
     }
 
     // Bluetooth connection
@@ -267,19 +214,6 @@ public class Layout extends Application {
     }
 
     public static void main(String[] args) {
-
-//        try {
-//            serialPort.openPort(); // Open the serial connection
-
             launch(Layout.class);
-//            serialPort.writeString("Hello student!");
-//            byte[] buffer = serialPort.readBytes(10); // Fixed buffer length
-//            for (int i = 0; i < 10; i++)
-//                System.out.print(buffer[i] + "-");
-//            serialPort.closePort();
-//        } catch (SerialPortException e) {
-//            e.printStackTrace();
-//        }
-
     }
 }

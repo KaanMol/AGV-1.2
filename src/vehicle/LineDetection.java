@@ -1,6 +1,7 @@
 package vehicle;
 
 import TI.Timer;
+import enums.Direction;
 import enums.Route;
 import hardware.LineFollower;
 import interfaces.LineDetectionUpdater;
@@ -8,8 +9,6 @@ import interfaces.Updatable;
 import common.Config;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LineDetection implements Updatable {
 
@@ -17,10 +16,12 @@ public class LineDetection implements Updatable {
     private LineFollower leftLineFollower;
     private LineFollower middleLineFollower;
     private LineFollower rightLineFollower;
+    private Gripper gripper;
     private Timer actionDelay;
     private ArrayList<Route> route;
     private int i = 0;
     boolean turning = false;
+    boolean isGrippering = false;
     boolean listenForRoutes = false;
     boolean isEnabled = true;
 
@@ -34,13 +35,14 @@ public class LineDetection implements Updatable {
         this.leftLineFollower = new LineFollower(Config.leftLineFollowerPin);
         this.middleLineFollower = new LineFollower(Config.middleLineFollowerPin);
         this.rightLineFollower = new LineFollower(Config.rightLineFollowerPin);
+        //this.gripper = new Gripper();
         this.route = new ArrayList<>();
         this.actionDelay = new Timer(1000);
         this.route.add(Route.FORWARD);
         this.route.add(Route.RIGHT);
         this.route.add(Route.FORWARD);
         this.route.add(Route.LEFT);
-        arrayRoute();
+//        arrayRoute();
     }
 
     public void startListeningRoutes() {
@@ -51,32 +53,33 @@ public class LineDetection implements Updatable {
     public void stopListeningRoutes() {
         this.listenForRoutes = false;
         this.turning = false;
+        for (int i = 0; i < this.route.size(); i++) {
+            System.out.println(i);
+            System.out.println(this.route.get(i).name());
+        }
+
         System.out.println("Stopped Listening routes");
         System.out.println(this.route.size());
     }
 
     public void setRoute(int receivedDirection) {
+
+        System.out.println("HI");
         if (this.listenForRoutes == false) {
             return;
         }
 
-        final int startNumber = 48;
-        final int direction = receivedDirection - startNumber;
-
-        if (direction == 0) {
+        if (receivedDirection == 0) {
             this.route.add(Route.FORWARD);
-        } else if (direction == 1) {
+        } else if (receivedDirection == 1) {
             this.route.add(Route.RIGHT);
-        } else if (direction == 2) {
+        } else if (receivedDirection == 2) {
             this.route.add(Route.BACKWARDS);
-        } else if (direction == 3) {
+        } else if (receivedDirection == 3) {
             this.route.add(Route.LEFT);
-        } else if (direction == 4) {
-            this.route.add(Route.GRIPPERPICKUP);
-        } else if (direction == 5) {
-            this.route.add(Route.GRIPPERDROP);
+        } else if (receivedDirection == 4) {
+            this.route.add(Route.GRIPPER);
         }
-        System.out.println("Direction : " + this.route.get(this.route.size() - 1).name());
     }
 
     /**
@@ -97,13 +100,15 @@ public class LineDetection implements Updatable {
                 this.route.add(Route.FORWARD);
             } else if (parts[i].equals("1")) {
                 this.route.add(Route.RIGHT);
+                //this.route.add(Route.FORWARD);
             } else if (parts[i].equals("2")) {
                 this.route.add(Route.BACKWARDS);
             } else if (parts[i].equals("3")) {
                 this.route.add(Route.LEFT);
-            } else if (parts[1].equals("4")) {
-                this.route.add(Route.GRIPPERPICKUP);
-            } else if (parts[1].equals("5")) {
+                //this.route.add(Route.FORWARD);
+            } else if (parts[i].equals("4")) {
+                this.route.add(Route.GRIPPER);
+            } else if (parts[i].equals("5")) {
                 this.route.add(Route.GRIPPERDROP);
             }
         }
@@ -123,19 +128,12 @@ public class LineDetection implements Updatable {
         }
 
         try {
-//            if (this.route.size() == 1) {
-//                this.route.add(Route.FORWARD);
-//                this.route.add(Route.RIGHT);
-//                this.route.add(Route.FORWARD);
-//                this.route.add(Route.LEFT);
-//            }
-
             if (this.turning) {
                 if (this.middleLineFollower.isOnLine() == true && this.actionDelay.timeout()) {
                     this.turning = false;
                     final Route currentAction = this.route.get(0);
                     this.route.remove(0);
-                    System.out.println(currentAction);
+//                    System.out.println(currentAction);
                     this.actionDelay.mark();
                     this.callback.onLineDetectionUpdate(currentAction);
                 }
@@ -145,7 +143,6 @@ public class LineDetection implements Updatable {
             if (this.leftLineFollower.isOnLine() && this.rightLineFollower.isOnLine() && this.actionDelay.timeout()) {
                 final Route currentAction = this.route.get(0);
                 this.route.remove(0);
-                System.out.println(currentAction);
 
                 if (currentAction == Route.LEFT || currentAction == Route.RIGHT) {
                     this.turning = true;
@@ -153,17 +150,15 @@ public class LineDetection implements Updatable {
 
                 this.callback.onLineDetectionUpdate(currentAction);
 
+
                 System.out.println("intersection found");
                 this.actionDelay.mark();
+
 
                 return;
             }
         } catch (Exception e) {
-//            this.route.add(Route.FORWARD);
-//            this.route.add(Route.RIGHT);
-//            this.route.add(Route.FORWARD);
-//            this.route.add(Route.LEFT);
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

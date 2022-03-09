@@ -18,6 +18,10 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
     private Manoeuvre manoeuvre = Manoeuvre.NONE;
     private Timer timer;
     private Timer accelerationTimer;
+    private boolean isDecelerating = false;
+    private boolean isPaused = false;
+    private Direction lastDirection = Direction.NEUTRAL;
+    private boolean isLookingForBread;
 
     private int step = 0;
 
@@ -32,6 +36,7 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.accelerationTimer = new Timer(Config.accelerationSpeedStep);
         this.rightServo = new Motor(Config.rightServoPin);
         this.leftServo = new Motor(Config.leftServoPin);
+        this.isLookingForBread = false;
     }
 
     /**
@@ -59,6 +64,39 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.setAcceleratingDirection(Direction.BACKWARD, 0, 0);
     }
 
+    public void brake() {
+        this.setDeceleratingDirection();
+    }
+
+    public void pause() {
+        if (this.isPaused == true) {
+            return;
+        }
+
+        this.lastDirection = this.currentHeading;
+        this.isPaused = true;
+
+
+        if (this.currentHeading == Direction.LEFT || this.currentHeading == Direction.RIGHT) {
+            this.neutral();
+        } else {
+            this.setDeceleratingDirection();
+        }
+
+    }
+
+    public void play() {
+        this.isPaused = false;
+        if (this.lastDirection == Direction.LEFT ) {
+            this.turnLeft();
+        } else if (this.lastDirection == Direction.RIGHT) {
+            this.turnRight();
+        } else {
+            this.setAcceleratingDirection(this.lastDirection, 0, 0);
+        }
+
+    }
+
     /**
      * Sets the direction of the vehicle to right
      */
@@ -81,6 +119,15 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
         this.rightServo.setSpeed(1500);
         this.leftServo.setSpeed(1500);
         this.setDirection(Direction.NEUTRAL, 0, 0);
+    }
+
+//    public void setLookingForBread(boolean isLookingForBread) {
+//        this.isLookingForBread = isLookingForBread;
+//    }
+
+    private void setDeceleratingDirection() {
+        this.isDecelerating = true;
+        this.accelerationTimer.mark();
     }
 
     /**
@@ -175,30 +222,31 @@ public class Movement implements interfaces.hardware.Movement, Updatable {
 
         if (this.currentHeading == Direction.FORWARD || this.currentHeading == Direction.BACKWARD) {
             if (this.accelerationTimer.timeout()) {
-
-                if (this.leftMotorSpeed < 30 && this.rightMotorSpeed > -30) {
+                if (this.leftMotorSpeed < 30 && this.rightMotorSpeed > -30 && this.isDecelerating == false) {
                     this.leftMotorSpeed += Config.accelerationStep;
                     this.rightMotorSpeed -= Config.accelerationStep;
-                }
-            }
-        }
-        else if (this.currentHeading == Direction.NEUTRAL) {
-            if (this.accelerationTimer.timeout()) {
-                if (this.leftMotorSpeed > 30 && this.rightMotorSpeed < -30) {
+                } else if (this.leftMotorSpeed != 0 && this.rightMotorSpeed != 0 && this.isDecelerating == true) {
                     this.leftMotorSpeed -= Config.accelerationStep;
-                    this.rightMotorSpeed -= Config.accelerationStep;
+                    this.rightMotorSpeed += Config.accelerationStep;
+                } else if (this.leftMotorSpeed == 0 && this.rightMotorSpeed == 0 && this.isDecelerating == true) {
+                    this.currentHeading = Direction.NEUTRAL;
+                    this.isDecelerating = false;
                 }
             }
         }
+
+//        if(this.isLookingForBread){
+//
+//        }
 
         if (this.getHeading() == Direction.BACKWARD) {
-
             this.rightServo.setSpeed(1500 + (this.rightMotorSpeed * -1));
             this.leftServo.setSpeed(1500 + (this.leftMotorSpeed * -1));
         } else {
             this.rightServo.setSpeed(1500 + this.rightMotorSpeed);
             this.leftServo.setSpeed(1500 + this.leftMotorSpeed);
         }
+
         this.callback.onMovementUpdate(this.getHeading());
     }
 }

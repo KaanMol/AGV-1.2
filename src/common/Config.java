@@ -87,7 +87,7 @@ public class Config {
     /**
      * The number that the ir remote sends for moving forward
      */
-    public static final int remoteForward = 216;
+    public static final int remoteForward =216;
 
     /**
      * The number that the ir remote sends for moving backward
@@ -107,7 +107,7 @@ public class Config {
     /**
      * The number that the ir remote sends for turning the wheels off
      */
-    public static final int remoteNeutral = 223;
+    public static final int remoteNeutral = 148;
 
     /**
      * The number that the ir remote sends for emergency stop
@@ -117,9 +117,9 @@ public class Config {
     /**
      * The number that the ir remote sends for emergency stop
      */
-    public static final int remoteControlTransfer = 151;
+    public static final int remoteControlTransfer = 219;
 
-    public static final int remoteGripper = 219;
+    public static final int remoteGripper = 151;
 
 
     /**

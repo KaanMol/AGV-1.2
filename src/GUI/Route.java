@@ -6,6 +6,6 @@ public enum Route {
     BACKWARDS,
     RIGHT,
     STOP,
-    ALL,
     GRIPPER,
+    Brake
 }
